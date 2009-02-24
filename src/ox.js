@@ -38,3 +38,32 @@ OX.Base = {
     return this;
   }
 };
+
+/**
+ * Connection object to use for all OXJS connections. The +initServices+
+ * method MUST be called after extending this object.
+ */
+OX.Connection = OX.Base.extend({
+  /**
+   * Initialize the service properties.
+   */
+  initServices: function () {
+    this.Auth        = OX.Auth.extend({connection: this.connection});
+    this.ActiveCalls = OX.ActiveCalls.extend({connection: this.connection});
+    this.UserAgents  = OX.UserAgents.extend({connection: this.connection});
+    this.Voicemail   = OX.Voicemail.extend({connection: this.connection});
+    this.Directories = OX.Directories.extend({connection: this.connection});
+    this.Preferences = OX.Preferences.extend({connection: this.connection});
+    this.RecentCalls = OX.RecentCalls.extend({connection: this.connection});
+
+    return this;
+  }
+});
+
+OX.Auth = OX.Base.extend({});
+OX.ActiveCalls = OX.Base.extend({});
+OX.UserAgents = OX.Base.extend({});
+OX.Voicemail = OX.Base.extend({});
+OX.Directories = OX.Base.extend({});
+OX.Preferences = OX.Base.extend({});
+OX.RecentCalls = OX.Base.extend({});
