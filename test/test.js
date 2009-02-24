@@ -105,9 +105,57 @@ OXTest.Item = new YAHOO.tool.TestCase({
   }
 });
 
+OXTest.ActiveCalls = new YAHOO.tool.TestCase({
+  name: 'ActiveCalls Tests',
+
+  setUp: function () {
+    this.ox = OX.Connection.extend();
+    this.ox.initServices();
+    this.ActiveCalls = this.ox.ActiveCalls;
+  },
+
+  tearDown: function () {
+    delete this.ox;
+    delete this.ActiveCalls;
+  },
+
+  testPubSubURI: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame('xmpp:pubsub.active-calls.xmpp.onsip.com',
+                   this.ActiveCalls.pubSubURI);
+  },
+
+  testCommandURIs: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(this.ActiveCalls.commandURIs);
+    Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=transfer',
+                   this.ActiveCalls.commandURIs.transfer);
+    Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=create',
+                   this.ActiveCalls.commandURIs.create);
+    Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate',
+                   this.ActiveCalls.commandURIs.hangup);
+  },
+
+  testCreate: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.create);
+  },
+
+  testItemTraits: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(this.ActiveCalls.Item.PreDialog);
+    Assert.isObject(this.ActiveCalls.Item.InDialog);
+  }
+});
+
 new YAHOO.tool.TestLogger();
 YAHOO.tool.TestRunner.add(OXTest.Namespace);
 YAHOO.tool.TestRunner.add(OXTest.Base);
 YAHOO.tool.TestRunner.add(OXTest.Services);
 YAHOO.tool.TestRunner.add(OXTest.Item);
+YAHOO.tool.TestRunner.add(OXTest.ActiveCalls);
 YAHOO.tool.TestRunner.run();
