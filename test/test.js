@@ -87,8 +87,27 @@ OXTest.Services = new YAHOO.tool.TestCase({
   }
 });
 
+OXTest.Item = new YAHOO.tool.TestCase({
+  name: 'Item Tests',
+
+  setUp: function () {
+    this.item = OX.Item.extend();
+  },
+
+  tearDown: function () {
+    delete this.item;
+  },
+
+  testURI: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.item.uri);
+  }
+});
+
 new YAHOO.tool.TestLogger();
 YAHOO.tool.TestRunner.add(OXTest.Namespace);
 YAHOO.tool.TestRunner.add(OXTest.Base);
 YAHOO.tool.TestRunner.add(OXTest.Services);
+YAHOO.tool.TestRunner.add(OXTest.Item);
 YAHOO.tool.TestRunner.run();

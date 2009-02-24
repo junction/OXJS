@@ -67,3 +67,7 @@ OX.Voicemail = OX.Base.extend({});
 OX.Directories = OX.Base.extend({});
 OX.Preferences = OX.Base.extend({});
 OX.RecentCalls = OX.Base.extend({});
+
+OX.Item = OX.Base.extend({
+  uri: null
+});
