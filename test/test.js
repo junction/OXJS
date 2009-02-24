@@ -79,6 +79,40 @@ OXTest.URI = new YAHOO.tool.TestCase({
   }
 });
 
+OXTest.Mixins = new YAHOO.tool.TestCase({
+  name: 'OX Mixin Tests',
+
+  testInDialog: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(OX.Mixins.InDialog);
+    Assert.isFunction(OX.Mixins.InDialog.transfer);
+  },
+
+  testPreDialog: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(OX.Mixins.PreDialog);
+    Assert.isFunction(OX.Mixins.PreDialog.hangup);
+  },
+
+  testCallLabeler: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(OX.Mixins.CallLabeler);
+    Assert.isFunction(OX.Mixins.CallLabeler.label);
+  },
+
+  testSubscribable: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(OX.Mixins.Subscribable);
+    Assert.isFunction(OX.Mixins.Subscribable.subscribe);
+    Assert.isFunction(OX.Mixins.Subscribable.unsubscribe);
+    Assert.isFunction(OX.Mixins.Subscribable.getItems);
+  }
+});
+
 OXTest.Services = new YAHOO.tool.TestCase({
   name: 'OX Service Tests',
 
@@ -187,17 +221,55 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(this.ActiveCalls.create);
   },
 
-  testItemTraits: function () {
+  testSubscribe: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.subscribe);
+    Assert.isFunction(this.ActiveCalls.unsubscribe);
+    Assert.isFunction(this.ActiveCalls.getItems);
+    Assert.isFunction(this.ActiveCalls.registerHandler);
+    Assert.isFunction(this.ActiveCalls.unregisterHandler);
+  },
+
+  testPreDialog: function () {
     var Assert = YAHOO.util.Assert;
 
     Assert.isObject(this.ActiveCalls.Item.PreDialog);
+    Assert.isFunction(this.ActiveCalls.Item.PreDialog.hangup);
+    Assert.isFunction(this.ActiveCalls.Item.PreDialog.label);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.dialogState);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.callID);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.toURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uacAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uasAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromTag);
+  },
+
+  testInDialog: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isObject(this.ActiveCalls.Item.InDialog);
+    Assert.isFunction(this.ActiveCalls.Item.InDialog.transfer);
+    Assert.isFunction(this.ActiveCalls.Item.InDialog.hangup);
+    Assert.isFunction(this.ActiveCalls.Item.InDialog.label);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.dialogState);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.callID);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.toURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uacAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uasAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromTag);
+    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.toTag);
   }
 });
 
 new YAHOO.tool.TestLogger();
 YAHOO.tool.TestRunner.add(OXTest.Namespace);
 YAHOO.tool.TestRunner.add(OXTest.Base);
+YAHOO.tool.TestRunner.add(OXTest.Error);
+YAHOO.tool.TestRunner.add(OXTest.URI);
+YAHOO.tool.TestRunner.add(OXTest.Mixins);
 YAHOO.tool.TestRunner.add(OXTest.Services);
 YAHOO.tool.TestRunner.add(OXTest.Item);
 YAHOO.tool.TestRunner.add(OXTest.ActiveCalls);
