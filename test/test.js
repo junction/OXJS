@@ -36,6 +36,17 @@ OXTest.Base = new YAHOO.tool.TestCase({
   }
 });
 
+OXTest.Error = new YAHOO.tool.TestCase({
+  name: 'OX Error Tests',
+
+  testExists: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(OX.Error);
+    Assert.isFunction(OX.Error.toString);
+  }
+});
+
 OXTest.Services = new YAHOO.tool.TestCase({
   name: 'OX Service Tests',
 
