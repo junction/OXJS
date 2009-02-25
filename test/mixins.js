@@ -31,6 +31,8 @@ OXTest.Mixins = new YAHOO.tool.TestCase({
 
     Assert.isObject(OX.Mixins.Subscribable,
                     'Subscribable mixin is not available.');
+    Assert.isObject(OX.Mixins.Subscribable.subscriptionHandlers,
+                    'Subscribable.subscriptionHandlers is not an object.');
     Assert.isFunction(OX.Mixins.Subscribable.subscribe,
                       'Subscribable.subscribe is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable.unsubscribe,
