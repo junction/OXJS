@@ -48,6 +48,8 @@ OXTest.Mixins = new YAHOO.tool.TestCase({
                       'Pending subscription handler is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onSubscribed,
                       'Subscribed subscription handler is not a function.');
+    Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onUnsubscribed,
+                      'Unsubscribed subscription handler is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onPublish,
                       'Publish item handler is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onRetract,

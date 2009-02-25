@@ -270,6 +270,13 @@ OX.Mixins.Subscribable = {
     onSubscribed: function (requestedURI, finalURI) {},
 
     /**
+     * This handler is called when we our subscription is removed.
+     *
+     * @param nodeURI The node we were unsubscribed from.
+     */
+    onUnsubscribed: function (nodeURI) {},
+
+    /**
      * This handler is called when an item is published.
      *
      * @param item The published item.
@@ -290,7 +297,7 @@ OX.Mixins.Subscribable = {
  */
 OX.Item = OX.Base.extend({
   /**
-   * The URI of this item.
+   * The URI of this item as an OX.URI.Base object.
    */
   uri: null
 });
