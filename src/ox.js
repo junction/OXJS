@@ -233,7 +233,7 @@ OX.Auth = OX.Base.extend({});
 /**
  * Namespace for active-calls related services.
  */
-OX.ActiveCalls = OX.Base.extend({
+OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
   /**
    * URI for this PubSub service.
    */
