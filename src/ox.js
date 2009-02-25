@@ -98,6 +98,31 @@ OX.URI = OX.Base.extend({
  */
 OX.URI.Base = OX.Base.extend({
   /**
+   * The URI scheme.
+   */
+  scheme: null,
+
+  /**
+   * The URI authority section.
+   */
+  authority: null,
+
+  /**
+   * The URI path.
+   */
+  path: null,
+
+  /**
+   * The URI query parameters.
+   */
+  query: null,
+
+  /**
+   * The URI fragment identifier.
+   */
+  fragment: null,
+
+  /**
    * Convert URI object to string representation.
    */
   toString: function () {
