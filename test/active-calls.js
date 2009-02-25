@@ -78,35 +78,33 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                       'ActiveCalls.unregisterHandler is not a function.');
   },
 
-  testPreDialog: function () {
+  testItem: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(this.ActiveCalls.Item);
-    Assert.isFunction(this.ActiveCalls.Item.hangup);
-    Assert.isFunction(this.ActiveCalls.Item.label);
-    Assert.isNotUndefined(this.ActiveCalls.Item.dialogState);
-    Assert.isNotUndefined(this.ActiveCalls.Item.callID);
-    Assert.isNotUndefined(this.ActiveCalls.Item.fromURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.toURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.uacAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.uasAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.fromTag);
-  },
-
-  testInDialog: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isFunction(this.ActiveCalls.Item.transfer);
-    Assert.isFunction(this.ActiveCalls.Item.hangup);
-    Assert.isFunction(this.ActiveCalls.Item.label);
-    Assert.isNotUndefined(this.ActiveCalls.Item.dialogState);
-    Assert.isNotUndefined(this.ActiveCalls.Item.callID);
-    Assert.isNotUndefined(this.ActiveCalls.Item.fromURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.toURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.uacAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.uasAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.fromTag);
-    Assert.isNotUndefined(this.ActiveCalls.Item.toTag);
+    Assert.isObject(this.ActiveCalls.Item,
+                    'ActiveCalls.Item is not an object');
+    Assert.isFunction(this.ActiveCalls.Item.transfer,
+                      'ActiveCalls.Item.transfer is not a function');
+    Assert.isFunction(this.ActiveCalls.Item.hangup,
+                      'ActiveCalls.Item.hangup is not a function');
+    Assert.isFunction(this.ActiveCalls.Item.label,
+                      'ActiveCalls.Item.label is not a function');
+    Assert.isNotUndefined(this.ActiveCalls.Item.dialogState,
+                          'ActiveCalls.Item.dialogState is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.callID,
+                          'ActiveCalls.Item.callID is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.fromURI,
+                          'ActiveCalls.Item.fromURI is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.toURI,
+                          'ActiveCalls.Item.toURI is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.uacAOR,
+                          'ActiveCalls.Item.uacAOR is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.uasAOR,
+                          'ActiveCalls.Item.uasAOR is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.fromTag,
+                          'ActiveCalls.Item.fromTag is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.toTag,
+                          'ActiveCalls.Item.toTag is undefined');
   }
 });
 
