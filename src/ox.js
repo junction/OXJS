@@ -250,6 +250,9 @@ OX.Mixins.Subscribable = {
  * Base Item object.
  */
 OX.Item = OX.Base.extend({
+  /**
+   * The URI of this item.
+   */
   uri: null
 });
 
