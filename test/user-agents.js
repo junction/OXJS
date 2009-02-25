@@ -4,7 +4,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
   setUp: function () {
     this.conn = {};
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initServices();
+    this.ox.initConnection();
     this.UserAgents = this.ox.UserAgents;
   },
 

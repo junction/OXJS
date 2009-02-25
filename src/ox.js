@@ -133,14 +133,14 @@ OX.URI.Base = OX.Base.extend({
 });
 
 /**
- * Connection object to use for all OXJS connections. The +initServices+
+ * Connection object to use for all OXJS connections. The +initConnection+
  * method MUST be called after extending this object.
  */
 OX.Connection = OX.Base.extend({
   /**
    * Initialize the service properties.
    */
-  initServices: function () {
+  initConnection: function () {
     this.Auth        = OX.Auth.extend({connection: this.connection});
     this.ActiveCalls = OX.ActiveCalls.extend({connection: this.connection});
     this.UserAgents  = OX.UserAgents.extend({connection: this.connection});
