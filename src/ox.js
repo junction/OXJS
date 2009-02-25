@@ -209,7 +209,7 @@ OX.Mixins.Subscribable = {
    * Subscribe to +node+
    *
    * @param node The node ID to subscribe to
-   * @param callbacks an object supplying functions for 'onPending', 'onSuccess', and 'onError'
+   * @param callbacks an object supplying functions for 'onSuccess', and 'onError'
    */
   subscribe: function (node, callbacks) {},
 
@@ -230,7 +230,7 @@ OX.Mixins.Subscribable = {
   /**
    * Registers +handler+ for +event+.
    *
-   * @param event One of the strings 'onPublish' or 'onRetract'.
+   * @param event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
    * @param handler A function which accepts one argument, which is the packet response.
    */
   registerHandler: function (event, handler) {
