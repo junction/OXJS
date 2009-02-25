@@ -228,6 +228,13 @@ OX.Mixins.Subscribable = {
   getItems: function (node, callbacks) {}
 };
 
+/**
+ * Base Item object.
+ */
+OX.Item = OX.Base.extend({
+  uri: null
+});
+
 OX.Auth = OX.Base.extend({});
 
 /**
@@ -254,7 +261,21 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
      * URI for hangup Ad Hoc commnd.
      */
     hangup: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate'
-  }
+  },
+
+  /**
+   * Active Call Item.
+   */
+  Item: OX.Item.extend({
+    dialogState: null,
+    callID: null,
+    fromURI: null,
+    toURI: null,
+    uacAOR: null,
+    uasAOR: null,
+    fromTag: null,
+    toTag: null
+  })
 });
 
 OX.UserAgents = OX.Base.extend({});
@@ -266,7 +287,3 @@ OX.Directories = OX.Base.extend({});
 OX.Preferences = OX.Base.extend({});
 
 OX.RecentCalls = OX.Base.extend({});
-
-OX.Item = OX.Base.extend({
-  uri: null
-});
