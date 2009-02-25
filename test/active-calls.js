@@ -41,9 +41,29 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.isFunction(this.ActiveCalls.subscribe);
+  },
+
+  testUnsubscribe: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isFunction(this.ActiveCalls.unsubscribe);
+  },
+
+  testGetItems: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isFunction(this.ActiveCalls.getItems);
+  },
+
+  testRegisterHandler: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isFunction(this.ActiveCalls.registerHandler);
+  },
+
+  testUnregisterHandler: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isFunction(this.ActiveCalls.unregisterHandler);
   },
 
