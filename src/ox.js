@@ -40,6 +40,36 @@ OX.Base = {
 };
 
 /**
+ * OX Connection Adapter abstract object.
+ */
+OX.ConnectionAdapter = OX.Base.extend({
+  /**
+   * Sends +xml+ to +this.connection+.
+   *
+   * @param xml The XML String to send.
+   * @param callback Called when a response to this packet is received with the first argument being the received packet.
+   * @param args An array of arguments to be passed to callback after the packet.
+   */
+   send: function (xml, callback, args) {},
+
+   /**
+    * Registers +handler+ for +event+.
+    *
+    * @param event One of the strings 'onPublish' or 'onRetract'.
+    * @param handler A function which accepts one argument, which is the packet response.
+    */
+   registerHandler: function (event, handler) {},
+
+   /**
+    * Unregisters +handler+ for +event+.
+    *
+    * @param event One of the strings 'onPublish' or 'onRetract'.
+    * @param handler A handler registered for +event+.
+    */
+   unregisterHandler: function (event, handler) {}
+});
+
+/**
  * URI namespace.
  */
 OX.URI = OX.Base.extend({
