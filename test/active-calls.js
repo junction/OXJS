@@ -81,33 +81,32 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   testPreDialog: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(this.ActiveCalls.Item.PreDialog);
-    Assert.isFunction(this.ActiveCalls.Item.PreDialog.hangup);
-    Assert.isFunction(this.ActiveCalls.Item.PreDialog.label);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.dialogState);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.callID);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.toURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uacAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uasAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromTag);
+    Assert.isObject(this.ActiveCalls.Item);
+    Assert.isFunction(this.ActiveCalls.Item.hangup);
+    Assert.isFunction(this.ActiveCalls.Item.label);
+    Assert.isNotUndefined(this.ActiveCalls.Item.dialogState);
+    Assert.isNotUndefined(this.ActiveCalls.Item.callID);
+    Assert.isNotUndefined(this.ActiveCalls.Item.fromURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.toURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.uacAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.uasAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.fromTag);
   },
 
   testInDialog: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(this.ActiveCalls.Item.InDialog);
-    Assert.isFunction(this.ActiveCalls.Item.InDialog.transfer);
-    Assert.isFunction(this.ActiveCalls.Item.InDialog.hangup);
-    Assert.isFunction(this.ActiveCalls.Item.InDialog.label);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.dialogState);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.callID);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.toURI);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uacAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.uasAOR);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.fromTag);
-    Assert.isNotUndefined(this.ActiveCalls.Item.PreDialog.toTag);
+    Assert.isFunction(this.ActiveCalls.Item.transfer);
+    Assert.isFunction(this.ActiveCalls.Item.hangup);
+    Assert.isFunction(this.ActiveCalls.Item.label);
+    Assert.isNotUndefined(this.ActiveCalls.Item.dialogState);
+    Assert.isNotUndefined(this.ActiveCalls.Item.callID);
+    Assert.isNotUndefined(this.ActiveCalls.Item.fromURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.toURI);
+    Assert.isNotUndefined(this.ActiveCalls.Item.uacAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.uasAOR);
+    Assert.isNotUndefined(this.ActiveCalls.Item.fromTag);
+    Assert.isNotUndefined(this.ActiveCalls.Item.toTag);
   }
 });
 
