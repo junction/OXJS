@@ -52,23 +52,23 @@ OX.ConnectionAdapter = OX.Base.extend({
    * @param callback Called when a response to this packet is received with the first argument being the received packet.
    * @param args An array of arguments to be passed to callback after the packet.
    */
-   send: function (xml, callback, args) {},
+  send: function (xml, callback, args) {},
 
-   /**
-    * Registers +handler+ for +event+.
-    *
-    * @param event One of the strings 'onPublish' or 'onRetract'.
-    * @param handler A function which accepts one argument, which is the packet response.
-    */
-   registerHandler: function (event, handler) {},
+  /**
+   * Registers +handler+ for +event+.
+   *
+   * @param event One of the strings 'onPublish' or 'onRetract'.
+   * @param handler A function which accepts one argument, which is the packet response.
+   */
+  registerHandler: function (event, handler) {},
 
-   /**
-    * Unregisters +handler+ for +event+.
-    *
-    * @param event One of the strings 'onPublish' or 'onRetract'.
-    * @param handler A handler registered for +event+.
-    */
-   unregisterHandler: function (event, handler) {}
+  /**
+   * Unregisters +handler+ for +event+.
+   *
+   * @param event One of the strings 'onPublish' or 'onRetract'.
+   * @param handler A handler registered for +event+.
+   */
+  unregisterHandler: function (event, handler) {}
 });
 
 /**
@@ -225,7 +225,25 @@ OX.Mixins.Subscribable = {
    *
    * @param callbacks an object supplying functions for 'onSuccess', and 'onError'
    */
-  getItems: function (node, callbacks) {}
+  getItems: function (node, callbacks) {},
+
+  /**
+   * Registers +handler+ for +event+.
+   *
+   * @param event One of the strings 'onPublish' or 'onRetract'.
+   * @param handler A function which accepts one argument, which is the packet response.
+   */
+  registerHandler: function (event, handler) {
+  },
+
+  /**
+   * Unregisters +handler+ for +event+.
+   *
+   * @param event One of the strings 'onPublish' or 'onRetract'.
+   * @param handler A handler registered for +event+.
+   */
+  unregisterHandler: function (event, handler) {
+  }
 };
 
 /**

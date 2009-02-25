@@ -37,6 +37,10 @@ OXTest.Mixins = new YAHOO.tool.TestCase({
                       'Subscribable.unsubscribe is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable.getItems,
                       'Subscribable.getItems is not a function.');
+    Assert.isFunction(OX.Mixins.Subscribable.registerHandler,
+                      'Subscribable.registerHandler is not a function.');
+    Assert.isFunction(OX.Mixins.Subscribable.unregisterHandler,
+                      'Subscribable.unregisterHandler is not a function.');
   }
 });
 
