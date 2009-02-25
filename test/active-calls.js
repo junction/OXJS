@@ -2,7 +2,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   name: 'ActiveCalls Tests',
 
   setUp: function () {
-    this.ox = OX.Connection.extend();
+    this.conn = {};
+    this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initServices();
     this.ActiveCalls = this.ox.ActiveCalls;
   },
@@ -10,6 +11,14 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   tearDown: function () {
     delete this.ox;
     delete this.ActiveCalls;
+  },
+
+  testServiceMixin: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(OX.ActiveCalls,   'ActiveCalls mixin is not available');
+    Assert.isObject(this.ActiveCalls, 'ActiveCalls is not initialized');
+    Assert.areSame(this.conn,         this.ox.ActiveCalls.connection);
   },
 
   testPubSubURI: function () {
