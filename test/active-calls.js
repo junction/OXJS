@@ -16,19 +16,24 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.areSame('xmpp:pubsub.active-calls.xmpp.onsip.com',
-                   this.ActiveCalls.pubSubURI);
+                   this.ActiveCalls.pubSubURI,
+                   'ActiveCalls.pubSubURI is wrong.');
   },
 
   testCommandURIs: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(this.ActiveCalls.commandURIs);
+    Assert.isObject(this.ActiveCalls.commandURIs,
+                    'ActiveCalls.commandURIs is not an object.');
     Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=transfer',
-                   this.ActiveCalls.commandURIs.transfer);
+                   this.ActiveCalls.commandURIs.transfer,
+                   'ActiveCalls.commandURIs.transfer is wrong');
     Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=create',
-                   this.ActiveCalls.commandURIs.create);
+                   this.ActiveCalls.commandURIs.create,
+                   'ActiveCalls.commandURIs.create is wrong');
     Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate',
-                   this.ActiveCalls.commandURIs.hangup);
+                   this.ActiveCalls.commandURIs.hangup,
+                   'ActiveCalls.commandURIs.hangup is wrong');
   },
 
   testCreate: function () {

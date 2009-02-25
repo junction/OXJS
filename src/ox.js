@@ -229,11 +229,42 @@ OX.Mixins.Subscribable = {
 };
 
 OX.Auth = OX.Base.extend({});
-OX.ActiveCalls = OX.Base.extend({});
+
+/**
+ * Namespace for active-calls related services.
+ */
+OX.ActiveCalls = OX.Base.extend({
+  /**
+   * URI for this PubSub service.
+   */
+  pubSubURI: 'xmpp:pubsub.active-calls.xmpp.onsip.com',
+
+  commandURIs: {
+    /**
+     * URI for create Ad Hoc commnd.
+     */
+    create: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=create',
+
+    /**
+     * URI for transfer Ad Hoc commnd.
+     */
+    transfer: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=transfer',
+
+    /**
+     * URI for hangup Ad Hoc commnd.
+     */
+    hangup: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate'
+  }
+});
+
 OX.UserAgents = OX.Base.extend({});
+
 OX.Voicemail = OX.Base.extend({});
+
 OX.Directories = OX.Base.extend({});
+
 OX.Preferences = OX.Base.extend({});
+
 OX.RecentCalls = OX.Base.extend({});
 
 OX.Item = OX.Base.extend({
