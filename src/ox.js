@@ -51,6 +51,15 @@ OX.URI = OX.Base.extend({
    */
   parse: function (string) {
     return OX.URI.Base.extend();
+  },
+
+  /**
+   * Convert +object+ into a URI.
+   *
+   * @param object
+   */
+  fromObject: function (object) {
+    return OX.URI.Base.extend(object);
   }
 });
 

@@ -20,8 +20,8 @@ OXTest.URI = new YAHOO.tool.TestCase({
   testFromObject: function () {
     var Assert = YAHOO.util.Assert;
 
-    var uri = OX.URI.Base.extend({to:      'foo@bar.com',
-                                  command: 'message'});
+    var uri = OX.URI.fromObject({to:      'foo@bar.com',
+                                 command: 'message'});
     Assert.areSame('xmpp:foo@bar.com?message', uri.toString());
   },
 
