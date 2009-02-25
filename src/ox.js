@@ -275,7 +275,12 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
     uasAOR: null,
     fromTag: null,
     toTag: null
-  })
+  }),
+
+  /**
+   * Create a new call.
+   */
+  create: function () {}
 });
 
 OX.UserAgents = OX.Base.extend({});
