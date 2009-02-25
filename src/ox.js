@@ -256,6 +256,9 @@ OX.Item = OX.Base.extend({
   uri: null
 });
 
+/**
+ * Namespace for auth related services.
+ */
 OX.Auth = OX.Base.extend({});
 
 /**
@@ -304,12 +307,27 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
   create: function () {}
 });
 
+/**
+ * Namespace for user agent related services.
+ */
 OX.UserAgents = OX.Base.extend({});
 
+/**
+ * Namespace for voicemail related services.
+ */
 OX.Voicemail = OX.Base.extend({});
 
+/**
+ * Namespace for directory related services.
+ */
 OX.Directories = OX.Base.extend({});
 
+/**
+ * Namespace for preference related services.
+ */
 OX.Preferences = OX.Base.extend({});
 
+/**
+ * Namespace for recent call related services.
+ */
 OX.RecentCalls = OX.Base.extend({});
