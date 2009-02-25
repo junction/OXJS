@@ -40,6 +40,33 @@ OX.Base = {
 };
 
 /**
+ * URI namespace.
+ */
+OX.URI = OX.Base.extend({
+  /**
+   * Parse +string+ as a URI.
+   *
+   * @param string The URI to parse
+   * @return A new URI object
+   */
+  parse: function (string) {
+    return OX.URI.Base.extend();
+  }
+});
+
+/**
+ * Traits object for URI.
+ */
+OX.URI.Base = OX.Base.extend({
+  /**
+   * Convert URI object to string representation.
+   */
+  toString: function () {
+    return 'XXX - Not implemented';
+  }
+});
+
+/**
  * Connection object to use for all OXJS connections. The +initServices+
  * method MUST be called after extending this object.
  */
@@ -60,20 +87,79 @@ OX.Connection = OX.Base.extend({
   }
 });
 
+/**
+ * Mixins namespace.
+ */
 OX.Mixins = {};
+
+/**
+ * InDialog mixin.
+ *
+ * To use this mixin your base object must supply a +callID+ and
+ * +toTag+ property.
+ */
 OX.Mixins.InDialog = {
-  transfer: function () {}
+  /**
+   * Transfer a call to +to+.
+   *
+   * @param to To whom to transfer the active call.
+   */
+  transfer: function (to) {}
 };
+
+/**
+ * PreDialog mixin.
+ *
+ * To use this mixin your base object must supply a +callID+ property.
+ */
 OX.Mixins.PreDialog = {
+  /**
+   * Hangup this call.
+   */
   hangup: function () {}
 };
+
+/**
+ * CallLabeler mixin.
+ *
+ * To use this mixin your base object must supply a +callID+ property.
+ */
 OX.Mixins.CallLabeler = {
-  label: function () {}
+  /**
+   * Label a call with a short string.
+   *
+   * @param label A short string used to label this call.
+   */
+  label: function (label) {}
 };
+
+/**
+ * Subscribable mixin.
+ *
+ * To use this mixin your base object must supply a +pubsubURI+ property.
+ */
 OX.Mixins.Subscribable = {
-  subscribe: function () {},
-  unsubscribe: function () {},
-  getItems: function () {}
+  /**
+   * Subscribe to +node+
+   *
+   * @param node The node ID to subscribe to
+   * @param callbacks an object supplying functions for 'onPending', 'onSuccess', and 'onError'
+   */
+  subscribe: function (node, callbacks) {},
+
+  /**
+   * Unsubscribe from +node+
+   *
+   * @param callbacks an object supplying functions for 'onSuccess', and 'onError'
+   */
+  unsubscribe: function (node, callbacks) {},
+
+  /**
+   * Get the items on +node+
+   *
+   * @param callbacks an object supplying functions for 'onSuccess', and 'onError'
+   */
+  getItems: function (node, callbacks) {}
 };
 
 OX.Auth = OX.Base.extend({});
