@@ -60,6 +60,22 @@ OX.Connection = OX.Base.extend({
   }
 });
 
+OX.Mixins = {};
+OX.Mixins.InDialog = {
+  transfer: function () {}
+};
+OX.Mixins.PreDialog = {
+  hangup: function () {}
+};
+OX.Mixins.CallLabeler = {
+  label: function () {}
+};
+OX.Mixins.Subscribable = {
+  subscribe: function () {},
+  unsubscribe: function () {},
+  getItems: function () {}
+};
+
 OX.Auth = OX.Base.extend({});
 OX.ActiveCalls = OX.Base.extend({});
 OX.UserAgents = OX.Base.extend({});
