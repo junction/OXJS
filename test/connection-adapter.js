@@ -19,11 +19,11 @@ OXTest.ConnectionAdapter = new YAHOO.tool.TestCase({
     var conn = new JSJaCConnection();
     var adapter = OX.ConnectionAdapter.extend({
       registerHandler: function (event, handler) {
-        return conn.registerHandler();
+        return conn.registerHandler(event, handler);
       },
 
       unregisterHandler: function (event, handler) {
-        return conn.unregisterHandler();
+        return conn.unregisterHandler(event, handler);
       },
 
       send: function (xml, cb, args) {
