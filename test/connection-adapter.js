@@ -30,6 +30,8 @@ OXTest.ConnectionAdapter = new YAHOO.tool.TestCase({
         return conn._sendRaw(xml, cb, args);
       }
     });
+
+    var tmp = OX.Connection.extend({connection: adapter});
   }
 });
 
