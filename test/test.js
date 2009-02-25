@@ -47,6 +47,20 @@ OXTest.Error = new YAHOO.tool.TestCase({
   }
 });
 
+OXTest.Packet = new YAHOO.tool.TestCase({
+  name: 'OX Packet Test',
+
+  testPacket: function() {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(OX.Packet);
+    Assert.isFunction(OX.Packet.getID);
+    Assert.isFunction(OX.Packet.setID);
+    Assert.isFunction(OX.Packet.xml);
+    Assert.isFunction(OX.Packet.pType);
+  }
+});
+
 OXTest.URI = new YAHOO.tool.TestCase({
   name: 'OX URI Tests',
 
@@ -268,6 +282,7 @@ new YAHOO.tool.TestLogger();
 YAHOO.tool.TestRunner.add(OXTest.Namespace);
 YAHOO.tool.TestRunner.add(OXTest.Base);
 YAHOO.tool.TestRunner.add(OXTest.Error);
+YAHOO.tool.TestRunner.add(OXTest.Packet);
 YAHOO.tool.TestRunner.add(OXTest.URI);
 YAHOO.tool.TestRunner.add(OXTest.Mixins);
 YAHOO.tool.TestRunner.add(OXTest.Services);
