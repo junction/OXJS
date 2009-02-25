@@ -266,7 +266,7 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
   /**
    * Active Call Item.
    */
-  Item: OX.Item.extend({
+  Item: OX.Item.extend(OX.Mixins.InDialog, OX.Mixins.PreDialog, OX.Mixins.CallLabeler, {
     dialogState: null,
     callID: null,
     fromURI: null,
