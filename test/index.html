@@ -20,6 +20,18 @@
     <script src="../src/ox.js"></script>
 
     <!-- Load our test suites. -->
-    <script src="test.js"></script>
+    <script src="oxtest.js"></script>
+    <script src="namespace.js"></script>
+    <script src="base.js"></script>
+    <script src="error.js"></script>
+    <script src="uri.js"></script>
+    <script src="mixins.js"></script>
+    <script src="item.js"></script>
+    <script src="services.js"></script>
+
+    <script>
+      new YAHOO.tool.TestLogger();
+      YAHOO.tool.TestRunner.run();
+    </script>
   </body>
 </html>
