@@ -34,37 +34,43 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   testCreate: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.ActiveCalls.create);
+    Assert.isFunction(this.ActiveCalls.create,
+                      'ActiveCalls.create is not a function.');
   },
 
   testSubscribe: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.ActiveCalls.subscribe);
+    Assert.isFunction(this.ActiveCalls.subscribe,
+                      'ActiveCalls.subscribe is not a function.');
   },
 
   testUnsubscribe: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.ActiveCalls.unsubscribe);
+    Assert.isFunction(this.ActiveCalls.unsubscribe,
+                      'ActiveCalls.unsubscribe is not a function.');
   },
 
   testGetItems: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.ActiveCalls.getItems);
+    Assert.isFunction(this.ActiveCalls.getItems,
+                      'ActiveCalls.getItems is not a function.');
   },
 
   testRegisterHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.ActiveCalls.registerHandler);
+    Assert.isFunction(this.ActiveCalls.registerHandler,
+                      'ActiveCalls.registerHandler is not a function.');
   },
 
   testUnregisterHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.ActiveCalls.unregisterHandler);
+    Assert.isFunction(this.ActiveCalls.unregisterHandler,
+                      'ActiveCalls.unregisterHandler is not a function.');
   },
 
   testPreDialog: function () {
