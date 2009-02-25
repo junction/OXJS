@@ -1,4 +1,6 @@
-/* Main application namespace. */
+/**
+ * Main application namespace.
+ */
 var OX = {};
 
 /**
