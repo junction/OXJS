@@ -31,8 +31,6 @@ OXTest.Mixins = new YAHOO.tool.TestCase({
 
     Assert.isObject(OX.Mixins.Subscribable,
                     'Subscribable mixin is not available.');
-    Assert.isObject(OX.Mixins.Subscribable.subscriptionHandlers,
-                    'Subscribable.subscriptionHandlers is not an object.');
     Assert.isFunction(OX.Mixins.Subscribable.subscribe,
                       'Subscribable.subscribe is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable.unsubscribe,
@@ -43,6 +41,17 @@ OXTest.Mixins = new YAHOO.tool.TestCase({
                       'Subscribable.registerHandler is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable.unregisterHandler,
                       'Subscribable.unregisterHandler is not a function.');
+
+    Assert.isObject(OX.Mixins.Subscribable._subscriptionHandlers,
+                    'Subscribable.subscriptionHandlers is not an object.');
+    Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onPending,
+                      'Pending subscription handler is not a function.');
+    Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onSubscribed,
+                      'Subscribed subscription handler is not a function.');
+    Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onPublish,
+                      'Publish item handler is not a function.');
+    Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onRetract,
+                      'Retract item handler is not a function.');
   }
 });
 

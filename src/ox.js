@@ -244,6 +244,44 @@ OX.Mixins.Subscribable = {
    * @param event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
    */
   unregisterHandler: function (event) {
+  },
+
+  /**
+   * Handlers for various subscription related events.
+   *
+   * @private
+   */
+  _subscriptionHandlers: {
+    /**
+     * This handler is called when we get a pending subscription
+     * notification.
+     *
+     * @param requestedURI The original URI of the subscription request.
+     * @param finalURI The final URI of the subscription request, after redirects.
+     */
+    onPending: function (requestedURI, finalURI) {},
+
+    /**
+     * This handler is called when we get a completed subscription.
+     *
+     * @param requestedURI The original URI of the subscription request.
+     * @param finalURI The final URI of the subscription request, after redirects.
+     */
+    onSubscribed: function (requestedURI, finalURI) {},
+
+    /**
+     * This handler is called when an item is published.
+     *
+     * @param item The published item.
+     */
+    onPublish: function (item) {},
+
+    /**
+     * This handler is called when an item is retracted.
+     *
+     * @param itemURI The URI of the retracted item.
+     */
+    onRetract: function (itemURI) {}
   }
 };
 
