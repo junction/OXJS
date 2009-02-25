@@ -230,6 +230,8 @@ OX.Mixins.Subscribable = {
   /**
    * Registers +handler+ for +event+.
    *
+   * Only one handler can be registered for a given event at a time.
+   *
    * @param event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
    * @param handler A function which accepts one argument, which is the packet response.
    */
@@ -239,10 +241,9 @@ OX.Mixins.Subscribable = {
   /**
    * Unregisters +handler+ for +event+.
    *
-   * @param event One of the strings 'onPublish' or 'onRetract'.
-   * @param handler A handler registered for +event+.
+   * @param event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
    */
-  unregisterHandler: function (event, handler) {
+  unregisterHandler: function (event) {
   }
 };
 
