@@ -1,10 +1,11 @@
 /**
- * Main application namespace.
+ * @namespace
  */
 var OX = {};
 
 /**
  * Base object for OXJS. All other objects inherit from this one.
+ * @class
  */
 OX.Base = {
   /**
@@ -13,6 +14,7 @@ OX.Base = {
    * called on the new object with remaining args.
    *
    * @return the new object
+   * @type OX.Base
    */
   extend: function () {
     var F = function () {};
@@ -43,8 +45,10 @@ OX.Base = {
 
 /**
  * OX Connection Adapter abstract object.
+ * @class
+ * @extends OX.Base
  */
-OX.ConnectionAdapter = OX.Base.extend({
+OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter */{
   /**
    * Sends +xml+ to +this.connection+.
    *
@@ -73,13 +77,16 @@ OX.ConnectionAdapter = OX.Base.extend({
 
 /**
  * URI namespace.
+ * @class
+ * @extends OX.Base
  */
-OX.URI = OX.Base.extend({
+OX.URI = OX.Base.extend(/** @lends OX.URI */{
   /**
    * Parse +string+ as a URI.
    *
    * @param string The URI to parse
    * @return A new URI object
+   * @type OX.URI.Base
    */
   parse: function (string) {
     return OX.URI.Base.extend();
@@ -89,6 +96,8 @@ OX.URI = OX.Base.extend({
    * Convert +object+ into a URI.
    *
    * @param object
+   * @return A new URI object
+   * @type OX.URI.Base
    */
   fromObject: function (object) {
     return OX.URI.Base.extend(object);
@@ -97,8 +106,10 @@ OX.URI = OX.Base.extend({
 
 /**
  * Traits object for URI.
+ * @class
+ * @extends OX.Base
  */
-OX.URI.Base = OX.Base.extend({
+OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base */{
   /**
    * The URI scheme.
    */
@@ -135,8 +146,17 @@ OX.URI.Base = OX.Base.extend({
 /**
  * Connection object to use for all OXJS connections. The +initConnection+
  * method MUST be called after extending this object.
+ * @class
+ * @extends OX.Base
+ * @property {OX.Auth} Auth
+ * @property {OX.ActiveCalls} ActiveCalls
+ * @property {OX.UserAgents} UserAgents
+ * @property {OX.Voicemail} Voicemail
+ * @property {OX.Directories} Directories
+ * @property {OX.Preferences} Preferences
+ * @property {OX.RecentCalls} RecentCalls
  */
-OX.Connection = OX.Base.extend({
+OX.Connection = OX.Base.extend(/** @lends OX.Connection */{
   /**
    * Initialize the service properties.
    */
@@ -155,30 +175,24 @@ OX.Connection = OX.Base.extend({
 
 /**
  * Mixins namespace.
+ * @namespace
  */
 OX.Mixins = {};
 
 /**
- * InDialog mixin.
+ * CallDialog mixin.
  *
- * To use this mixin your base object must supply a +callID+ and
- * +toTag+ property.
+ * To use this mixin your base object must supply a +callID+ property
+ * @type Object
  */
-OX.Mixins.InDialog = {
+OX.Mixins.CallDialog = {
   /**
    * Transfer a call to +to+.
    *
    * @param to To whom to transfer the active call.
    */
-  transfer: function (to) {}
-};
+  transfer: function (to) {},
 
-/**
- * PreDialog mixin.
- *
- * To use this mixin your base object must supply a +callID+ property.
- */
-OX.Mixins.PreDialog = {
   /**
    * Hangup this call.
    */
@@ -189,6 +203,7 @@ OX.Mixins.PreDialog = {
  * CallLabeler mixin.
  *
  * To use this mixin your base object must supply a +callID+ property.
+ * @type Object
  */
 OX.Mixins.CallLabeler = {
   /**
@@ -203,6 +218,7 @@ OX.Mixins.CallLabeler = {
  * Subscribable mixin.
  *
  * To use this mixin your base object must supply a +pubsubURI+ property.
+ * @type Object
  */
 OX.Mixins.Subscribable = {
   /**
@@ -294,8 +310,10 @@ OX.Mixins.Subscribable = {
 
 /**
  * Base Item object.
+ * @class
+ * @extends OX.Base
  */
-OX.Item = OX.Base.extend({
+OX.Item = OX.Base.extend(/** @lends OX.Item */{
   /**
    * The URI of this item as an OX.URI.Base object.
    */
@@ -304,18 +322,28 @@ OX.Item = OX.Base.extend({
 
 /**
  * Namespace for auth related services.
+ * @class
+ * @extends OX.Base
  */
 OX.Auth = OX.Base.extend({});
 
 /**
  * Namespace for active-calls related services.
+ * @class
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable.subscribe as subscribe
+ * @borrows OX.Mixins.Subscribable.unsubscribe as unsubscribe
+ * @borrows OX.Mixins.Subscribable.getItems as getItems
+ * @borrows OX.Mixins.Subscribable.registerHandler as registerHandler
+ * @borrows OX.Mixins.Subscribable.unregisterHandler as unregisterHandler
  */
-OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
+OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.ActiveCalls */ {
   /**
    * URI for this PubSub service.
    */
   pubSubURI: 'xmpp:pubsub.active-calls.xmpp.onsip.com',
 
+  /** @field */
   commandURIs: {
     /**
      * URI for create Ad Hoc commnd.
@@ -335,8 +363,14 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
 
   /**
    * Active Call Item.
+   * @name OX.ActiveCalls.Item
+   * @class
+   * @extends OX.Item
+   * @borrows OX.Mixins.CallDialog.transfer as transfer
+   * @borrows OX.Mixins.CallDialog.hangup as hangup
+   * @borrows OX.Mixins.CallLabeler.label as label
    */
-  Item: OX.Item.extend(OX.Mixins.InDialog, OX.Mixins.PreDialog, OX.Mixins.CallLabeler, {
+  Item: OX.Item.extend(OX.Mixins.CallDialog, OX.Mixins.CallLabeler, /** @lends OX.ActiveCalls.Item */{
     dialogState: null,
     callID: null,
     fromURI: null,
@@ -355,25 +389,60 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
 
 /**
  * Namespace for user agent related services.
+ * @class
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable.subscribe as subscribe
+ * @borrows OX.Mixins.Subscribable.unsubscribe as unsubscribe
+ * @borrows OX.Mixins.Subscribable.getItems as getItems
+ * @borrows OX.Mixins.Subscribable.registerHandler as registerHandler
+ * @borrows OX.Mixins.Subscribable.unregisterHandler as unregisterHandler
  */
-OX.UserAgents = OX.Base.extend({});
+OX.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.UserAgents */{});
 
 /**
  * Namespace for voicemail related services.
+ * @class
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable.subscribe as subscribe
+ * @borrows OX.Mixins.Subscribable.unsubscribe as unsubscribe
+ * @borrows OX.Mixins.Subscribable.getItems as getItems
+ * @borrows OX.Mixins.Subscribable.registerHandler as registerHandler
+ * @borrows OX.Mixins.Subscribable.unregisterHandler as unregisterHandler
  */
-OX.Voicemail = OX.Base.extend({});
+OX.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Voicemail */{});
 
 /**
  * Namespace for directory related services.
+ * @class
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable.subscribe as subscribe
+ * @borrows OX.Mixins.Subscribable.unsubscribe as unsubscribe
+ * @borrows OX.Mixins.Subscribable.getItems as getItems
+ * @borrows OX.Mixins.Subscribable.registerHandler as registerHandler
+ * @borrows OX.Mixins.Subscribable.unregisterHandler as unregisterHandler
  */
-OX.Directories = OX.Base.extend({});
+OX.Directories = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Directories */{});
 
 /**
  * Namespace for preference related services.
+ * @class
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable.subscribe as subscribe
+ * @borrows OX.Mixins.Subscribable.unsubscribe as unsubscribe
+ * @borrows OX.Mixins.Subscribable.getItems as getItems
+ * @borrows OX.Mixins.Subscribable.registerHandler as registerHandler
+ * @borrows OX.Mixins.Subscribable.unregisterHandler as unregisterHandler
  */
-OX.Preferences = OX.Base.extend({});
+OX.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Preferences */{});
 
 /**
  * Namespace for recent call related services.
+ * @class
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable.subscribe as subscribe
+ * @borrows OX.Mixins.Subscribable.unsubscribe as unsubscribe
+ * @borrows OX.Mixins.Subscribable.getItems as getItems
+ * @borrows OX.Mixins.Subscribable.registerHandler as registerHandler
+ * @borrows OX.Mixins.Subscribable.unregisterHandler as unregisterHandler
  */
-OX.RecentCalls = OX.Base.extend({});
+OX.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.RecentCalls */{});
