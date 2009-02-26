@@ -1,20 +1,14 @@
 OXTest.Mixins = new YAHOO.tool.TestCase({
   name: 'OX Mixin Tests',
 
-  testInDialog: function () {
+  testCallDialog: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Mixins.InDialog, 'InDialog mixin is not available.');
-    Assert.isFunction(OX.Mixins.InDialog.transfer,
-                      'InDialog.transfer is not a function.');
-  },
-
-  testPreDialog: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isObject(OX.Mixins.PreDialog, 'PreDialog mixin is not available.');
-    Assert.isFunction(OX.Mixins.PreDialog.hangup,
-                      'PreDialog.hangup is not a function.');
+    Assert.isObject(OX.Mixins.CallDialog, 'CallDialog mixin is not available.');
+    Assert.isFunction(OX.Mixins.CallDialog.transfer,
+                      'CallDialog.transfer is not a function.');
+    Assert.isFunction(OX.Mixins.CallDialog.hangup,
+                      'CallDialog.hangup is not a function.');
   },
 
   testCallLabeler: function () {
