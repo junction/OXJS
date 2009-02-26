@@ -1,0 +1,466 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
+<span class='line'>  2</span>  * @namespace
+<span class='line'>  3</span>  */</span><span class="WHIT">
+<span class='line'>  4</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">OX</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  5</span> 
+<span class='line'>  6</span> </span><span class="COMM">/**
+<span class='line'>  7</span>  * Base object for OXJS. All other objects inherit from this one.
+<span class='line'>  8</span>  * @namespace
+<span class='line'>  9</span>  */</span><span class="WHIT">
+<span class='line'> 10</span> </span><span class="NAME">OX.Base</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 11</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'> 12</span>    * Creates a new object which extends the current object.  Any
+<span class='line'> 13</span>    * arguments are mixed in to the new object as if +OX.Base.extend+ was
+<span class='line'> 14</span>    * called on the new object with remaining args.
+<span class='line'> 15</span>    *
+<span class='line'> 16</span>    * @returns {OX.Base} the new object
+<span class='line'> 17</span>    */</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">  </span><span class="NAME">extend</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">F</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">    </span><span class="NAME">F.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 21</span> 
+<span class='line'> 22</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">rc</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">F</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 23</span> </span><span class="WHIT">    </span><span class="NAME">rc.mixin.apply</span><span class="PUNC">(</span><span class="NAME">rc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 24</span> 
+<span class='line'> 25</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">rc</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 27</span> 
+<span class='line'> 28</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'> 29</span>    * Iterates over all arguments, adding their own properties to the
+<span class='line'> 30</span>    * receiver.
+<span class='line'> 31</span>    *
+<span class='line'> 32</span>    * @returns {OX.Base} the receiver
+<span class='line'> 33</span>    */</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">  </span><span class="NAME">mixin</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">    </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">len</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">arguments.length</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">len</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 36</span> </span><span class="WHIT">      </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">k</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">hasOwnProperty</span><span class="PUNC">(</span><span class="NAME">k</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">        </span><span class="KEYW">this</span><span class="PUNC">[</span><span class="NAME">k</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">[</span><span class="NAME">k</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">      </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 39</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 40</span> 
+<span class='line'> 41</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 44</span> 
+<span class='line'> 45</span> </span><span class="COMM">/**
+<span class='line'> 46</span>  * OX Connection Adapter abstract object.
+<span class='line'> 47</span>  * @namespace
+<span class='line'> 48</span>  * @extends OX.Base
+<span class='line'> 49</span>  */</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="NAME">OX.ConnectionAdapter</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="COMM">/** @lends OX.ConnectionAdapter# */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'> 52</span>    * Sends +xml+ to +this.connection+.
+<span class='line'> 53</span>    *
+<span class='line'> 54</span>    * @param {String} xml The XML String to send.
+<span class='line'> 55</span>    * @param {Function} callback Called when a response to this packet is received with the first argument being the received packet.
+<span class='line'> 56</span>    * @param {Array} args An array of arguments to be passed to callback after the packet.
+<span class='line'> 57</span>    */</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">  </span><span class="NAME">send</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">xml</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callback</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 59</span> 
+<span class='line'> 60</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'> 61</span>    * Registers +handler+ for +event+.
+<span class='line'> 62</span>    *
+<span class='line'> 63</span>    * @param {String} event One of the strings 'onPublish' or 'onRetract'.
+<span class='line'> 64</span>    * @param {Function} handler A function which accepts one argument, which is the packet response.
+<span class='line'> 65</span>    */</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">  </span><span class="NAME">registerHandler</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">handler</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 67</span> 
+<span class='line'> 68</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'> 69</span>    * Unregisters +handler+ for +event+.
+<span class='line'> 70</span>    *
+<span class='line'> 71</span>    * @param {String} event One of the strings 'onPublish' or 'onRetract'.
+<span class='line'> 72</span>    * @param {Function} handler A handler registered for +event+.
+<span class='line'> 73</span>    */</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">  </span><span class="NAME">unregisterHandler</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">handler</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 76</span> 
+<span class='line'> 77</span> </span><span class="COMM">/**
+<span class='line'> 78</span>  * URI namespace.
+<span class='line'> 79</span>  * @namespace
+<span class='line'> 80</span>  * @extends OX.Base
+<span class='line'> 81</span>  */</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="NAME">OX.URI</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="COMM">/** @lends OX.URI */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'> 84</span>    * Parse +string+ as an OX.URI.Base object.
+<span class='line'> 85</span>    *
+<span class='line'> 86</span>    * @param {String} uriString the URI to parse
+<span class='line'> 87</span>    * @returns {OX.URI.Base} A new OX.URI.Base object
+<span class='line'> 88</span>    */</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">  </span><span class="NAME">parse</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">uriString</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">OX.URI.Base.extend</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 92</span> 
+<span class='line'> 93</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'> 94</span>    * Convert +object+ into an OX.URI.Base object
+<span class='line'> 95</span>    *
+<span class='line'> 96</span>    * @param {Object} object an object with these members: scheme, path, authority, query, fragment
+<span class='line'> 97</span>    * @returns {OX.URI.Base} A new URI object
+<span class='line'> 98</span>    */</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">  </span><span class="NAME">fromObject</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">object</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">OX.URI.Base.extend</span><span class="PUNC">(</span><span class="NAME">object</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>103</span> 
+<span class='line'>104</span> </span><span class="COMM">/**
+<span class='line'>105</span>  * Traits object for URI.
+<span class='line'>106</span>  * @namespace
+<span class='line'>107</span>  * @extends OX.Base
+<span class='line'>108</span>  */</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="NAME">OX.URI.Base</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="COMM">/** @lends OX.URI.Base# */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>111</span>    * The URI scheme.
+<span class='line'>112</span>    * @public
+<span class='line'>113</span>    */</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">  </span><span class="NAME">scheme</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>115</span> 
+<span class='line'>116</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>117</span>    * The URI authority section.
+<span class='line'>118</span>    * @public
+<span class='line'>119</span>    */</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">  </span><span class="NAME">authority</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>121</span> 
+<span class='line'>122</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>123</span>    * The URI path.
+<span class='line'>124</span>    * @public
+<span class='line'>125</span>    */</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">  </span><span class="NAME">path</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>127</span> 
+<span class='line'>128</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>129</span>    * The URI query parameters.
+<span class='line'>130</span>    * @public
+<span class='line'>131</span>    */</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">  </span><span class="NAME">query</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>133</span> 
+<span class='line'>134</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>135</span>    * The URI fragment identifier.
+<span class='line'>136</span>    * @public
+<span class='line'>137</span>    */</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">  </span><span class="NAME">fragment</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>139</span> 
+<span class='line'>140</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>141</span>    * Convert URI object to string representation.
+<span class='line'>142</span>    * @public
+<span class='line'>143</span>    */</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">  </span><span class="NAME">toString</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="STRN">'XXX - Not implemented'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> 
+<span class='line'>149</span> </span><span class="COMM">/**
+<span class='line'>150</span>  * Connection object to use for all OXJS connections. The +initConnection+
+<span class='line'>151</span>  * method MUST be called after extending this object.
+<span class='line'>152</span>  * @namespace
+<span class='line'>153</span>  * @extends OX.Base
+<span class='line'>154</span>  */</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="NAME">OX.Connection</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="COMM">/** @lends OX.Connection# */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>157</span>    * Initialize the service properties.
+<span class='line'>158</span>    */</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">  </span><span class="NAME">initConnection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>160</span> 
+<span class='line'>161</span> </span><span class="WHIT">    </span><span class="NAME">this.Auth</span><span class="WHIT">        </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Auth.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">connection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.connection</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">    </span><span class="NAME">this.ActiveCalls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.ActiveCalls.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">connection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.connection</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="WHIT">    </span><span class="NAME">this.UserAgents</span><span class="WHIT">  </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.UserAgents.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">connection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.connection</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>164</span> </span><span class="WHIT">    </span><span class="NAME">this.Voicemail</span><span class="WHIT">   </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Voicemail.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">connection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.connection</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">    </span><span class="NAME">this.Directories</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Directories.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">connection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.connection</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">    </span><span class="NAME">this.Preferences</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Preferences.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">connection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.connection</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>167</span> </span><span class="WHIT">    </span><span class="NAME">this.RecentCalls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.RecentCalls.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">connection</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.connection</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>168</span> 
+<span class='line'>169</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>171</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>172</span> 
+<span class='line'>173</span> </span><span class="COMM">/**
+<span class='line'>174</span>  * Mixins namespace.
+<span class='line'>175</span>  * @namespace
+<span class='line'>176</span>  */</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="NAME">OX.Mixins</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>178</span> 
+<span class='line'>179</span> </span><span class="COMM">/**
+<span class='line'>180</span>  * CallDialog mixin.
+<span class='line'>181</span>  *
+<span class='line'>182</span>  * To use this mixin your base object must supply a +callID+ property
+<span class='line'>183</span>  * @namespace
+<span class='line'>184</span>  */</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="NAME">OX.Mixins.CallDialog</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.Mixins.CallDialog# */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>186</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>187</span>    * Transfer a call to +to+.
+<span class='line'>188</span>    * @param {String} to To whom to transfer the active call.
+<span class='line'>189</span>    */</span><span class="WHIT">
+<span class='line'>190</span> </span><span class="WHIT">  </span><span class="NAME">transfer</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">to</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>191</span> 
+<span class='line'>192</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>193</span>    * Hangup this call.
+<span class='line'>194</span>    */</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">  </span><span class="NAME">hangup</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>196</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>197</span> 
+<span class='line'>198</span> </span><span class="COMM">/**
+<span class='line'>199</span>  * CallLabeler mixin.
+<span class='line'>200</span>  *
+<span class='line'>201</span>  * To use this mixin your base object must supply a +callID+ property.
+<span class='line'>202</span>  * @namespace
+<span class='line'>203</span>  */</span><span class="WHIT">
+<span class='line'>204</span> </span><span class="NAME">OX.Mixins.CallLabeler</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.Mixins.CallLabeler# */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>205</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>206</span>    * Label a call with a short string.
+<span class='line'>207</span>    *
+<span class='line'>208</span>    * @param {String} label A short string used to label this call.
+<span class='line'>209</span>    */</span><span class="WHIT">
+<span class='line'>210</span> </span><span class="WHIT">  </span><span class="NAME">label</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">label</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>211</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>212</span> 
+<span class='line'>213</span> </span><span class="COMM">/**
+<span class='line'>214</span>  * Subscribable mixin.
+<span class='line'>215</span>  *
+<span class='line'>216</span>  * To use this mixin your base object must supply a +pubsubURI+ property.
+<span class='line'>217</span>  * @namespace
+<span class='line'>218</span>  */</span><span class="WHIT">
+<span class='line'>219</span> </span><span class="NAME">OX.Mixins.Subscribable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.Mixins.Subscribable# */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>220</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>221</span>    * Subscribe to +node+
+<span class='line'>222</span>    *
+<span class='line'>223</span>    * @public
+<span class='line'>224</span>    * @param {String} node The node ID to subscribe to
+<span class='line'>225</span>    * @param {Function} callbacks an object supplying functions for 'onSuccess', and 'onError'
+<span class='line'>226</span>    */</span><span class="WHIT">
+<span class='line'>227</span> </span><span class="WHIT">  </span><span class="NAME">subscribe</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>228</span> 
+<span class='line'>229</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>230</span>    * Unsubscribe from +node+
+<span class='line'>231</span>    *
+<span class='line'>232</span>    * @public
+<span class='line'>233</span>    * @param {String} node The node ID to subscribe to
+<span class='line'>234</span>    * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
+<span class='line'>235</span>    */</span><span class="WHIT">
+<span class='line'>236</span> </span><span class="WHIT">  </span><span class="NAME">unsubscribe</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>237</span> 
+<span class='line'>238</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>239</span>    * Get the items on +node+
+<span class='line'>240</span>    *
+<span class='line'>241</span>    * @public
+<span class='line'>242</span>    * @param {String} node The node ID to subscribe to
+<span class='line'>243</span>    * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
+<span class='line'>244</span>    */</span><span class="WHIT">
+<span class='line'>245</span> </span><span class="WHIT">  </span><span class="NAME">getItems</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">node</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">callbacks</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>246</span> 
+<span class='line'>247</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>248</span>    * Registers +handler+ for +event+.
+<span class='line'>249</span>    *
+<span class='line'>250</span>    * Only one handler can be registered for a given event at a time.
+<span class='line'>251</span>    *
+<span class='line'>252</span>    * @public
+<span class='line'>253</span>    * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
+<span class='line'>254</span>    * @param {Function} handler A function which accepts one argument, which is the packet response.
+<span class='line'>255</span>    */</span><span class="WHIT">
+<span class='line'>256</span> </span><span class="WHIT">  </span><span class="NAME">registerHandler</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">handler</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>257</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>258</span> 
+<span class='line'>259</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>260</span>    * Unregisters +handler+ for +event+.
+<span class='line'>261</span>    *
+<span class='line'>262</span>    * @public
+<span class='line'>263</span>    * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
+<span class='line'>264</span>    */</span><span class="WHIT">
+<span class='line'>265</span> </span><span class="WHIT">  </span><span class="NAME">unregisterHandler</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>266</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>267</span> 
+<span class='line'>268</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>269</span>    * Handlers for various subscription related events.
+<span class='line'>270</span>    *
+<span class='line'>271</span>    * @private
+<span class='line'>272</span>    */</span><span class="WHIT">
+<span class='line'>273</span> </span><span class="WHIT">  </span><span class="NAME">_subscriptionHandlers</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>274</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>275</span>      * This handler is called when we get a pending subscription
+<span class='line'>276</span>      * notification.
+<span class='line'>277</span>      *
+<span class='line'>278</span>      * @param requestedURI The original URI of the subscription request.
+<span class='line'>279</span>      * @param finalURI The final URI of the subscription request, after redirects.
+<span class='line'>280</span>      */</span><span class="WHIT">
+<span class='line'>281</span> </span><span class="WHIT">    </span><span class="NAME">onPending</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">requestedURI</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">finalURI</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>282</span> 
+<span class='line'>283</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>284</span>      * This handler is called when we get a completed subscription.
+<span class='line'>285</span>      *
+<span class='line'>286</span>      * @param requestedURI The original URI of the subscription request.
+<span class='line'>287</span>      * @param finalURI The final URI of the subscription request, after redirects.
+<span class='line'>288</span>      */</span><span class="WHIT">
+<span class='line'>289</span> </span><span class="WHIT">    </span><span class="NAME">onSubscribed</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">requestedURI</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">finalURI</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>290</span> 
+<span class='line'>291</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>292</span>      * This handler is called when we our subscription is removed.
+<span class='line'>293</span>      *
+<span class='line'>294</span>      * @param nodeURI The node we were unsubscribed from.
+<span class='line'>295</span>      */</span><span class="WHIT">
+<span class='line'>296</span> </span><span class="WHIT">    </span><span class="NAME">onUnsubscribed</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">nodeURI</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>297</span> 
+<span class='line'>298</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>299</span>      * This handler is called when an item is published.
+<span class='line'>300</span>      *
+<span class='line'>301</span>      * @param item The published item.
+<span class='line'>302</span>      */</span><span class="WHIT">
+<span class='line'>303</span> </span><span class="WHIT">    </span><span class="NAME">onPublish</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">item</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>304</span> 
+<span class='line'>305</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>306</span>      * This handler is called when an item is retracted.
+<span class='line'>307</span>      *
+<span class='line'>308</span>      * @param itemURI The URI of the retracted item.
+<span class='line'>309</span>      */</span><span class="WHIT">
+<span class='line'>310</span> </span><span class="WHIT">    </span><span class="NAME">onRetract</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">itemURI</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>311</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>312</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>313</span> 
+<span class='line'>314</span> </span><span class="COMM">/**
+<span class='line'>315</span>  * Base Item object.
+<span class='line'>316</span>  * @namespace
+<span class='line'>317</span>  * @extends OX.Base
+<span class='line'>318</span>  */</span><span class="WHIT">
+<span class='line'>319</span> </span><span class="NAME">OX.Item</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="COMM">/** @lends OX.Item# */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>320</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>321</span>    * The URI of this item as an OX.URI.Base object.
+<span class='line'>322</span>    * @type OX.URI.Base
+<span class='line'>323</span>    */</span><span class="WHIT">
+<span class='line'>324</span> </span><span class="WHIT">  </span><span class="NAME">uri</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT">
+<span class='line'>325</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>326</span> 
+<span class='line'>327</span> </span><span class="COMM">/**
+<span class='line'>328</span>  * Namespace for auth related services.
+<span class='line'>329</span>  * @namespace
+<span class='line'>330</span>  * @extends OX.Base
+<span class='line'>331</span>  */</span><span class="WHIT">
+<span class='line'>332</span> </span><span class="NAME">OX.Auth</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>333</span> 
+<span class='line'>334</span> </span><span class="COMM">/**
+<span class='line'>335</span>  * Namespace for active-calls related services.
+<span class='line'>336</span>  * @namespace
+<span class='line'>337</span>  * @extends OX.Base
+<span class='line'>338</span>  * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+<span class='line'>339</span>  * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+<span class='line'>340</span>  * @borrows OX.Mixins.Subscribable#getItems as #getItems
+<span class='line'>341</span>  * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+<span class='line'>342</span>  * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+<span class='line'>343</span>  */</span><span class="WHIT">
+<span class='line'>344</span> </span><span class="NAME">OX.ActiveCalls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="NAME">OX.Mixins.Subscribable</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.ActiveCalls */</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>345</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>346</span>    * URI for this PubSub service.
+<span class='line'>347</span>    */</span><span class="WHIT">
+<span class='line'>348</span> </span><span class="WHIT">  </span><span class="NAME">pubSubURI</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'xmpp:pubsub.active-calls.xmpp.onsip.com'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>349</span> 
+<span class='line'>350</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>351</span>    */</span><span class="WHIT">
+<span class='line'>352</span> </span><span class="WHIT">  </span><span class="NAME">commandURIs</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>353</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>354</span>      * URI for create Ad Hoc commnd.
+<span class='line'>355</span>      */</span><span class="WHIT">
+<span class='line'>356</span> </span><span class="WHIT">    </span><span class="NAME">create</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'xmpp:commands.active-calls.xmpp.onsip.com?;node=create'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>357</span> 
+<span class='line'>358</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>359</span>      * URI for transfer Ad Hoc commnd.
+<span class='line'>360</span>      */</span><span class="WHIT">
+<span class='line'>361</span> </span><span class="WHIT">    </span><span class="NAME">transfer</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'xmpp:commands.active-calls.xmpp.onsip.com?;node=transfer'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>362</span> 
+<span class='line'>363</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>364</span>      * URI for hangup Ad Hoc commnd.
+<span class='line'>365</span>      */</span><span class="WHIT">
+<span class='line'>366</span> </span><span class="WHIT">    </span><span class="NAME">hangup</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate'</span><span class="WHIT">
+<span class='line'>367</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>368</span> 
+<span class='line'>369</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>370</span>    * Active Call Item.
+<span class='line'>371</span>    * @name OX.ActiveCalls.Item
+<span class='line'>372</span>    * @namespace
+<span class='line'>373</span>    * @extends OX.Item
+<span class='line'>374</span>    * @borrows OX.Mixins.CallDialog#transfer as #transfer
+<span class='line'>375</span>    * @borrows OX.Mixins.CallDialog#hangup as #hangup
+<span class='line'>376</span>    * @borrows OX.Mixins.CallLabeler#label as #label
+<span class='line'>377</span>    */</span><span class="WHIT">
+<span class='line'>378</span> </span><span class="WHIT">  </span><span class="NAME">Item</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">OX.Item.extend</span><span class="PUNC">(</span><span class="NAME">OX.Mixins.CallDialog</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">OX.Mixins.CallLabeler</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.ActiveCalls.Item */</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>379</span> </span><span class="WHIT">    </span><span class="NAME">dialogState</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>380</span> </span><span class="WHIT">    </span><span class="NAME">callID</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>381</span> </span><span class="WHIT">    </span><span class="NAME">fromURI</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>382</span> </span><span class="WHIT">    </span><span class="NAME">toURI</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>383</span> </span><span class="WHIT">    </span><span class="NAME">uacAOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>384</span> </span><span class="WHIT">    </span><span class="NAME">uasAOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>385</span> </span><span class="WHIT">    </span><span class="NAME">fromTag</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>386</span> </span><span class="WHIT">    </span><span class="NAME">toTag</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT">
+<span class='line'>387</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>388</span> 
+<span class='line'>389</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>390</span>    * Create a new call.
+<span class='line'>391</span>    * @memberOf OX.ActiveCalls#
+<span class='line'>392</span>    * @public
+<span class='line'>393</span>    *
+<span class='line'>394</span>    * @param {String} to the SIP address to terminate the call at
+<span class='line'>395</span>    * @param {String} from the SIP address to originate the call from
+<span class='line'>396</span>    */</span><span class="WHIT">
+<span class='line'>397</span> </span><span class="WHIT">  </span><span class="NAME">create</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">to</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">from</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>398</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>399</span> 
+<span class='line'>400</span> </span><span class="COMM">/**
+<span class='line'>401</span>  * Namespace for user agent related services.
+<span class='line'>402</span>  * @namespace
+<span class='line'>403</span>  * @extends OX.Base
+<span class='line'>404</span>  * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+<span class='line'>405</span>  * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+<span class='line'>406</span>  * @borrows OX.Mixins.Subscribable#getItems as #getItems
+<span class='line'>407</span>  * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+<span class='line'>408</span>  * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+<span class='line'>409</span>  */</span><span class="WHIT">
+<span class='line'>410</span> </span><span class="NAME">OX.UserAgents</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="NAME">OX.Mixins.Subscribable</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.UserAgents */</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>411</span> 
+<span class='line'>412</span> </span><span class="COMM">/**
+<span class='line'>413</span>  * Namespace for voicemail related services.
+<span class='line'>414</span>  * @namespace
+<span class='line'>415</span>  * @extends OX.Base
+<span class='line'>416</span>  * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+<span class='line'>417</span>  * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+<span class='line'>418</span>  * @borrows OX.Mixins.Subscribable#getItems as #getItems
+<span class='line'>419</span>  * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+<span class='line'>420</span>  * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+<span class='line'>421</span>  */</span><span class="WHIT">
+<span class='line'>422</span> </span><span class="NAME">OX.Voicemail</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="NAME">OX.Mixins.Subscribable</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.Voicemail */</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>423</span> 
+<span class='line'>424</span> </span><span class="COMM">/**
+<span class='line'>425</span>  * Namespace for directory related services.
+<span class='line'>426</span>  * @namespace
+<span class='line'>427</span>  * @extends OX.Base
+<span class='line'>428</span>  * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+<span class='line'>429</span>  * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+<span class='line'>430</span>  * @borrows OX.Mixins.Subscribable#getItems as #getItems
+<span class='line'>431</span>  * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+<span class='line'>432</span>  * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+<span class='line'>433</span>  */</span><span class="WHIT">
+<span class='line'>434</span> </span><span class="NAME">OX.Directories</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="NAME">OX.Mixins.Subscribable</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.Directories */</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>435</span> 
+<span class='line'>436</span> </span><span class="COMM">/**
+<span class='line'>437</span>  * Namespace for preference related services.
+<span class='line'>438</span>  * @namespace
+<span class='line'>439</span>  * @extends OX.Base
+<span class='line'>440</span>  * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+<span class='line'>441</span>  * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+<span class='line'>442</span>  * @borrows OX.Mixins.Subscribable#getItems as #getItems
+<span class='line'>443</span>  * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+<span class='line'>444</span>  * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+<span class='line'>445</span>  */</span><span class="WHIT">
+<span class='line'>446</span> </span><span class="NAME">OX.Preferences</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="NAME">OX.Mixins.Subscribable</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.Preferences */</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>447</span> 
+<span class='line'>448</span> </span><span class="COMM">/**
+<span class='line'>449</span>  * Namespace for recent call related services.
+<span class='line'>450</span>  * @namespace
+<span class='line'>451</span>  * @extends OX.Base
+<span class='line'>452</span>  * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+<span class='line'>453</span>  * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+<span class='line'>454</span>  * @borrows OX.Mixins.Subscribable#getItems as #getItems
+<span class='line'>455</span>  * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+<span class='line'>456</span>  * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+<span class='line'>457</span>  */</span><span class="WHIT">
+<span class='line'>458</span> </span><span class="NAME">OX.RecentCalls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">OX.Base.extend</span><span class="PUNC">(</span><span class="NAME">OX.Mixins.Subscribable</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="COMM">/** @lends OX.RecentCalls */</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>459</span> </span></pre></body></html>
