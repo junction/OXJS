@@ -44,6 +44,25 @@ OX.Base = {
 
 /**
  * OX Connection Adapter abstract object.
+ *
+ * @example
+ * var conn = new JSJaCConnection();
+ * var adapter = OX.ConnectionAdapter.extend({
+ *   registerHandler: function (event, handler) {
+ *     return conn.registerHandler(event, handler);
+ *   },
+ *
+ *   unregisterHandler: function (event, handler) {
+ *     return conn.unregisterHandler(event, handler);
+ *   },
+ *
+ *   send: function (xml, cb, args) {
+ *     return conn._sendRaw(xml, cb, args);
+ *   }
+ * });
+ *
+ * var tmp = OX.Connection.extend({connection: adapter});
+ *
  * @namespace
  * @extends OX.Base
  */
