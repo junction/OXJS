@@ -1,10 +1,11 @@
 /**
- * Main application namespace.
+ * @namespace
  */
 var OX = {};
 
 /**
  * Base object for OXJS. All other objects inherit from this one.
+ * @namespace
  */
 OX.Base = {
   /**
@@ -12,7 +13,7 @@ OX.Base = {
    * arguments are mixed in to the new object as if +OX.Base.extend+ was
    * called on the new object with remaining args.
    *
-   * @return the new object
+   * @returns {OX.Base} the new object
    */
   extend: function () {
     var F = function () {};
@@ -28,7 +29,7 @@ OX.Base = {
    * Iterates over all arguments, adding their own properties to the
    * receiver.
    *
-   * @return the receiver
+   * @returns {OX.Base} the receiver
    */
   mixin: function () {
     for (var i = 0, len = arguments.length; i < len; i++) {
@@ -43,52 +44,57 @@ OX.Base = {
 
 /**
  * OX Connection Adapter abstract object.
+ * @namespace
+ * @extends OX.Base
  */
-OX.ConnectionAdapter = OX.Base.extend({
+OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
   /**
    * Sends +xml+ to +this.connection+.
    *
-   * @param xml The XML String to send.
-   * @param callback Called when a response to this packet is received with the first argument being the received packet.
-   * @param args An array of arguments to be passed to callback after the packet.
+   * @param {String} xml The XML String to send.
+   * @param {Function} callback Called when a response to this packet is received with the first argument being the received packet.
+   * @param {Array} args An array of arguments to be passed to callback after the packet.
    */
   send: function (xml, callback, args) {},
 
   /**
    * Registers +handler+ for +event+.
    *
-   * @param event One of the strings 'onPublish' or 'onRetract'.
-   * @param handler A function which accepts one argument, which is the packet response.
+   * @param {String} event One of the strings 'onPublish' or 'onRetract'.
+   * @param {Function} handler A function which accepts one argument, which is the packet response.
    */
   registerHandler: function (event, handler) {},
 
   /**
    * Unregisters +handler+ for +event+.
    *
-   * @param event One of the strings 'onPublish' or 'onRetract'.
-   * @param handler A handler registered for +event+.
+   * @param {String} event One of the strings 'onPublish' or 'onRetract'.
+   * @param {Function} handler A handler registered for +event+.
    */
   unregisterHandler: function (event, handler) {}
 });
 
 /**
  * URI namespace.
+ * @namespace
+ * @extends OX.Base
  */
-OX.URI = OX.Base.extend({
+OX.URI = OX.Base.extend(/** @lends OX.URI */{
   /**
-   * Parse +string+ as a URI.
+   * Parse +string+ as an OX.URI.Base object.
    *
-   * @param string The URI to parse
-   * @return A new URI object
+   * @param {String} uriString the URI to parse
+   * @returns {OX.URI.Base} A new OX.URI.Base object
    */
-  parse: function (string) {
+  parse: function (uriString) {
     return OX.URI.Base.extend();
   },
 
   /**
-   * Convert +object+ into a URI.
+   * Convert +object+ into an OX.URI.Base object
    *
-   * @param object
+   * @param {Object} object an object with these members: scheme, path, authority, query, fragment
+   * @returns {OX.URI.Base} A new URI object
    */
   fromObject: function (object) {
     return OX.URI.Base.extend(object);
@@ -97,35 +103,43 @@ OX.URI = OX.Base.extend({
 
 /**
  * Traits object for URI.
+ * @namespace
+ * @extends OX.Base
  */
-OX.URI.Base = OX.Base.extend({
+OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
   /**
    * The URI scheme.
+   * @public
    */
   scheme: null,
 
   /**
    * The URI authority section.
+   * @public
    */
   authority: null,
 
   /**
    * The URI path.
+   * @public
    */
   path: null,
 
   /**
    * The URI query parameters.
+   * @public
    */
   query: null,
 
   /**
    * The URI fragment identifier.
+   * @public
    */
   fragment: null,
 
   /**
    * Convert URI object to string representation.
+   * @public
    */
   toString: function () {
     return 'XXX - Not implemented';
@@ -135,12 +149,15 @@ OX.URI.Base = OX.Base.extend({
 /**
  * Connection object to use for all OXJS connections. The +initConnection+
  * method MUST be called after extending this object.
+ * @namespace
+ * @extends OX.Base
  */
-OX.Connection = OX.Base.extend({
+OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
   /**
    * Initialize the service properties.
    */
   initConnection: function () {
+
     this.Auth        = OX.Auth.extend({connection: this.connection});
     this.ActiveCalls = OX.ActiveCalls.extend({connection: this.connection});
     this.UserAgents  = OX.UserAgents.extend({connection: this.connection});
@@ -155,30 +172,23 @@ OX.Connection = OX.Base.extend({
 
 /**
  * Mixins namespace.
+ * @namespace
  */
 OX.Mixins = {};
 
 /**
- * InDialog mixin.
+ * CallDialog mixin.
  *
- * To use this mixin your base object must supply a +callID+ and
- * +toTag+ property.
+ * To use this mixin your base object must supply a +callID+ property
+ * @namespace
  */
-OX.Mixins.InDialog = {
+OX.Mixins.CallDialog = /** @lends OX.Mixins.CallDialog# */{
   /**
    * Transfer a call to +to+.
-   *
-   * @param to To whom to transfer the active call.
+   * @param {String} to To whom to transfer the active call.
    */
-  transfer: function (to) {}
-};
+  transfer: function (to) {},
 
-/**
- * PreDialog mixin.
- *
- * To use this mixin your base object must supply a +callID+ property.
- */
-OX.Mixins.PreDialog = {
   /**
    * Hangup this call.
    */
@@ -189,12 +199,13 @@ OX.Mixins.PreDialog = {
  * CallLabeler mixin.
  *
  * To use this mixin your base object must supply a +callID+ property.
+ * @namespace
  */
-OX.Mixins.CallLabeler = {
+OX.Mixins.CallLabeler = /** @lends OX.Mixins.CallLabeler# */{
   /**
    * Label a call with a short string.
    *
-   * @param label A short string used to label this call.
+   * @param {String} label A short string used to label this call.
    */
   label: function (label) {}
 };
@@ -203,27 +214,33 @@ OX.Mixins.CallLabeler = {
  * Subscribable mixin.
  *
  * To use this mixin your base object must supply a +pubsubURI+ property.
+ * @namespace
  */
-OX.Mixins.Subscribable = {
+OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
   /**
    * Subscribe to +node+
    *
-   * @param node The node ID to subscribe to
-   * @param callbacks an object supplying functions for 'onSuccess', and 'onError'
+   * @public
+   * @param {String} node The node ID to subscribe to
+   * @param {Function} callbacks an object supplying functions for 'onSuccess', and 'onError'
    */
   subscribe: function (node, callbacks) {},
 
   /**
    * Unsubscribe from +node+
    *
-   * @param callbacks an object supplying functions for 'onSuccess', and 'onError'
+   * @public
+   * @param {String} node The node ID to subscribe to
+   * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
    */
   unsubscribe: function (node, callbacks) {},
 
   /**
    * Get the items on +node+
    *
-   * @param callbacks an object supplying functions for 'onSuccess', and 'onError'
+   * @public
+   * @param {String} node The node ID to subscribe to
+   * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
    */
   getItems: function (node, callbacks) {},
 
@@ -232,8 +249,9 @@ OX.Mixins.Subscribable = {
    *
    * Only one handler can be registered for a given event at a time.
    *
-   * @param event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
-   * @param handler A function which accepts one argument, which is the packet response.
+   * @public
+   * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
+   * @param {Function} handler A function which accepts one argument, which is the packet response.
    */
   registerHandler: function (event, handler) {
   },
@@ -241,7 +259,8 @@ OX.Mixins.Subscribable = {
   /**
    * Unregisters +handler+ for +event+.
    *
-   * @param event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
+   * @public
+   * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
    */
   unregisterHandler: function (event) {
   },
@@ -294,28 +313,42 @@ OX.Mixins.Subscribable = {
 
 /**
  * Base Item object.
+ * @namespace
+ * @extends OX.Base
  */
-OX.Item = OX.Base.extend({
+OX.Item = OX.Base.extend(/** @lends OX.Item# */{
   /**
    * The URI of this item as an OX.URI.Base object.
+   * @type OX.URI.Base
    */
   uri: null
 });
 
 /**
  * Namespace for auth related services.
+ * @namespace
+ * @extends OX.Base
  */
 OX.Auth = OX.Base.extend({});
 
 /**
  * Namespace for active-calls related services.
+ * @namespace
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+ * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+ * @borrows OX.Mixins.Subscribable#getItems as #getItems
+ * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+ * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
  */
-OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
+OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.ActiveCalls */ {
   /**
    * URI for this PubSub service.
    */
   pubSubURI: 'xmpp:pubsub.active-calls.xmpp.onsip.com',
 
+  /**
+   */
   commandURIs: {
     /**
      * URI for create Ad Hoc commnd.
@@ -335,8 +368,14 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
 
   /**
    * Active Call Item.
+   * @name OX.ActiveCalls.Item
+   * @namespace
+   * @extends OX.Item
+   * @borrows OX.Mixins.CallDialog#transfer as #transfer
+   * @borrows OX.Mixins.CallDialog#hangup as #hangup
+   * @borrows OX.Mixins.CallLabeler#label as #label
    */
-  Item: OX.Item.extend(OX.Mixins.InDialog, OX.Mixins.PreDialog, OX.Mixins.CallLabeler, {
+  Item: OX.Item.extend(OX.Mixins.CallDialog, OX.Mixins.CallLabeler, /** @lends OX.ActiveCalls.Item */{
     dialogState: null,
     callID: null,
     fromURI: null,
@@ -349,31 +388,71 @@ OX.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, {
 
   /**
    * Create a new call.
+   * @memberOf OX.ActiveCalls#
+   * @public
+   *
+   * @param {String} to the SIP address to terminate the call at
+   * @param {String} from the SIP address to originate the call from
    */
-  create: function () {}
+  create: function (to, from) {}
 });
 
 /**
  * Namespace for user agent related services.
+ * @namespace
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+ * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+ * @borrows OX.Mixins.Subscribable#getItems as #getItems
+ * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+ * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
  */
-OX.UserAgents = OX.Base.extend({});
+OX.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.UserAgents */{});
 
 /**
  * Namespace for voicemail related services.
+ * @namespace
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+ * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+ * @borrows OX.Mixins.Subscribable#getItems as #getItems
+ * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+ * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
  */
-OX.Voicemail = OX.Base.extend({});
+OX.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Voicemail */{});
 
 /**
  * Namespace for directory related services.
+ * @namespace
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+ * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+ * @borrows OX.Mixins.Subscribable#getItems as #getItems
+ * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+ * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
  */
-OX.Directories = OX.Base.extend({});
+OX.Directories = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Directories */{});
 
 /**
  * Namespace for preference related services.
+ * @namespace
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+ * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+ * @borrows OX.Mixins.Subscribable#getItems as #getItems
+ * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+ * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
  */
-OX.Preferences = OX.Base.extend({});
+OX.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Preferences */{});
 
 /**
  * Namespace for recent call related services.
+ * @namespace
+ * @extends OX.Base
+ * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
+ * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
+ * @borrows OX.Mixins.Subscribable#getItems as #getItems
+ * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
+ * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
  */
-OX.RecentCalls = OX.Base.extend({});
+OX.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.RecentCalls */{});
