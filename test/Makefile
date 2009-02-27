@@ -7,7 +7,7 @@ test:	rhinodom
 	$(JAVA) -cp $(RHINODIR)/classes:rhinodom/build Shell rhino.js
 
 rhinodom:
-	@(cd rhinodom && ant -Drhino.dir=$(RHINODIR) dist)
+	cd rhinodom && ant -Drhino.dir=$(RHINODIR) dist
 
 clean:
-	@(cd rhinodom && ant -Drhino.dir=$(RHINODIR) clean)
+	cd rhinodom && ant -Drhino.dir=$(RHINODIR) clean
