@@ -31,8 +31,6 @@ OXTest.Auth = new YAHOO.tool.TestCase({
 
     var doc = OXTest.DOMParser.parse(this.conn._data);
 
-    window.bjc1 = doc;
-
     Assert.areSame('set',
                    doc.getPathValue('/iq/@type'),
                    'auth-plain iq is not type set.');
@@ -58,8 +56,6 @@ OXTest.Auth = new YAHOO.tool.TestCase({
 
   testAuthorizePlainWithJID: function () {
     var Assert = YAHOO.util.Assert;
-
-    window.bjc2 = doc;
 
     Assert.isFunction(this.Auth.authenticatePlain,
                       'Plaintext auth function not available.');
