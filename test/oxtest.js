@@ -23,34 +23,23 @@ OXTest.ConnectionMock = OX.Base.extend({
 OXTest.DOMParser = OX.Base.extend({
   parser: new DOMParser(),
 
-  serializer: new XMLSerializer(),
-
   prefixMap: {
     cmd: 'http://jabber.org/protocol/commands',
-    x: 'jabber:x:data'
+    x: 'jabber:x:data',
+    ps: 'http://jabber.org/protocol/pubsub'
+  },
+
+  nsResolver: function (ns) {
+    return OXTest.DOMParser.prefixMap[ns];
   },
 
   parse: function (xml) {
     return OX.Base.extend({
       doc: OXTest.DOMParser.parser.parseFromString(xml, 'text/xml'),
 
-      serialize: function () {
-        return OXTest.DOMParser.serializer.serializeToString(this.doc);
-      },
-
       getPath: function (path) {
-        var resolver = function (ns) {
-          console.log('resolving ns: ' + ns);
-
-          return OXTest.DOMParser.prefixMap[ns];
-        };
-
-        var rc = this.doc.evaluate(path, this.doc, resolver,
-                                   XPathResult.ANY_TYPE, null).iterateNext();
-
-        console.log(path + ": " + rc);
-
-        return rc;
+        return this.doc.evaluate(path, this.doc, OXTest.DOMParser.nsResolver,
+                                 XPathResult.ANY_TYPE, null).iterateNext();
       },
 
       getPathValue: function (path) {

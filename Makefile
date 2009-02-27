@@ -1,14 +1,30 @@
 SHELL = /bin/sh
 
-.PHONY: doc clean-doc
+.PHONY: src test doc clean-src clean-test clean-doc
 
-all: doc
+all: src doc
 
-clean: clean-doc
+clean: clean-src clean-test clean-doc
 
-doc:
+src:
+	@echo "--> $(MAKE) $(MFLAGS) $@"
+	@($(MAKE) -C src all)
+
+test:	src
+	@echo "--> $(MAKE) $(MFLAGS) $@"
+	@($(MAKE) -C test test)
+
+doc:	src
 	@echo "--> $(MAKE) $(MFLAGS) $@"
 	@($(MAKE) -C doc doc)
+
+clean-src:
+	@echo "--> $(MAKE) $(MFLAGS) $@"
+	@($(MAKE) -C src clean)
+
+clean-test:
+	@echo "--> $(MAKE) $(MFLAGS) $@"
+	@($(MAKE) -C test clean)
 
 clean-doc:
 	@echo "--> $(MAKE) $(MFLAGS) $@"

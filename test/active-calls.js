@@ -16,7 +16,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.ActiveCalls,   'ActiveCalls mixin is not available');
+    Assert.isObject(OX.Services.ActiveCalls,
+                    'ActiveCalls mixin is not available');
     Assert.isObject(this.ActiveCalls, 'ActiveCalls is not initialized');
     Assert.areSame(this.conn,         this.ox.ActiveCalls.connection);
   },

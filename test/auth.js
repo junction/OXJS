@@ -19,7 +19,8 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Auth,   'Auth mixin is not available');
+    Assert.isObject(OX.Services.Auth,
+                    'Auth mixin is not available');
     Assert.isObject(this.Auth, 'Auth mixin is not initialized');
     Assert.areSame(this.conn,  this.ox.Auth.connection);
   },
@@ -30,8 +31,6 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     this.Auth.authenticatePlain('enoch@sip-example.com', 'example');
 
     var doc = OXTest.DOMParser.parse(this.conn._data);
-
-    window.bjc1 = doc;
 
     Assert.areSame('set',
                    doc.getPathValue('/iq/@type'),
@@ -58,8 +57,6 @@ OXTest.Auth = new YAHOO.tool.TestCase({
 
   testAuthorizePlainWithJID: function () {
     var Assert = YAHOO.util.Assert;
-
-    window.bjc2 = doc;
 
     Assert.isFunction(this.Auth.authenticatePlain,
                       'Plaintext auth function not available.');
