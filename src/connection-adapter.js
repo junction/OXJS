@@ -19,7 +19,7 @@
  *
  * var tmp = OX.Connection.extend({connection: adapter});
  *
- * @namespace
+ * @class
  * @extends OX.Base
  */
 OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{

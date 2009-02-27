@@ -1,6 +1,6 @@
 /**
  * Base object for OXJS. All other objects inherit from this one.
- * @namespace
+ * @class
  */
 OX.Base = {
   /**
