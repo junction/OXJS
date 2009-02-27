@@ -11,25 +11,25 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    */
   initConnection: function () {
     /** @type OX.Auth */
-    this.Auth        = OX.Auth.extend({connection: this.connection});
+    this.Auth        = OX.Services.Auth.extend({connection: this.connection});
 
     /** @type OX.ActiveCalls */
-    this.ActiveCalls = OX.ActiveCalls.extend({connection: this.connection});
+    this.ActiveCalls = OX.Services.ActiveCalls.extend({connection: this.connection});
 
     /** @type OX.UserAgents */
-    this.UserAgents  = OX.UserAgents.extend({connection: this.connection});
+    this.UserAgents  = OX.Services.UserAgents.extend({connection: this.connection});
 
     /** @type OX.Voicemail */
-    this.Voicemail   = OX.Voicemail.extend({connection: this.connection});
+    this.Voicemail   = OX.Services.Voicemail.extend({connection: this.connection});
 
     /** @type OX.Directories */
-    this.Directories = OX.Directories.extend({connection: this.connection});
+    this.Directories = OX.Services.Directories.extend({connection: this.connection});
 
     /** @type OX.Preferences */
-    this.Preferences = OX.Preferences.extend({connection: this.connection});
+    this.Preferences = OX.Services.Preferences.extend({connection: this.connection});
 
     /** @type OX.RecentCalls */
-    this.RecentCalls = OX.RecentCalls.extend({connection: this.connection});
+    this.RecentCalls = OX.Services.RecentCalls.extend({connection: this.connection});
 
     return this;
   }

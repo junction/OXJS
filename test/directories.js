@@ -16,7 +16,8 @@ OXTest.Directories = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Directories,   'Directories mixin is not available');
+    Assert.isObject(OX.Services.Directories,
+                    'Directories mixin is not available');
     Assert.isObject(this.Directories, 'Directories is not initialized');
     Assert.areSame(this.conn,         this.ox.Directories.connection);
   }

@@ -16,7 +16,8 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.UserAgents,      'UserAgents mixin is not available');
+    Assert.isObject(OX.Services.UserAgents,
+                    'UserAgents mixin is not available');
     Assert.isObject(this.ox.UserAgents, 'UserAgents is not initialized');
     Assert.areSame(this.conn,           this.ox.UserAgents.connection);
   }
