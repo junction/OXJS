@@ -25,7 +25,8 @@ OXTest.DOMParser = OX.Base.extend({
 
   prefixMap: {
     cmd: 'http://jabber.org/protocol/commands',
-    x: 'jabber:x:data'
+    x: 'jabber:x:data',
+    ps: 'http://jabber.org/protocol/pubsub'
   },
 
   nsResolver: function (ns) {
