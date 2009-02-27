@@ -23,8 +23,6 @@ OXTest.ConnectionMock = OX.Base.extend({
 OXTest.DOMParser = OX.Base.extend({
   parser: new DOMParser(),
 
-  serializer: new XMLSerializer(),
-
   prefixMap: {
     cmd: 'http://jabber.org/protocol/commands',
     x: 'jabber:x:data'
@@ -33,10 +31,6 @@ OXTest.DOMParser = OX.Base.extend({
   parse: function (xml) {
     return OX.Base.extend({
       doc: OXTest.DOMParser.parser.parseFromString(xml, 'text/xml'),
-
-      serialize: function () {
-        return OXTest.DOMParser.serializer.serializeToString(this.doc);
-      },
 
       getPath: function (path) {
         var resolver = function (ns) {
