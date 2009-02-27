@@ -1,6 +1,9 @@
 /**
  * Namespace for service mixins.
  *
+ * These objects should not be used directly, but only when
+ * instantiated from an OX.Connection after calling initConnection.
+ *
  * @namespace
  */
 OX.Services = {};
