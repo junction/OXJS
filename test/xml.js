@@ -21,7 +21,6 @@ OXTest.XML = new YAHOO.tool.TestCase({
 
     Assert.isObject(OX.XML, 'OX.XML not found');
     Assert.isObject(OX.XML.Element, 'OX.XML.Element not found');
-
     Assert.isObject(OX.XMPP, 'OX.XMPP not found');
     Assert.isObject(OX.XMPP.Stanza, 'OX.XMPP.Stanza not found');
     Assert.isObject(OX.XMPP.IQ, 'OX.XMPP.IQ not found');
@@ -34,6 +33,7 @@ OXTest.XML = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
     Assert.isFunction(OX.XML.Element.addChild, 'addChild is not a function');
     Assert.isFunction(OX.XML.Element.attr, 'attr is not a function');
+    Assert.isFunction(OX.XML.Element.toString, 'toString is not a function');
   },
 
   testDemoXMLStructure: function() {
@@ -52,6 +52,9 @@ OXTest.XML = new YAHOO.tool.TestCase({
     foo.attr('bam','baz');
     foo.attr('plip','plop');
 
+    //
+    // test attr() and text
+    //
     Assert.areEqual('baz', foo.attr('bam'));
     Assert.areEqual(this.demoDoc.getPathValue('/foo/@bam'), foo.attr('bam'));
     Assert.areEqual(this.demoDoc.getPathValue('/foo/@plip'), foo.attr('plip'));
@@ -72,12 +75,28 @@ OXTest.XML = new YAHOO.tool.TestCase({
     Assert.isFunction(iq.to);
     Assert.isFunction(iq.from);
 
+    //
+    // test values
+    //
     Assert.areEqual('testTo@sender.com', iq.attr('to'), 'str not equal to iq.attr("to")');
     Assert.areEqual('testFrom@receiver.com', iq.attr('from'), 'str not equal to iq.attr("from")');
+
+    //
+    // test attr aliases
+    //
     Assert.areEqual(iq.attr('to'), iq.to(), 'iq.attr(to) != iq.to()');
     Assert.areEqual(iq.attr('from'), iq.from(), 'iq.attr(from) != iq.from()');
-    Assert.areEqual(this.iqDoc.getPathValue('/iq/@to'), iq.to(), 'xpath != iq.to()');
-    Assert.areEqual(this.iqDoc.getPathValue('/iq/@from'), iq.from(), 'xpath != iq.from()');
+
+    //
+    // test DOM structure xpath
+    //
+    var doc = OXTest.DOMParser.parse(iq.toString());
+    Assert.areEqual(iq.to(),
+                    doc.getPathValue('/iq/@to'),
+                    "xpath not equal to iq.to()");
+    Assert.areEqual(iq.from(),
+                    doc.getPathValue('/iq/@from'),
+                    "xpath not equal to iq.from()");
   },
 
   testCommandAPI: function() {
@@ -95,12 +114,27 @@ OXTest.XML = new YAHOO.tool.TestCase({
     cmd.node("foo");
     cmd.action("execute");
 
-    Assert.areEqual("http://jabber.org/protocol/commands", cmd.ns, 'command namespace incorrect');
+    //
+    // test xmlns
+    //
+    Assert.areEqual("http://jabber.org/protocol/commands", cmd.xmlns, 'command namespace incorrect');
 
+    //
+    // test attr aliases
+    //
     Assert.areEqual("foo", cmd.node(), "string:foo not equal to cmd.node()");
     Assert.areEqual("execute", cmd.action(), "string:execute not equal to cmd.action()");
-    Assert.areEqual(this.iqDoc.getPathValue('/iq/cmd:command/@node'), cmd.node(), "xpath not equal to cmd.node()");
-    Assert.areEqual(this.iqDoc.getPathValue('/iq/cmd:command/@action'), cmd.action(), "xpath not equal to cmd.node()");
+
+    //
+    // test DOM structure xpath
+    //
+    var doc = OXTest.DOMParser.parse(iq.toString());
+    Assert.areEqual(cmd.node(),
+                    doc.getPathValue('/iq/cmd:command/@node'),
+                    "xpath not equal to cmd.node()");
+    Assert.areEqual(cmd.action(),
+                    doc.getPathValue('/iq/cmd:command/@action'),
+                    "xpath not equal to cmd.action()");
   },
 
   testXDataFormAPI: function() {
@@ -124,10 +158,28 @@ OXTest.XML = new YAHOO.tool.TestCase({
     x.addField('f1','f1Value');
     x.addField('f2','f2Value');
 
-    Assert.areEqual("jabber:x:data", x.ns, 'x namesapce incorrect');
+    //
+    // test xmlns
+    //
+    Assert.areEqual("jabber:x:data", x.xmlns, 'x namesapce incorrect');
 
-    Assert.areEqual(this.iqDoc.getPathValue('/iq/cmd:command/x:x/x:field[@var="f1"]/x:value/text()'),x.addField('f1'));
-    Assert.areEqual(this.iqDoc.getPathValue('/iq/cmd:command/x:x/x:field[@var="f2"]/x:value/text()'),x.addField('f2'));
+    //
+    // test attr aliases
+    //
+    Assert.areEqual("submit", x.type(), "string:submit not equal to x.type()");
+
+    //
+    // test DOM structure xpath
+    //
+    var doc = OXTest.DOMParser.parse(iq.toString());
+    Assert.areEqual(x.type(),
+                    doc.getPathValue('/iq/cmd:command/x:x/@type'),
+                    "xpath not equal to x.type()");
+    Assert.areEqual('f1Value',
+                    doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="f1"]/x:value/text()'));
+    Assert.areEqual('f2Value',
+                    doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="f2"]/x:value/text()'));
+
   }
 });
 

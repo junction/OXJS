@@ -1,14 +1,36 @@
-/** @namespace */
-OX.XMPP = {};
+/**
+ * Namespace for XML elements
+ * @namespace
+ * */
 OX.XML = {};
 
-OX.XML.Element = OX.Base.extend({
+/**
+ * Namespace for XMPP XML elements
+ * @namespace
+ * */
+OX.XMPP = {};
+
+/**
+ * A simple XML element class, call +extend+ to generate objects
+ * that you can then call +toString+ on for an XML representation.
+ *
+ * @extends OX.Base
+ * @class
+ */
+OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
   name: null,
   attributes: null,
-  ns: null,
+  xmlns: null,
   children: null,
   text: null,
 
+  /**
+   * Get or set attributes on the receiver
+   *
+   * @param {String} name The attributes name
+   * @param {String} [value] If value is supplied, the attribute will be set
+   * @returns {String} the value of the attribute
+   */
   attr: function(name,value) {
     this.attributes = this.attributes || {};
     if(value) {
@@ -17,6 +39,12 @@ OX.XML.Element = OX.Base.extend({
     return this.attributes[name];
   },
 
+  /**
+   * Add a XML child element to the receiver
+   *
+   * @param {OX.XML.Element} child the XML element to add as a child
+   * @returns {OX.XML.Element} this
+   */
   addChild: function(child) {
     this.children = this.children || [];
     if(child) {
@@ -25,11 +53,14 @@ OX.XML.Element = OX.Base.extend({
     return this;
   },
 
+  /**
+   * @returns {String} this XML element as XML text
+   */
   toString: function() {
     var ret = "";
     var attrs = [];
 
-    if (this.ns) this.attr('ns',this.ns);
+    if (this.xmlns) this.attr('xmlns',this.xmlns);
 
     if(this.attributes) for(var name in this.attributes) {
       var val = this.attributes[name];
@@ -54,7 +85,11 @@ OX.XML.Element = OX.Base.extend({
   }
 });
 
-OX.XMPP.Stanza = OX.XML.Element.extend({
+/**
+ * @extends OX.XML.Element
+ * @class
+ */
+OX.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XMPP.Stanza# */{
   to: function(val) {
     return this.attr('to', val);
   },
@@ -64,7 +99,11 @@ OX.XMPP.Stanza = OX.XML.Element.extend({
   }
 });
 
-OX.XMPP.IQ = OX.XMPP.Stanza.extend({
+/**
+ * @extends OX.XMPP.Stanza
+ * @class
+ */
+OX.XMPP.IQ = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.IQ# */{
   name: 'iq',
 
   type: function(val) {
@@ -72,13 +111,21 @@ OX.XMPP.IQ = OX.XMPP.Stanza.extend({
   }
 });
 
-OX.XMPP.Message = OX.XMPP.Stanza.extend({
+/**
+ * @extends OX.XMPP.Stanza
+ * @class
+ */
+OX.XMPP.Message = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.Message# */{
   name: 'message'
 });
 
-OX.XMPP.Command = OX.XML.Element.extend({
+/**
+ * @extends OX.XML.Element
+ * @class
+ */
+OX.XMPP.Command = OX.XML.Element.extend(/** @lends OX.XMPP.Command# */{
   name: 'command',
-  ns: 'http://jabber.org/protocol/commands',
+  xmlns: 'http://jabber.org/protocol/commands',
 
   node: function(val) {
     return this.attr('node', val);
@@ -89,23 +136,39 @@ OX.XMPP.Command = OX.XML.Element.extend({
   }
 });
 
-OX.XMPP.XDataForm = OX.XML.Element.extend({
+/**
+ * @extends OX.XML.Element
+ * @class
+ */
+OX.XMPP.XDataForm = OX.XML.Element.extend(/** @lends OX.XMPP.XDataForm# */{
   name: 'x',
-  ns: 'jabber:x:data',
+  xmlns: 'jabber:x:data',
 
   type: function(val) {
     return this.attr('type', val);
   },
 
+  /**
+   * A convenience method for adding fields and values to the XDataForm.  Calling
+   * this method will add an XDataField and value to this XDataForm.
+   *
+   * @param {String} name the name of the field, as identified in the 'var' attribute
+   * @param {String} value the text to insert into the 'value' element
+   * @param {String} type XDataField type see XEP: 0004
+   * @returns {OX.XMPP.XDataForm} this
+   */
   addField: function(name,value,type) {
-    var f;
-    if(value) {
-      f = OX.XML.Element.extend({name: 'field'});
-      f.attr('var', name);
-      if(type) f.attr('type',type);
+    var f,v;
+    f = OX.XML.Element.extend({name: 'field'});
+    f.attr('var',name);
 
-      f.addChild(OX.XML.Element.extend({name: 'value', text: value}));
+    if(value) {
+      v = OX.XML.Element.extend({name: 'value', text: value});
+      f.addChild(v);
     }
-    return this;
+
+    if(type) f.attr('type',type);
+
+    return this.addChild(f);
   }
 });
