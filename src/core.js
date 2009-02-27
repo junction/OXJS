@@ -213,6 +213,8 @@ OX.Mixins = {};
  *
  * To use this mixin your base object must supply a +callID+ property
  * @namespace
+ * @requires callID property on receiving object.
+ * @requires toTag property on receiving object.
  */
 OX.Mixins.CallDialog = /** @lends OX.Mixins.CallDialog# */{
   /**
@@ -232,6 +234,7 @@ OX.Mixins.CallDialog = /** @lends OX.Mixins.CallDialog# */{
  *
  * To use this mixin your base object must supply a +callID+ property.
  * @namespace
+ * @requires callID property on receiving object.
  */
 OX.Mixins.CallLabeler = /** @lends OX.Mixins.CallLabeler# */{
   /**
@@ -246,7 +249,9 @@ OX.Mixins.CallLabeler = /** @lends OX.Mixins.CallLabeler# */{
  * Subscribable mixin.
  *
  * To use this mixin your base object must supply a +pubsubURI+ property.
+ *
  * @namespace
+ * @requires connection property which is an OX.ConnectionAdapter object on receiving object
  */
 OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
   /**
