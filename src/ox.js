@@ -329,7 +329,17 @@ OX.Item = OX.Base.extend(/** @lends OX.Item# */{
  * @namespace
  * @extends OX.Base
  */
-OX.Auth = OX.Base.extend({});
+OX.Auth = OX.Base.extend(/** @lends OX.Auth */{
+  /**
+   * Authenticate +jid+ for +address+ with +password+
+   *
+   * @param {String} address The SIP address to authenticate as.
+   * @param {String} password The web password for +address+.
+   * @param {String} [jid] The JID to authorize for +address+. If unspecified, use the current JID.
+   */
+  authenticatePlain: function (address, password, jid) {
+  }
+});
 
 /**
  * Namespace for active-calls related services.

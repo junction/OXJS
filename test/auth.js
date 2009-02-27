@@ -20,6 +20,13 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Auth,   'Auth mixin is not available');
     Assert.isObject(this.Auth, 'Auth mixin is not initialized');
     Assert.areSame(this.conn,  this.ox.Auth.connection);
+  },
+
+  testAuthorizePlain: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.Auth.authenticatePlain,
+                      'Plaintext auth function not available.');
   }
 });
 
