@@ -338,6 +338,11 @@ OX.Auth = OX.Base.extend(/** @lends OX.Auth */{
    * @param {String} [jid] The JID to authorize for +address+. If unspecified, use the current JID.
    */
   authenticatePlain: function (address, password, jid) {
+    // TODO: parse this out of commands uri.
+    var jidStr = jid ? '<field var="jid"><value>' + jid + '</value></field>' : '';
+    var xml = '<iq type="set" to="commands.auth.xmpp.onsip.com"><command xmlns="http://jabber.org/protocol/commands" node="authenticate-plain"><x xmlns="jabber:x:data" type="submit"><field var="sip-address"><value>' + address + '</value></field><field var="password"><value>'+ password +'</value></field>' + jidStr + '</x></command></iq>';
+
+    this.connection.send(xml, function () {}, []);
   }
 });
 

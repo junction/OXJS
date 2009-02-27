@@ -1,7 +1,7 @@
 /* Namespace for OXJS tests. */
 var OXTest = {};
 
-OXTest.ConnectionMock = {
+OXTest.ConnectionMock = OX.Base.extend({
   _handlers: {},
 
   _data: null,
@@ -18,4 +18,55 @@ OXTest.ConnectionMock = {
   unregisterHandler: function (event, handler) {
     delete this._handlers[event];
   }
-};
+});
+
+OXTest.DOMParser = OX.Base.extend({
+  parser: new DOMParser(),
+
+  serializer: new XMLSerializer(),
+
+  prefixMap: {
+    cmd: 'http://jabber.org/protocol/commands',
+    x: 'jabber:x:data'
+  },
+
+  parse: function (xml) {
+    return OX.Base.extend({
+      doc: OXTest.DOMParser.parser.parseFromString(xml, 'text/xml'),
+
+      serialize: function () {
+        return OXTest.DOMParser.serializer.serializeToString(this.doc);
+      },
+
+      getPath: function (path) {
+        var resolver = function (ns) {
+          console.log('resolving ns: ' + ns);
+
+          return OXTest.DOMParser.prefixMap[ns];
+        };
+
+        var rc = this.doc.evaluate(path, this.doc, resolver,
+                                   XPathResult.ANY_TYPE, null).iterateNext();
+
+        console.log(path + ": " + rc);
+
+        return rc;
+      },
+
+      getPathValue: function (path) {
+        var rc = this.getPath(path);
+        if (rc) {
+          if (rc.data) {
+            return rc.data;
+          } else if (rc.value) {
+            return rc.value;
+          } else {
+            return rc;
+          }
+        } else {
+          return undefined;
+        }
+      }
+    });
+  }
+});
