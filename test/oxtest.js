@@ -28,23 +28,17 @@ OXTest.DOMParser = OX.Base.extend({
     x: 'jabber:x:data'
   },
 
+  nsResolver: function (ns) {
+    return OXTest.DOMParser.prefixMap[ns];
+  },
+
   parse: function (xml) {
     return OX.Base.extend({
       doc: OXTest.DOMParser.parser.parseFromString(xml, 'text/xml'),
 
       getPath: function (path) {
-        var resolver = function (ns) {
-          console.log('resolving ns: ' + ns);
-
-          return OXTest.DOMParser.prefixMap[ns];
-        };
-
-        var rc = this.doc.evaluate(path, this.doc, resolver,
-                                   XPathResult.ANY_TYPE, null).iterateNext();
-
-        console.log(path + ": " + rc);
-
-        return rc;
+        return this.doc.evaluate(path, this.doc, OXTest.DOMParser.nsResolver,
+                                 XPathResult.ANY_TYPE, null).iterateNext();
       },
 
       getPathValue: function (path) {
