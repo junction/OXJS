@@ -34,6 +34,33 @@ OXTest.XML = new YAHOO.tool.TestCase({
     Assert.isFunction(OX.XML.Element.addChild, 'addChild is not a function');
     Assert.isFunction(OX.XML.Element.attr, 'attr is not a function');
     Assert.isFunction(OX.XML.Element.toString, 'toString is not a function');
+    Assert.isFunction(OX.XML.Element.create, 'create is not a function');
+  },
+
+  testXMLElement: function() {
+    var Assert = YAHOO.util.Assert;
+
+    var typeOfElement = OX.XML.Element.extend({name: 'test'});
+
+    var extendedElement = typeOfElement.extend();
+    extendedElement.attr('bam', 'bop');
+    Assert.areEqual('bop', extendedElement.attr('bam'));
+    Assert.isUndefined(extendedElement.attr('bop'));
+
+    //
+    // test OX.XML.Element.create
+    //
+    var createdAttrs = {foo: 'bar', baz: 'bam'};
+    var createdChild = OX.XML.Element.extend({name: 'child', text: 'the text'});
+    var createdElement = typeOfElement.create(createdAttrs, [createdChild]);
+
+    Assert.areEqual('bar', createdElement.attr('foo'));
+    Assert.areEqual('test', createdElement.name);
+
+    console.log(createdElement.toString());
+
+    var doc = OXTest.DOMParser.parse(createdElement.toString());
+    Assert.areEqual('the text', doc.getPathValue('/test/child/text()'));
   },
 
   testDemoXMLStructure: function() {

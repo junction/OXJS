@@ -83,7 +83,32 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
 
     return ret;
   }
-});
+}, /** @lends OX.XML.Element */ {
+
+  /**
+   * +create+ is a static convenience function for creating a new OX.XML.Element
+   * and setting attrs and elements in a single function
+   *
+   * @param {Object} [attrs] a hash of attribute names to attribute values
+   * @param {Array} [elements] an array of OX.XML.Element to assign as children
+   * @returns {OX.XML.Element}
+   */
+  create: function(attrs, elements) {
+    var ret = this.extend();
+
+    if (attrs) for(var k in attrs) {
+      var v = attrs[k];
+      if (!v) continue;
+      ret.attr(k,v);
+    }
+
+    if (elements && elements.length) for(var i=0,len=elements.length; i < len; i++) {
+      ret.addChild(elements[i]);
+    }
+
+    return ret;
+  }
+})
 
 /**
  * @extends OX.XML.Element
