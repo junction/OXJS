@@ -23,11 +23,22 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
    * @param {String} [jid] The JID to authorize for +address+. If unspecified, use the current JID.
    */
   authenticatePlain: function (address, password, jid) {
-    // TODO: parse this out of commands uri.
-    var jidStr = jid ? '<field var="jid"><value>' + jid + '</value></field>' : '';
-    var xml = '<iq type="set" to="commands.auth.xmpp.onsip.com"><command xmlns="http://jabber.org/protocol/commands" node="authenticate-plain"><x xmlns="jabber:x:data" type="submit"><field var="sip-address"><value>' + address + '</value></field><field var="password"><value>'+ password +'</value></field>' + jidStr + '</x></command></iq>';
+    var
+      iq = OX.XMPP.IQ.extend(),
+      cmd = OX.XMPP.Command.extend(),
+      xData = OX.XMPP.XDataForm.extend();
 
-    this.connection.send(xml, function () {}, []);
+    iq.to('commands.auth.xmpp.onsip.com');
+    iq.type('set');
+    cmd.node('authenticate-plain');
+    xData.type('submit');
+    xData.addField('sip-address',address);
+    xData.addField('password',password);
+    if(jid) xData.addField('jid',jid);
+
+    iq.addChild(cmd.addChild(xData));
+
+    this.connection.send(iq.toString(), function () {}, []);
   }
 });
 
