@@ -14,14 +14,13 @@
  */
 OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
   services: {
-    Auth: OX.Services.Auth,
+    Auth:        OX.Services.Auth,
     ActiveCalls: OX.Services.ActiveCalls,
-    'ActiveCalls.Item': OX.Services.ActiveCalls.Item,
     Directories: OX.Services.Directories,
     Preferences: OX.Services.Preferences,
     RecentCalls: OX.Services.RecentCalls,
-    UserAgents: OX.Services.UserAgents,
-    Voicemail: OX.Services.Voicemail
+    UserAgents:  OX.Services.UserAgents,
+    Voicemail:   OX.Services.Voicemail
   },
 
   /**
