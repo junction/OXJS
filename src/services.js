@@ -46,11 +46,7 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
  * Namespace for active-calls related services.
  * @namespace
  * @extends OX.Base
- * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
- * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
- * @borrows OX.Mixins.Subscribable#getItems as #getItems
- * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
- * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+ * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
 OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.ActiveCalls */ {
@@ -83,9 +79,8 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    * @name OX.Services.ActiveCalls.Item
    * @namespace
    * @extends OX.Item
-   * @borrows OX.Mixins.CallDialog#transfer as #transfer
-   * @borrows OX.Mixins.CallDialog#hangup as #hangup
-   * @borrows OX.Mixins.CallLabeler#label as #label
+   * @extends OX.Mixins.CallDialog
+   * @extends OX.Mixins.CallLabeler
    */
   Item: OX.Item.extend(OX.Mixins.CallDialog, OX.Mixins.CallLabeler, /** @lends OX.Services.ActiveCalls.Item */{
     dialogState: null,
@@ -111,11 +106,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * Namespace for user agent related services.
  * @namespace
  * @extends OX.Base
- * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
- * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
- * @borrows OX.Mixins.Subscribable#getItems as #getItems
- * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
- * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+ * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
 OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.UserAgents */{});
@@ -124,11 +115,7 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
  * Namespace for voicemail related services.
  * @namespace
  * @extends OX.Base
- * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
- * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
- * @borrows OX.Mixins.Subscribable#getItems as #getItems
- * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
- * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+ * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
 OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Voicemail */{});
@@ -137,11 +124,7 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Ser
  * Namespace for directory related services.
  * @namespace
  * @extends OX.Base
- * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
- * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
- * @borrows OX.Mixins.Subscribable#getItems as #getItems
- * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
- * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+ * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
 OX.Services.Directories = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Directories */{});
@@ -150,11 +133,7 @@ OX.Services.Directories = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * Namespace for preference related services.
  * @namespace
  * @extends OX.Base
- * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
- * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
- * @borrows OX.Mixins.Subscribable#getItems as #getItems
- * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
- * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+ * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
 OX.Services.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Preferences */{});
@@ -163,11 +142,7 @@ OX.Services.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * Namespace for recent call related services.
  * @namespace
  * @extends OX.Base
- * @borrows OX.Mixins.Subscribable#subscribe as #subscribe
- * @borrows OX.Mixins.Subscribable#unsubscribe as #unsubscribe
- * @borrows OX.Mixins.Subscribable#getItems as #getItems
- * @borrows OX.Mixins.Subscribable#registerHandler as #registerHandler
- * @borrows OX.Mixins.Subscribable#unregisterHandler as #unregisterHandler
+ * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
 OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.RecentCalls */{});
