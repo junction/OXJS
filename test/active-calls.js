@@ -57,7 +57,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(this.ActiveCalls.itemFromPacket,
                       'Active call service cannot turn packet into item.');
 
-    var itemXML = '';
+    var itemXML = '<event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.onsip.com/foo"><item id="301:NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU."><active-call xmlns="onsip:active-calls"><dialog-state>created</dialog-state><uac-aor>jill@example.com</uac-aor><uas-aor>jack@example.com</uas-aor><call-id>123</call-id><from-uri>sip:jill@example.com</from-uri><to-uri>sip:jack@example.com</to-uri><from-tag>999</from-tag><to-tag>666</to-tag></active-call></item></items></event>';
+
     var packet = OXTest.Message.extend({
       from: 'user-agents.xmpp.onsip.com',
       to:   'me@example.com',
@@ -67,6 +68,22 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isObject(item, 'ActiveCalls.itemFromPacket did not return an object.');
     Assert.areSame(this.conn, item.connection,
                    'Active calls item connection is wrong.');
+    Assert.areSame('created', this.dialogState,
+                   'Active call item dialog state is wrong.');
+    Assert.areSame('jill@example.com', this.uacAOR,
+                   'Active call item uac aor is wrong.');
+    Assert.areSame('jack@example.com', this.uasAOR,
+                   'Active call item uas aor is wrong.');
+    Assert.areSame('123', this.callID,
+                   'Active call item call id is wrong.');
+    Assert.areSame('sip:jill@example.com', this.fromURI,
+                   'Active call item from URI is wrong.');
+    Assert.areSame('sip:jack@example.com', this.toURI,
+                   'Active call item to URI is wrong.');
+    Assert.areSame('999', this.fromTag,
+                   'Active call item from tag is wrong.');
+    Assert.areSame('666', this.toTag,
+                   'Active call item to tag is wrong.');
   },
 
   testSubscribe: function () {
