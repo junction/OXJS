@@ -42,6 +42,13 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     Assert.areSame(this.conn,         this.ox.Directories.connection);
   },
 
+  testItemFromPacket: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.Directories.itemFromPacket,
+                      'Directory service cannot turn packet into item.');
+  },
+
   testSubscribe: function () {
     var Assert = YAHOO.util.Assert;
     this.Directories.subscribe('/me/jid', {

@@ -20,6 +20,13 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
                     'Preferences mixin is not available');
     Assert.isObject(this.ox.Preferences, 'Preferences is not initialized');
     Assert.areSame(this.conn,            this.ox.Preferences.connection);
+  },
+
+  testItemFromPacket: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.Preferences.itemFromPacket,
+                      'Preferences service cannot turn packet into item.');
   }
 });
 

@@ -51,6 +51,13 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    'ActiveCalls.commandURIs.hangup is wrong');
   },
 
+  testItemFromPacket: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.itemFromPacket,
+                      'Active call service cannot turn packet into item.');
+  },
+
   testSubscribe: function () {
     var Assert = YAHOO.util.Assert;
 
@@ -153,6 +160,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     this.ActiveCalls.registerHandler({
       onPending: function (requestedURI, finalURI) { pendingFired = true; }
     });
+    this.conn.fireEvent('onPending');
     Assert.isTrue(pendingFired, 'pending subscription handler did not fire.');
   },
 
