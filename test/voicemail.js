@@ -2,7 +2,7 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
   name: 'Voicemail Tests',
 
   setUp: function () {
-    this.conn = {};
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initConnection();
     this.Voicemail = this.ox.Voicemail;

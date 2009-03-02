@@ -48,6 +48,9 @@ OXTest.Mixins = new YAHOO.tool.TestCase({
                       'Publish item handler is not a function.');
     Assert.isFunction(OX.Mixins.Subscribable._subscriptionHandlers.onRetract,
                       'Retract item handler is not a function.');
+
+    Assert.isFunction(OX.Mixins.Subscribable.itemFromPacket,
+                      'Item from packet function missing on subscribable mixin.');
   }
 });
 

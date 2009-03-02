@@ -133,6 +133,13 @@ OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
   },
 
   /**
+   * Turn a packet into an item for this service. By default, this
+   * does nothing. You must override this within the object being
+   * extended for useful behavior.
+   */
+  itemFromPacket: function (packet) {},
+
+  /**
    * Handlers for various subscription related events.
    *
    * @private

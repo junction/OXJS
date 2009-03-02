@@ -2,7 +2,7 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
   name: 'Preferences Tests',
 
   setUp: function () {
-    this.conn = {};
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initConnection();
     this.Preferences = this.ox.Preferences;
