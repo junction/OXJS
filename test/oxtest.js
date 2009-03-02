@@ -6,6 +6,13 @@ OXTest.ConnectionMock = OX.Base.extend({
 
   _data: null,
 
+  fireEvent: function (event) {
+    var handler = this._handlers[event],
+        args    = arguments.slice(1);
+
+    handler.apply(handler, args);
+  },
+
   send: function (xml, callback, args) {
     this._data = xml;
     callback.apply(callback, args);
