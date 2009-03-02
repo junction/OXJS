@@ -117,3 +117,17 @@ YAHOO.util.Assert.isUnsubscribe = function (xml, jid, node, ourJID) {
                doc.getPathValue('/iq/ps:pubsub/ps:unsubscribe/@jid'),
                'unsubscribe jid is wrong');
 };
+
+YAHOO.util.Assert.isGetItems = function (xml, jid, node) {
+  var doc = OXTest.DOMParser.parse(xml);
+
+  this.areSame('set',
+               doc.getPathValue('/iq/@type'),
+               'unsubscribe iq is not type set.');
+  this.areSame(jid,
+               doc.getPathValue('/iq/@to'),
+               'unsubscribe iq is sent to wrong jid.');
+  this.areSame(node,
+               doc.getPathValue('/iq/ps:pubsub/ps:items/@node'),
+               'unsubscribe node is wrong');
+};

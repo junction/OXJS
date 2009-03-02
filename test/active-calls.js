@@ -6,11 +6,16 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initConnection();
     this.ActiveCalls = this.ox.ActiveCalls;
+
+    this.successFlag = false;
+    this.errorFlag = false;
   },
 
   tearDown: function () {
     delete this.ox;
     delete this.ActiveCalls;
+    delete this.successFlag;
+    delete this.errorFlag;
   },
 
   testServiceMixin: function () {
@@ -51,6 +56,31 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.ActiveCalls.subscribe,
                       'ActiveCalls.subscribe is not a function.');
+
+    this.ActiveCalls.subscribe('/me/jid', {
+      onSucess: function (requestedURI, finalURI) {
+        this.successFlag = true;
+        Assert.areSame(requestedURI, finalURI,
+                       'requested and final uri differ when successful.');
+        Assert.areSame('/me/jid', requestedURI,
+                       'requestedURI is not actual requested uri');
+      },
+
+      onError: function (requestedURI, finalURI) {
+        this.errorFlag = true;
+        Assert.areSame(requestedURI, finalURI,
+                       'requested and final uri differ on error.');
+        Assert.areSame('/me/jid', requestedURI,
+                       'requestedURI is not actual requested uri');
+      }
+    });
+
+    Assert.isSubscribe(this.conn._data, 'pubsub.active-calls.xmpp.onsip.com',
+                       '/', 'test@example.com');
+    Assert.areSame(false, this.errorFlag,
+                   'Got error trying to subscribe to /');
+    Assert.areSame(true,  this.successFlag,
+                   'Was not successful trying to subscribe to /');
   },
 
   testUnsubscribe: function () {
@@ -58,6 +88,31 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.ActiveCalls.unsubscribe,
                       'ActiveCalls.unsubscribe is not a function.');
+
+    this.ActiveCalls.unsubscribe('/me/jid', {
+      onSucess: function (requestedURI, finalURI) {
+        this.successFlag = true;
+        Assert.areSame(requestedURI, finalURI,
+                       'requested and final uri differ when successful.');
+        Assert.areSame('/me/jid', requestedURI,
+                       'requestedURI is not actual requested uri');
+      },
+
+      onError: function (requestedURI, finalURI) {
+        this.errorFlag = true;
+        Assert.areSame(requestedURI, finalURI,
+                       'requested and final uri differ on error.');
+        Assert.areSame('/me/jid', requestedURI,
+                       'requestedURI is not actual requested uri');
+      }
+    });
+
+    Assert.isUnsubscribe(this.conn._data, 'pubsub.active-calls.xmpp.onsip.com',
+                         '/', 'test@example.com');
+    Assert.areSame(false, this.errorFlag,
+                   'Got error trying to unsubscribe to /');
+    Assert.areSame(true,  this.successFlag,
+                   'Was not successful trying to unsubscribe to /');
   },
 
   testGetItems: function () {
@@ -65,6 +120,30 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.ActiveCalls.getItems,
                       'ActiveCalls.getItems is not a function.');
+
+    this.ActiveCalls.getItems('/me/jid', {
+      onSucess: function (items) {
+        this.successFlag = true;
+        Assert.areSame(requestedURI, finalURI,
+                       'requested and final uri differ when successful.');
+        Assert.areSame('/me/jid', requestedURI,
+                       'requestedURI is not actual requested uri');
+      },
+
+      onError: function (error) {
+        this.errorFlag = true;
+        Assert.areSame(requestedURI, finalURI,
+                       'requested and final uri differ on error.');
+        Assert.areSame('/me/jid', requestedURI,
+                       'requestedURI is not actual requested uri');
+      }
+    });
+
+    Assert.isGetItems(this.conn._data, 'pubsub.active-calls.xmpp.onsip.com', '/');
+    Assert.areSame(false, this.errorFlag,
+                   'Got error trying to get items on /');
+    Assert.areSame(true,  this.successFlag,
+                   'Was not successful trying to get items on /');
   },
 
   testRegisterHandler: function () {
@@ -98,7 +177,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     this.ActiveCalls.create('to@example.com', 'from@example.com');
 
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
                      'create', {to:   'to@example.com',
                                 from: 'from@example.com'});
   },
@@ -116,7 +195,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(item.hangup,
                       'active call item\'s hangup is not a function');
     item.hangup();
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
                      'hangup', {'call-id':  '123',
                                 'to-tag':   'alice@example.com',
                                 'from-tag': 'bob@example.com'});
@@ -134,7 +213,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(item.transfer,
                       'active call item\'s transfer is not a function');
     item.transfer('transfer@example.com');
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
                      'transfer', {'to-address': 'transfer@example.onsip.com',
                                   'call-id':    '123',
                                   'to-tag':     'alice@example.com',
@@ -151,7 +230,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(item.label,
                       'active call item\'s label is not a function');
     item.label('wauug');
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+    Assert.isCommand(this.conn._data, 'commands.recent-calls.xmpp.onsip.com',
                      'label', {'call-id': '123',
                                'label':   'wauug'});
   },

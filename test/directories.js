@@ -62,7 +62,8 @@ OXTest.Directories = new YAHOO.tool.TestCase({
       }
     });
 
-    Assert.isSubscribe(this.conn._data);
+    Assert.isSubscribe(this.conn._data, 'pubsub.directories.xmpp.onsip.com',
+                       '/', 'test@example.com');
 
     Assert.areSame(false, this.errorFlag,
                    'Got error trying to subscribe to /');
