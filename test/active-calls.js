@@ -46,19 +46,6 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    'ActiveCalls.commandURIs.hangup is wrong');
   },
 
-  testCreate: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isFunction(this.ActiveCalls.create,
-                      'ActiveCalls.create is not a function.');
-
-    this.ActiveCalls.create('to@example.com', 'from@example.com');
-
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
-                     'create', {to:   'to@example.com',
-                                from: 'from@example.com'});
-  },
-
   testSubscribe: function () {
     var Assert = YAHOO.util.Assert;
 
@@ -101,6 +88,72 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                     'ActiveCalls.Item is not an object');
     Assert.areSame(this.conn, this.ActiveCalls.Item.connection,
                    'ActiveCalls.Item connection is wrong.');
+  },
+
+  testCreate: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.create,
+                      'ActiveCalls.create is not a function.');
+
+    this.ActiveCalls.create('to@example.com', 'from@example.com');
+
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'create', {to:   'to@example.com',
+                                from: 'from@example.com'});
+  },
+
+
+  testHangup: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.hangup,
+                      'ActiveCalls.Item.hangup is not a function');
+
+    var item = this.ActiveCalls.Item.extend({callID:  '123',
+                                             fromTag: 'alice@example.com',
+                                             toTag:   'bob@example.com'});
+    Assert.isFunction(item.hangup,
+                      'active call item\'s hangup is not a function');
+    item.hangup();
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'hangup', {'call-id':  '123',
+                                'to-tag':   'alice@example.com',
+                                'from-tag': 'bob@example.com'});
+  },
+
+  testTransfer: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.transfer,
+                      'ActiveCalls.Item.transfer is not a function');
+
+    var item = this.ActiveCalls.Item.extend({callID:  '123',
+                                             fromTag: 'alice@example.com',
+                                             toTag:   'bob@example.com'});
+    Assert.isFunction(item.transfer,
+                      'active call item\'s transfer is not a function');
+    item.transfer('transfer@example.com');
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'transfer', {'to-address': 'transfer@example.onsip.com',
+                                  'call-id':    '123',
+                                  'to-tag':     'alice@example.com',
+                                  'from-tag':   'bob@example.com'});
+  },
+
+  testLabel: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.label,
+                      'ActiveCalls.Item.label is not a function');
+
+    var item = this.ActiveCalls.Item.extend({callID:  '123'});
+    Assert.isFunction(item.label,
+                      'active call item\'s label is not a function');
+    item.label('wauug');
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'label', {'call-id': '123',
+                               'label':   'wauug'});
   },
 
   testDialogState: function () {
@@ -157,58 +210,6 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isNotUndefined(this.ActiveCalls.Item.toTag,
                           'ActiveCalls.Item.toTag is undefined');
-  },
-
-  testHangup: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isFunction(this.ActiveCalls.Item.hangup,
-                      'ActiveCalls.Item.hangup is not a function');
-
-    var item = this.ActiveCalls.Item.extend({callID:  '123',
-                                             fromTag: 'alice@example.com',
-                                             toTag:   'bob@example.com'});
-    Assert.isFunction(item.hangup,
-                      'active call item\'s hangup is not a function');
-    item.hangup();
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
-                     'hangup', {'call-id':  '123',
-                                'to-tag':   'alice@example.com',
-                                'from-tag': 'bob@example.com'});
-  },
-
-  testTransfer: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isFunction(this.ActiveCalls.Item.transfer,
-                      'ActiveCalls.Item.transfer is not a function');
-
-    var item = this.ActiveCalls.Item.extend({callID:  '123',
-                                             fromTag: 'alice@example.com',
-                                             toTag:   'bob@example.com'});
-    Assert.isFunction(item.transfer,
-                      'active call item\'s transfer is not a function');
-    item.transfer('transfer@example.com');
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
-                     'transfer', {'to-address': 'transfer@example.onsip.com',
-                                  'call-id':    '123',
-                                  'to-tag':     'alice@example.com',
-                                  'from-tag':   'bob@example.com'});
-  },
-
-  testLabel: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isFunction(this.ActiveCalls.Item.label,
-                      'ActiveCalls.Item.label is not a function');
-
-    var item = this.ActiveCalls.Item.extend({callID:  '123'});
-    Assert.isFunction(item.label,
-                      'active call item\'s label is not a function');
-    item.label('wauug');
-    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
-                     'label', {'call-id': '123',
-                               'label':   'wauug'});
   }
 });
 
