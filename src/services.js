@@ -112,7 +112,19 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
-OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.UserAgents */{});
+OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.UserAgents */{
+  /**
+   * User Agent Item.
+   * @name OX.Services.UserAgents.Item
+   * @namespace
+   * @extends OX.Item
+   */
+  Item: OX.Item.extend({contact:  null,
+                        received: null,
+                        device:   null,
+                        expires:  null,
+                        event:    null})
+});
 
 /**
  * Namespace for voicemail related services.

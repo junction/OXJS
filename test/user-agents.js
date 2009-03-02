@@ -44,6 +44,41 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     Assert.areSame('Test UA', item.device, 'Device is wrong.');
     Assert.aresame('2009-03-02T15:58:23Z', item.expires, 'Expiry is wrong.');
     Assert.areSame('insert', item.event, 'Event type is wrong.');
+  },
+
+  testContact: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.UserAgents.Item.contact,
+                          'UserAgents.Item.contact is undefined');
+  },
+
+  testReceived: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.UserAgents.Item.received,
+                          'UserAgents.Item.received is undefined');
+  },
+
+  testDevice: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.UserAgents.Item.device,
+                          'UserAgents.Item.device is undefined');
+  },
+
+  testExpires: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.UserAgents.Item.expires,
+                          'UserAgents.Item.expires is undefined');
+  },
+
+  testEvent: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.UserAgents.Item.event,
+                          'UserAgents.Item.event is undefined');
   }
 });
 
