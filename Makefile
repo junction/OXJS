@@ -10,13 +10,13 @@ src:
 	@echo "--> $(MAKE) $(MFLAGS) $@"
 	@($(MAKE) -C src all)
 
-test:	src
+test:
 	@echo "--> $(MAKE) $(MFLAGS) $@"
 	@($(MAKE) -C test test)
 
-doc:	src
+doc:
 	@echo "--> $(MAKE) $(MFLAGS) $@"
-	@($(MAKE) -C doc doc)
+	@($(MAKE) -C src doc)
 
 clean-src:
 	@echo "--> $(MAKE) $(MFLAGS) $@"
@@ -28,4 +28,4 @@ clean-test:
 
 clean-doc:
 	@echo "--> $(MAKE) $(MFLAGS) $@"
-	@($(MAKE) -C doc clean)
+	@($(MAKE) -C src clean-doc)
