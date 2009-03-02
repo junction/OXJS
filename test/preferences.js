@@ -36,6 +36,8 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
     });
     var item = this.Preferences.itemFromPacket(packet);
     Assert.isObject(item, 'Preferences.itemFromPacket did not return an object.');
+    Assert.areSame(this.conn, item.connection,
+                   'Preferences item connection is wrong.');
   }
 });
 

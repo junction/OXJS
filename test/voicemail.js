@@ -36,6 +36,8 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
     });
     var item = this.Voicemail.itemFromPacket(packet);
     Assert.isObject(item, 'Preferences.itemFromPacket did not return an object.');
+    Assert.areSame(this.conn, item.connection,
+                   'Voicemail item connection is wrong.');
   }
 });
 

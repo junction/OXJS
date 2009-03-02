@@ -37,6 +37,8 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     });
     var item = this.UserAgents.itemFromPacket(packet);
     Assert.isObject(item, 'UserAgents.itemFromPacket did not return an object.');
+    Assert.areSame(this.conn, item.connection,
+                   'User agent item connection is wrong.');
     Assert.areSame('sip:jill@example.com:5060', item.contact,
                    'Contact is wrong');
     Assert.areSame('sip:jack@example.com:5060', item.received,

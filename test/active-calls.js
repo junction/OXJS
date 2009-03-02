@@ -65,6 +65,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     });
     var item = this.ActiveCalls.itemFromPacket(packet);
     Assert.isObject(item, 'ActiveCalls.itemFromPacket did not return an object.');
+    Assert.areSame(this.conn, item.connection,
+                   'Active calls item connection is wrong.');
   },
 
   testSubscribe: function () {
@@ -232,15 +234,6 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFalse(subscribedFired, 'subscribed subscription handler fired.');
     Assert.isFalse(publishFired,    'publish subscription handler fired.');
     Assert.isFalse(retractFired,    'retract subscription handler fired.');
-  },
-
-  testItemConnection: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isObject(this.ActiveCalls.Item,
-                    'ActiveCalls.Item is not an object');
-    Assert.areSame(this.conn, this.ActiveCalls.Item.connection,
-                   'ActiveCalls.Item connection is wrong.');
   },
 
   testCreate: function () {

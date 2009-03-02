@@ -36,6 +36,8 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
     });
     var item = this.RecentCalls.itemFromPacket(packet);
     Assert.isObject(item, 'RecentCalls.itemFromPacket did not return an object.');
+    Assert.areSame(this.conn, item.connection,
+                   'Recent call item connection is wrong.');
   }
 });
 

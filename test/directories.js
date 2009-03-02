@@ -55,6 +55,8 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     });
     var item = this.Directories.itemFromPacket(packet);
     Assert.isObject(item, 'Directories.itemFromPacket did not return an object.');
+    Assert.areSame(this.conn, item.connection,
+                   'Directory item connection is wrong.');
   },
 
   testSubscribe: function () {
