@@ -65,22 +65,22 @@ YAHOO.util.Assert.isCommand = function (xml, jid, node, fields) {
 
   this.areSame('set',
                doc.getPathValue('/iq/@type'),
-               'auth-plain iq is not type set.');
+               'command iq is not type set.');
   this.areSame(jid,
                doc.getPathValue('/iq/@to'),
-               'auth-plain command is not sent to auth commands host.');
+               'command iq is sent to wrong jid.');
   this.areSame(node,
                doc.getPathValue('/iq/cmd:command/@node'),
-               'auth-plain command node is not authenticate-plain.');
+               'command node is wrong.');
   this.areSame('submit',
                doc.getPathValue('/iq/cmd:command/x:x/@type'),
-               'auth-plain xform type is not submit.');
+               'command xform type is wrong.');
 
   for (var f in fields) if (fields.hasOwnProperty(f)) {
     var path = '/iq/cmd:command/x:x/x:field[@var="' + f + '"]/x:value/text()';
 
     this.areSame(fields[f], doc.getPathValue(path),
-                   'auth-plain xform sip-address is wrong.');
+                   'field value for ' + f + 'is wrong.');
   }
 };
 
@@ -89,10 +89,10 @@ YAHOO.util.Assert.isSubscribe = function (xml, jid, node, ourJID) {
 
   this.areSame('set',
                doc.getPathValue('/iq/@type'),
-               'iq type when subscribing is not "set"');
+               'subscribe iq is not type set.');
   this.areSame(jid,
                doc.getPathValue('/iq/@to'),
-               'iq to when subscribing is wrong');
+               'subscribe iq is sent to wrong jid.');
   this.areSame(node,
                doc.getPathValue('/iq/ps:pubsub/ps:subscribe/@node'),
                'subscribe node is wrong');
