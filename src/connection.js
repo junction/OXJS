@@ -4,35 +4,45 @@
  *
  * @class
  * @extends OX.Base
+ * @property {OX.Services.Auth} Auth#
+ * @property {OX.Services.Auth} ActiveCalls#
+ * @property {OX.Services.Auth} UserAgents#
+ * @property {OX.Services.Auth} Voicemail#
+ * @property {OX.Services.Auth} Directories#
+ * @property {OX.Services.Auth} Preferences#
+ * @property {OX.Services.Auth} RecentCalls#
  */
 OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
+  services: {
+    Auth: OX.Services.Auth,
+    ActiveCalls: OX.Services.ActiveCalls,
+    'ActiveCalls.Item': OX.Services.ActiveCalls.Item,
+    Directories: OX.Services.Directories,
+    Preferences: OX.Services.Preferences,
+    RecentCalls: OX.Services.RecentCalls,
+    UserAgents: OX.Services.UserAgents,
+    Voicemail: OX.Services.Voicemail
+  },
+
   /**
    * Initialize the service properties.
    */
   initConnection: function () {
-    /** @type OX.Auth */
-    this.Auth        = OX.Services.Auth.extend({connection: this.connection});
+    var serviceMap = {};
 
-    /** @type OX.ActiveCalls */
-    this.ActiveCalls = OX.Services.ActiveCalls.extend({connection: this.connection});
+    for (var s in this.services) if (this.services.hasOwnProperty(s)) {
+      var service = this.services[s];
 
-    /** @type OX.ActiveCalls.Item */
-    this.ActiveCalls.Item = OX.Services.ActiveCalls.Item.extend({connection: this.connection});
+      this[s] = service.extend({connection: this.connection});
+      if (service.pubSubURI) {
+        serviceMap[service.pubSubURI] = service;
+      }
+    }
 
-    /** @type OX.UserAgents */
-    this.UserAgents  = OX.Services.UserAgents.extend({connection: this.connection});
-
-    /** @type OX.Voicemail */
-    this.Voicemail   = OX.Services.Voicemail.extend({connection: this.connection});
-
-    /** @type OX.Directories */
-    this.Directories = OX.Services.Directories.extend({connection: this.connection});
-
-    /** @type OX.Preferences */
-    this.Preferences = OX.Services.Preferences.extend({connection: this.connection});
-
-    /** @type OX.RecentCalls */
-    this.RecentCalls = OX.Services.RecentCalls.extend({connection: this.connection});
+    // Register for incoming messages.
+    this.connection.registerHandler('message', function (msg) {
+      var from = msg.getFrom();
+    });
 
     return this;
   }
