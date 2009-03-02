@@ -2,7 +2,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   name: 'ActiveCalls Tests',
 
   setUp: function () {
-    this.conn = {};
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initConnection();
     this.ActiveCalls = this.ox.ActiveCalls;
@@ -165,9 +165,16 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(this.ActiveCalls.Item.hangup,
                       'ActiveCalls.Item.hangup is not a function');
 
-    var item = this.ActiveCalls.Item.extend();
+    var item = this.ActiveCalls.Item.extend({callID:  '123',
+                                             fromTag: 'alice@example.com',
+                                             toTag:   'bob@example.com'});
     Assert.isFunction(item.hangup,
                       'active call item\'s hangup is not a function');
+    item.hangup();
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'hangup', {'call-id':  '123',
+                                'to-tag':   'alice@example.com',
+                                'from-tag': 'bob@example.com'});
   },
 
   testTransfer: function () {
@@ -176,9 +183,17 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(this.ActiveCalls.Item.transfer,
                       'ActiveCalls.Item.transfer is not a function');
 
-    var item = this.ActiveCalls.Item.extend();
+    var item = this.ActiveCalls.Item.extend({callID:  '123',
+                                             fromTag: 'alice@example.com',
+                                             toTag:   'bob@example.com'});
     Assert.isFunction(item.transfer,
                       'active call item\'s transfer is not a function');
+    item.transfer('transfer@example.com');
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'transfer', {'to-address': 'transfer@example.onsip.com',
+                                  'call-id':    '123',
+                                  'to-tag':     'alice@example.com',
+                                  'from-tag':   'bob@example.com'});
   },
 
   testLabel: function () {
@@ -187,10 +202,14 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(this.ActiveCalls.Item.label,
                       'ActiveCalls.Item.label is not a function');
 
-    var item = this.ActiveCalls.Item.extend();
+    var item = this.ActiveCalls.Item.extend({callID:  '123'});
     Assert.isFunction(item.label,
                       'active call item\'s label is not a function');
-  },
+    item.label('wauug');
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'label', {'call-id': '123',
+                               'label':   'wauug'});
+  }
 });
 
 YAHOO.tool.TestRunner.add(OXTest.ActiveCalls);
