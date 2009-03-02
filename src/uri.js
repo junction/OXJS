@@ -39,37 +39,33 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
 OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
   /**
    * The URI scheme.
-   * @public
+   *
+   * @default "xmpp"
    */
-  scheme: null,
+  scheme: 'xmpp',
 
   /**
    * The URI authority section.
-   * @public
    */
   authority: null,
 
   /**
    * The URI path.
-   * @public
    */
   path: null,
 
   /**
    * The URI query parameters.
-   * @public
    */
   query: null,
 
   /**
    * The URI fragment identifier.
-   * @public
    */
   fragment: null,
 
   /**
    * Convert URI object to string representation.
-   * @public
    */
   toString: function () {
     return 'XXX - Not implemented';
