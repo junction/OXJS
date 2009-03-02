@@ -70,6 +70,37 @@ OXTest.DOMParser = OX.Base.extend({
   }
 });
 
+OXTest.Packet = OX.Base.extend({
+  from:  null,
+  to:    null,
+  pType: null,
+  doc:   null,
+
+  getFrom: function () {
+    return this.from;
+  },
+
+  getTo: function () {
+    return this.to;
+  },
+
+  getType: function () {
+    return this.type;
+  },
+
+  getDoc: function () {
+    return this.doc;
+  }
+});
+
+OXTest.Message = OXTest.Packet.extend({
+  pType: 'message'
+});
+
+OXTest.IQ = OXTest.Packet.extend({
+  pType: 'iq'
+});
+
 YAHOO.util.Assert.isCommand = function (xml, jid, node, fields) {
   var doc = OXTest.DOMParser.parse(xml);
 
