@@ -1,4 +1,4 @@
-_load('rhino_dom.js');
+_load('../frameworks/rhino_dom.js');
 
 _load('../frameworks/yui-test/yahoo-dom-event.js');
 _load('../frameworks/yui-test/yuitest-min.js');
