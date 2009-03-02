@@ -68,6 +68,9 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
    * Convert URI object to string representation.
    */
   toString: function () {
-    return 'XXX - Not implemented';
+    var authority = this.authority ? '//' + this.authority + '/' : '',
+        query     = this.query     ? '?'  + this.query           : '',
+        fragment  = this.fragment  ? '#'  + this.fragment        : '';
+    return this.scheme + ':' + authority + this.path + query + fragment;
   }
 });
