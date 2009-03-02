@@ -93,6 +93,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isObject(this.ActiveCalls.Item,
                     'ActiveCalls.Item is not an object');
+    Assert.areSame(this.conn, this.ActiveCalls.Item.connection,
+                   'ActiveCalls.Item connection is wrong.');
     Assert.isFunction(this.ActiveCalls.Item.transfer,
                       'ActiveCalls.Item.transfer is not a function');
     Assert.isFunction(this.ActiveCalls.Item.hangup,

@@ -16,6 +16,9 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
     /** @type OX.ActiveCalls */
     this.ActiveCalls = OX.Services.ActiveCalls.extend({connection: this.connection});
 
+    /** @type OX.ActiveCalls.Item */
+    this.ActiveCalls.Item = OX.Services.ActiveCalls.Item.extend({connection: this.connection});
+
     /** @type OX.UserAgents */
     this.UserAgents  = OX.Services.UserAgents.extend({connection: this.connection});
 
