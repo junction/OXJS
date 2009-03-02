@@ -146,11 +146,44 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    'Was not successful trying to get items on /');
   },
 
-  testRegisterHandler: function () {
+  testPendingHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.ActiveCalls.registerHandler,
-                      'ActiveCalls.registerHandler is not a function.');
+    var pendingFired = false;
+    this.ActiveCalls.registerHandler({
+      onPending: function (requestedURI, finalURI) { pendingFired = true; }
+    });
+    Assert.isTrue(pendingFired, 'pending subscription handler did not fire.');
+  },
+
+  testSubscribedHandler: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var subscribedFired = false;
+    this.ActiveCalls.registerHandler({
+      onSubscribed: function (requestedURI, finalURI) { subscribedFired = true; }
+    });
+    Assert.isTrue(subscribedFired, 'subscribed subscription handler did not fire.');
+  },
+
+  testPublishHandler: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var publishFired = false;
+    this.ActiveCalls.registerHandler({
+      onPublish: function (item) { publishFired = true; }
+    });
+    Assert.isTrue(publishFired, 'publish subscription handler did not fire.');
+  },
+
+  testRetractHandler: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var retractFired = false;
+    this.ActiveCalls.registerHandler({
+      onRetract: function (uri) { retractFired = true; }
+    });
+    Assert.isTrue(retractFired, 'retract subscription handler did not fire.');
   },
 
   testUnregisterHandler: function () {
