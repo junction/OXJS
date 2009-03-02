@@ -96,6 +96,10 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     toTag: null
   }),
 
+  itemFromPacket: function (packet) {
+    return this.Item.extend({connection: this.connection});
+  },
+
   /**
    * Create a new call.
    *
@@ -123,7 +127,11 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
                         received: null,
                         device:   null,
                         expires:  null,
-                        event:    null})
+                        event:    null}),
+
+  itemFromPacket: function (packet) {
+    return this.Item.extend({connection: this.connection});
+  }
 });
 
 /**

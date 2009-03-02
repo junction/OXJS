@@ -38,6 +38,28 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
     Assert.isObject(item, 'RecentCalls.itemFromPacket did not return an object.');
     Assert.areSame(this.conn, item.connection,
                    'Recent call item connection is wrong.');
+  },
+
+  testCallID: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.RecentCalls.Item.callID,
+                          'RecentCalls.Item.callID is undefined');
+  },
+
+  testLabel: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.RecentCalls.Item.label,
+                      'RecentCalls.Item.label is not a function');
+
+    var item = this.RecentCalls.Item.extend({callID:  '123'});
+    Assert.isFunction(item.label,
+                      'recent call item\'s label is not a function');
+    item.label('wauug');
+    Assert.isCommand(this.conn._data, 'commands.recent-calls.xmpp.onsip.com',
+                     'label', {'call-id': '123',
+                               'label':   'wauug'});
   }
 });
 
