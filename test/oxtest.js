@@ -8,8 +8,11 @@ OXTest.ConnectionMock = OX.Base.extend({
 
   fireEvent: function (event) {
     var handler = this._handlers[event],
-        args    = arguments.slice(1);
+        args    = [];
 
+    for (var i = 1; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
     handler.apply(handler, args);
   },
 
