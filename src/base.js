@@ -8,6 +8,9 @@ OX.Base = {
    * arguments are mixed in to the new object as if +OX.Base.extend+ was
    * called on the new object with remaining args.
    *
+   * @example
+   * var obj = OX.Base.extend({param: value});
+   *
    * @returns {OX.Base} the new object
    */
   extend: function () {
@@ -23,6 +26,9 @@ OX.Base = {
   /**
    * Iterates over all arguments, adding their own properties to the
    * receiver.
+   *
+   * @example
+   * obj.mixin({param: value});
    *
    * @returns {OX.Base} the receiver
    */

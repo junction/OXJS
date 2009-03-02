@@ -21,6 +21,9 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
    * @param {String} address The SIP address to authenticate as.
    * @param {String} password The web password for +address+.
    * @param {String} [jid] The JID to authorize for +address+. If unspecified, use the current JID.
+   *
+   * @example
+   * ox.Auth.authenticatePlain('sip@example.com', 'password', 'jid@example.com');
    */
   authenticatePlain: function (address, password, jid) {
     var

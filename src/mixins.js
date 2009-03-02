@@ -16,11 +16,17 @@ OX.Mixins.CallDialog = /** @lends OX.Mixins.CallDialog# */{
   /**
    * Transfer a call to +to+.
    * @param {String} to To whom to transfer the active call.
+   *
+   * @example
+   * call.transfer('lisa@example.com');
    */
   transfer: function (to) {},
 
   /**
    * Hangup this call.
+   *
+   * @example
+   * call.hangup();
    */
   hangup: function () {}
 };
@@ -37,6 +43,9 @@ OX.Mixins.CallLabeler = /** @lends OX.Mixins.CallLabeler# */{
    * Label a call with a short string.
    *
    * @param {String} label A short string used to label this call.
+   *
+   * @example
+   * call.label('alice');
    */
   label: function (label) {}
 };
@@ -56,6 +65,12 @@ OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
    * @public
    * @param {String} node The node ID to subscribe to
    * @param {Function} callbacks an object supplying functions for 'onSuccess', and 'onError'
+   *
+   * @example
+   * service.subscribe('/', {
+   *   onSuccess: function (requestedURI, finalURI) {},
+   *   onError:   function (requestedURI, finalURI) {}
+   * });
    */
   subscribe: function (node, callbacks) {},
 
@@ -65,6 +80,12 @@ OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
    * @public
    * @param {String} node The node ID to subscribe to
    * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
+   *
+   * @example
+   * service.unsubscribe('/', {
+   *   onSuccess: function (uri) {},
+   *   onError:   function (uri) {}
+   * });
    */
   unsubscribe: function (node, callbacks) {},
 
@@ -74,6 +95,12 @@ OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
    * @public
    * @param {String} node The node ID to subscribe to
    * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
+   *
+   * @example
+   * service.getItems('/', {
+   *   onSuccess: function (items) {},
+   *   onError:   function (errorPacket) {}
+   * });
    */
   getItems: function (node, callbacks) {},
 
@@ -85,6 +112,9 @@ OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
    * @public
    * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
    * @param {Function} handler A function which accepts one argument, which is the packet response.
+   *
+   * @example
+   * service.registerHandler('onPublish', function (item) {});
    */
   registerHandler: function (event, handler) {
   },
@@ -94,6 +124,9 @@ OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
    *
    * @public
    * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
+   *
+   * @example
+   * service.unregisterHandler('onPublish', handlerFunction);
    */
   unregisterHandler: function (event) {
   },
