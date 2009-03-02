@@ -189,8 +189,32 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   testUnregisterHandler: function () {
     var Assert = YAHOO.util.Assert;
 
+    var pendingFired    = false,
+        subscribedFired = false,
+        publishFired    = false,
+        retractFired    = false;
+
+    var pendingHandler    = function () { pendingFired    = true; };
+    var subscribedHandler = function () { subscribedFired = true; };
+    var publishHandler    = function () { publishFired    = true; };
+    var retractHandler    = function () { retractFired    = true; };
+
+    this.ActiveCalls.registerHandler({onPending:    pendingHandler,
+                                      onSubscribed: subscribedHandler,
+                                      onPublish:    publishHandler,
+                                      onRetract:    retractHandler});
+
     Assert.isFunction(this.ActiveCalls.unregisterHandler,
                       'ActiveCalls.unregisterHandler is not a function.');
+    this.ActiveCalls.unregisterHandler({onPending:    pendingHandler,
+                                        onSubscribed: subscribedHandler,
+                                        onPublish:    publishHandler,
+                                        onRetract:    retractHandler});
+
+    Assert.isFalse(pendingFired,    'pending subscription handler fired.');
+    Assert.isFalse(subscribedFired, 'subscribed subscription handler fired.');
+    Assert.isFalse(publishFired,    'publish subscription handler fired.');
+    Assert.isFalse(retractFired,    'retract subscription handler fired.');
   },
 
   testItemConnection: function () {
