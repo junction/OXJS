@@ -27,6 +27,15 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.RecentCalls.itemFromPacket,
                       'Recent call service cannot turn packet into item.');
+
+    var itemXML = '';
+    var packet = OXTest.Message.extend({
+      from: 'user-agents.xmpp.onsip.com',
+      to:   'me@example.com',
+      doc:  OXTest.DOMParser.parse(itemXML)
+    });
+    var item = this.RecentCalls.itemFromPacket(packet);
+    Assert.isObject(item, 'RecentCalls.itemFromPacket did not return an object.');
   }
 });
 

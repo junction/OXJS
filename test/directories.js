@@ -45,8 +45,16 @@ OXTest.Directories = new YAHOO.tool.TestCase({
   testItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 
+    var itemXML = '';
     Assert.isFunction(this.Directories.itemFromPacket,
                       'Directory service cannot turn packet into item.');
+    var packet = OXTest.Message.extend({
+      from: 'user-agents.xmpp.onsip.com',
+      to:   'me@example.com',
+      doc:  OXTest.DOMParser.parse(itemXML)
+    });
+    var item = this.Directories.itemFromPacket(packet);
+    Assert.isObject(item, 'Directories.itemFromPacket did not return an object.');
   },
 
   testSubscribe: function () {

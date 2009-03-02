@@ -56,6 +56,15 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.ActiveCalls.itemFromPacket,
                       'Active call service cannot turn packet into item.');
+
+    var itemXML = '';
+    var packet = OXTest.Message.extend({
+      from: 'user-agents.xmpp.onsip.com',
+      to:   'me@example.com',
+      doc:  OXTest.DOMParser.parse(itemXML)
+    });
+    var item = this.ActiveCalls.itemFromPacket(packet);
+    Assert.isObject(item, 'ActiveCalls.itemFromPacket did not return an object.');
   },
 
   testSubscribe: function () {

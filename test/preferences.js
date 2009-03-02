@@ -27,6 +27,15 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.Preferences.itemFromPacket,
                       'Preferences service cannot turn packet into item.');
+
+    var itemXML = '';
+    var packet = OXTest.Message.extend({
+      from: 'user-agents.xmpp.onsip.com',
+      to:   'me@example.com',
+      doc:  OXTest.DOMParser.parse(itemXML)
+    });
+    var item = this.Preferences.itemFromPacket(packet);
+    Assert.isObject(item, 'Preferences.itemFromPacket did not return an object.');
   }
 });
 
