@@ -62,20 +62,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
       }
     });
 
-    var doc = OXTest.DOMParser.parse(this.conn._data);
-
-    Assert.areSame('set',
-                   doc.getPathValue('/iq/@type'),
-                   'iq type when subscribing is not "set"');
-    Assert.areSame('pubsub.directories.xmpp.onsip.com',
-                   doc.getPathValue('/iq/@to'),
-                   'iq to when subscribing is not "pubsub.directories.xmpp.onsip.com"');
-    Assert.areSame('/me/jid',
-                   doc.getPathValue('/iq/ps:pubsub/ps:subscribe/@node'),
-                   'subscribe node is not "/me/jid"');
-    Assert.areSame('enoch@example.com',
-                   doc.getPathValue('/iq/ps:pubsub/ps:subscribe/@node'),
-                   'subscribe jid is not "enoch@example.com"');
+    Assert.isSubscribe(this.conn._data);
 
     Assert.areSame(false, this.errorFlag,
                    'Got error trying to subscribe to /');

@@ -30,29 +30,11 @@ OXTest.Auth = new YAHOO.tool.TestCase({
 
     this.Auth.authenticatePlain('enoch@sip-example.com', 'example');
 
-    var doc = OXTest.DOMParser.parse(this.conn._data);
-
-    Assert.areSame('set',
-                   doc.getPathValue('/iq/@type'),
-                   'auth-plain iq is not type set.');
-    Assert.areSame('commands.auth.xmpp.onsip.com',
-                   doc.getPathValue('/iq/@to'),
-                   'auth-plain command is not sent to auth commands host.');
-    Assert.areSame('authenticate-plain',
-                   doc.getPathValue('/iq/cmd:command/@node'),
-                   'auth-plain command node is not authenticate-plain.');
-    Assert.areSame('submit',
-                   doc.getPathValue('/iq/cmd:command/x:x/@type'),
-                   'auth-plain xform type is not submit.');
-    Assert.areSame('enoch@sip-example.com',
-                   doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="sip-address"]/x:value/text()'),
-                   'auth-plain xform sip-address is wrong.');
-    Assert.areSame('example',
-                   doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="password"]/x:value/text()'),
-                   'auth-plain xform password is wrong.');
-    Assert.areEqual(undefined,
-                    doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="jid"]/x:value/text()'),
-                    'auth-plain xform jid is being set.');
+    Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
+                     'authenticate-plain',
+                     {'sip-address': 'enoch@sip-example.com',
+                      'password':    'example',
+                      'jid':         undefined});
   },
 
   testAuthorizePlainWithJID: function () {
@@ -63,29 +45,11 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     this.Auth.authenticatePlain('enoch@sip-example.com', 'example',
                                 'enoch@jid-example.com');
 
-    var doc = OXTest.DOMParser.parse(this.conn._data);
-
-    Assert.areSame('set',
-                   doc.getPathValue('/iq/@type'),
-                   'auth-plain iq is not type set.');
-    Assert.areSame('commands.auth.xmpp.onsip.com',
-                   doc.getPathValue('/iq/@to'),
-                   'auth-plain command is not sent to auth commands host.');
-    Assert.areSame('authenticate-plain',
-                   doc.getPathValue('/iq/cmd:command/@node'),
-                   'auth-plain command node is not authenticate-plain.');
-    Assert.areSame('submit',
-                   doc.getPathValue('/iq/cmd:command/x:x/@type'),
-                   'auth-plain xform type is not submit.');
-    Assert.areSame('enoch@sip-example.com',
-                   doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="sip-address"]/x:value/text()'),
-                   'auth-plain xform sip-address is wrong.');
-    Assert.areSame('example',
-                   doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="password"]/x:value/text()'),
-                   'auth-plain xform password is wrong.');
-    Assert.areSame('enoch@jid-example.com',
-                   doc.getPathValue('/iq/cmd:command/x:x/x:field[@var="jid"]/x:value/text()'),
-                   'auth-plain xform jid is wrong.');
+    Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
+                     'authenticate-plain',
+                     {'sip-address': 'enoch@sip-example.com',
+                      'password':    'example',
+                      'jid':         'enoch@jid-example.com'});
   }
 });
 
