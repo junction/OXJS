@@ -51,6 +51,12 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.ActiveCalls.create,
                       'ActiveCalls.create is not a function.');
+
+    this.ActiveCalls.create('to@example.com', 'from@example.com');
+
+    Assert.isCommand(this.conn._data, 'active-calls.xmpp.onsip.com',
+                     'create', {to:   'to@example.com',
+                                from: 'from@example.com'});
   },
 
   testSubscribe: function () {
@@ -88,36 +94,103 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                       'ActiveCalls.unregisterHandler is not a function.');
   },
 
-  testItem: function () {
+  testItemConnection: function () {
     var Assert = YAHOO.util.Assert;
 
     Assert.isObject(this.ActiveCalls.Item,
                     'ActiveCalls.Item is not an object');
     Assert.areSame(this.conn, this.ActiveCalls.Item.connection,
                    'ActiveCalls.Item connection is wrong.');
-    Assert.isFunction(this.ActiveCalls.Item.transfer,
-                      'ActiveCalls.Item.transfer is not a function');
-    Assert.isFunction(this.ActiveCalls.Item.hangup,
-                      'ActiveCalls.Item.hangup is not a function');
-    Assert.isFunction(this.ActiveCalls.Item.label,
-                      'ActiveCalls.Item.label is not a function');
+  },
+
+  testDialogState: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.dialogState,
                           'ActiveCalls.Item.dialogState is undefined');
+  },
+
+  testCallID: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.callID,
                           'ActiveCalls.Item.callID is undefined');
+  },
+
+  testFromURI: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.fromURI,
                           'ActiveCalls.Item.fromURI is undefined');
+  },
+
+  testToURI: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.toURI,
                           'ActiveCalls.Item.toURI is undefined');
+  },
+
+  testUACAOR: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.uacAOR,
                           'ActiveCalls.Item.uacAOR is undefined');
+  },
+
+  testUASAOR: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.uasAOR,
                           'ActiveCalls.Item.uasAOR is undefined');
+  },
+
+  testFromTag: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.fromTag,
                           'ActiveCalls.Item.fromTag is undefined');
+  },
+
+  testToTag: function () {
+    var Assert = YAHOO.util.Assert;
+
     Assert.isNotUndefined(this.ActiveCalls.Item.toTag,
                           'ActiveCalls.Item.toTag is undefined');
-  }
+  },
+
+  testHangup: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.hangup,
+                      'ActiveCalls.Item.hangup is not a function');
+
+    var item = this.ActiveCalls.Item.extend();
+    Assert.isFunction(item.hangup,
+                      'active call item\'s hangup is not a function');
+  },
+
+  testTransfer: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.transfer,
+                      'ActiveCalls.Item.transfer is not a function');
+
+    var item = this.ActiveCalls.Item.extend();
+    Assert.isFunction(item.transfer,
+                      'active call item\'s transfer is not a function');
+  },
+
+  testLabel: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.label,
+                      'ActiveCalls.Item.label is not a function');
+
+    var item = this.ActiveCalls.Item.extend();
+    Assert.isFunction(item.label,
+                      'active call item\'s label is not a function');
+  },
 });
 
 YAHOO.tool.TestRunner.add(OXTest.ActiveCalls);
