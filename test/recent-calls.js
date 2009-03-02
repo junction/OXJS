@@ -9,6 +9,7 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
   },
 
   tearDown: function () {
+    delete this.conn;
     delete this.ox;
     delete this.RecentCalls;
   },

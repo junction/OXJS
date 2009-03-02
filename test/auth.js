@@ -10,10 +10,8 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   },
 
   tearDown: function () {
-    delete this.ox;
-    delete this.Auth;
     delete this.conn;
-    delete this.DOMParser;
+    delete this.ox;
   },
 
   testServiceMixin: function () {

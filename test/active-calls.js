@@ -12,6 +12,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   },
 
   tearDown: function () {
+    delete this.conn;
     delete this.ox;
     delete this.ActiveCalls;
     delete this.successFlag;

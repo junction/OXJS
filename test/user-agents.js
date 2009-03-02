@@ -9,6 +9,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
   },
 
   tearDown: function () {
+    delete this.conn;
     delete this.ox;
     delete this.UserAgents;
   },
