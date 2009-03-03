@@ -71,12 +71,6 @@ OXTest.Connection = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.areSame(0, 1, 'Check onError callback.');
-  },
-
-  testFollowRedirect: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.areSame(0, 1, 'Verify that redirects are automatically followed.');
   }
 });
 
