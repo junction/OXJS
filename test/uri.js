@@ -29,6 +29,62 @@ OXTest.URI = new YAHOO.tool.TestCase({
                    'Unparse of parse did not produce the same string used to parse.');
   },
 
+  testPathQuery: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uriString = 'xmpp:enoch@example.com?query';
+    var uri = OX.URI.parse(uriString);
+    Assert.areSame('xmpp', uri.scheme);
+    Assert.areSame('enoch@example.com', uri.path);
+    Assert.areSame('query', uri.query);
+    Assert.isUndefined(uri.authority);
+    Assert.isUndefined(uri.fragment);
+    Assert.areSame(uriString, uri.toString(),
+                   'Unparse of parse did not produce the same string used to parse.');
+  },
+
+  testPathQueryFrag: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uriString = 'xmpp:enoch@example.com?query#frag';
+    var uri = OX.URI.parse(uriString);
+    Assert.areSame('xmpp', uri.scheme);
+    Assert.areSame('enoch@example.com', uri.path);
+    Assert.areSame('query', uri.query);
+    Assert.areSame('frag', uri.fragment);
+    Assert.isUndefined(uri.authority);
+    Assert.areSame(uriString, uri.toString(),
+                   'Unparse of parse did not produce the same string used to parse.');
+  },
+
+  testAuthorityPath: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uriString = 'xmpp://jill@example.com/enoch@example.com';
+    var uri = OX.URI.parse(uriString);
+    Assert.areSame('xmpp', uri.scheme);
+    Assert.areSame('jill@example.com', uri.authority);
+    Assert.areSame('enoch@example.com', uri.path);
+    Assert.isUndefined(uri.query);
+    Assert.isUndefined(uri.fragment);
+    Assert.areSame(uriString, uri.toString(),
+                   'Unparse of parse did not produce the same string used to parse.');
+  },
+
+  testAuthorityPathQuery: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uriString = 'xmpp://jill@example.com/enoch@example.com?message';
+    var uri = OX.URI.parse(uriString);
+    Assert.areSame('xmpp', uri.scheme);
+    Assert.areSame('jill@example.com', uri.authority);
+    Assert.areSame('enoch@example.com', uri.path);
+    Assert.areSame('message', uri.query);
+    Assert.isUndefined(uri.fragment);
+    Assert.areSame(uriString, uri.toString(),
+                   'Unparse of parse did not produce the same string used to parse.');
+  },
+
   testFromSimpleObject: function () {
     var Assert = YAHOO.util.Assert;
 

@@ -14,7 +14,34 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
    * var uri = OX.URI.parse('xmpp:lisa@example.com');
    */
   parse: function (uriString) {
-    return OX.URI.Base.extend();
+    var scheme, authority, path, query, fragment;
+
+    // Scan for : to find scheme                    - required
+    // Scan between // and / to find authority      - optional
+    // Scan from end of authority to ? to find path - required
+    // Scan from ? to # to find query               - optional
+    // Scan from # to EOL to find fragment          - optional
+    var parts = uriString.match(/^([^:]*:)(\/\/[^\/]*\/)?([^?]*)(\?[^#]*)?(#.*)?/);
+    if (parts[1])
+      scheme = parts[1].substr(0, parts[1].length - 1);
+    if (parts[2])
+      authority = parts[2].substr(2, parts[2].length - 2).substr(0, parts[2].length - 3);
+    if (parts[3])
+      path = parts[3];
+    if (parts[4])
+      query = parts[4].substr(1, parts[4].length - 1);
+    if (parts[5])
+      fragment = parts[5].substr(1, parts[5].length - 1);
+
+    console.log('parts: ' + parts);
+    console.log('scheme:' + scheme);
+    console.log('authority:' + authority);
+    console.log('path:' + path);
+    console.log('query:' + query);
+    console.log('fragment:' + fragment);
+
+    return OX.URI.Base.extend({scheme: scheme, authority: authority,
+                               path: path, query: query, fragment: fragment});
   },
 
   /**
