@@ -33,13 +33,6 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
     if (parts[5])
       fragment = parts[5].substr(1, parts[5].length - 1);
 
-    console.log('parts: ' + parts);
-    console.log('scheme:' + scheme);
-    console.log('authority:' + authority);
-    console.log('path:' + path);
-    console.log('query:' + query);
-    console.log('fragment:' + fragment);
-
     return OX.URI.Base.extend({scheme: scheme, authority: authority,
                                path: path, query: query, fragment: fragment});
   },
