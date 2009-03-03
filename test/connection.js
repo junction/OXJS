@@ -46,7 +46,7 @@ OXTest.Connection = new YAHOO.tool.TestCase({
 
     this.ox.registerJIDHandler('jill@example.com', handler);
 
-    var doc = OXTest.DOMParser.parse('<event xmlns="http://jabber.org/protocol/pubsub#event"><items node="musings"><item id="1"></item></items></event>');
+    var doc = OXTest.DOMParser.parse('<message from="jill@example.com" to="jill@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="musings"><item id="1"></item></items></event></message>');
     var packet = OXTest.Message.extend({from: 'jill@example.com',
                                         to:   'jack@example.com',
                                         doc:  doc});
@@ -64,7 +64,14 @@ OXTest.Connection = new YAHOO.tool.TestCase({
   testIQSuccessCallback: function () {
     var Assert = YAHOO.util.Assert;
 
+    var xml = '';
+    var handlerFired = false;
+    var handler = function (packet, arg2) {
+      Assert.areSame('arg2', arg2);
+    };
+
     Assert.areSame(0, 1, 'Check onSuccess callback.');
+    this.ox.connection.send(xml, handler, 'arg2');
   },
 
   testIQErrorCallback: function () {

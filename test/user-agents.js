@@ -29,7 +29,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     Assert.isFunction(this.UserAgents.itemFromPacket,
                       'User agent service cannot turn packet into item.');
 
-    var itemXML = '<event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.com/me"><item id="sip:jill@example.com:5060"><user-agent xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received>sip:jack@example.com:5060</received><device>Test UA</device><expires>2009-03-02T15:58:23Z</expires><event>insert</event></user-agent></item></items></event>';
+    var itemXML = '<message from="user-agents.xmpp.onsip.com" to="me@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.com/me"><item id="sip:jill@example.com:5060"><user-agent xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received>sip:jack@example.com:5060</received><device>Test UA</device><expires>2009-03-02T15:58:23Z</expires><event>insert</event></user-agent></item></items></event></message>';
 
     var packet = OXTest.Message.extend({
       from: 'user-agents.xmpp.onsip.com',
