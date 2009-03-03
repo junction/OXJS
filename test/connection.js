@@ -59,6 +59,24 @@ OXTest.Connection = new YAHOO.tool.TestCase({
     this.ox.unregisterJIDHandler('jill@example.com');
     this.conn.fireEvent('message', packet);
     Assert.isFalse(handlerFired, 'JID event handler was fired after unregister.');
+  },
+
+  testIQSuccessCallback: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame(0, 1, 'Check onSuccess callback.');
+  },
+
+  testIQErrorCallback: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame(0, 1, 'Check onError callback.');
+  },
+
+  testFollowRedirect: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame(0, 1, 'Verify that redirects are automatically followed.');
   }
 });
 
