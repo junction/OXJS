@@ -13,6 +13,12 @@
  * @property {OX.Services.Auth} RecentCalls#
  */
 OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
+  /**
+   * Map of instance names to instance objects. Used during
+   * initConnection().
+   *
+   * @see OX.Connection#initConnection
+   */
   services: {
     Auth:        OX.Services.Auth,
     ActiveCalls: OX.Services.ActiveCalls,
@@ -24,7 +30,22 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
   },
 
   /**
+   * Map of jids to event handler functions. Used when message events
+   * are received from the connection.
+   *
+   * @see OX.Connection#registerJIDHandler
+   * @see OX.Connection#unregisterJIDHandler
+   */
+  jidHandlers: {},
+
+  /**
    * Initialize the service properties.
+   *
+   * @example
+   * var ox = OX.Connection.extend();
+   * ox.initConnection();
+   *
+   * @return {OX.Connection}
    */
   initConnection: function () {
     var serviceMap = {};
@@ -39,10 +60,53 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
     }
 
     // Register for incoming messages.
+    var that = this;
     this.connection.registerHandler('message', function (msg) {
       var from = msg.getFrom();
+      var fn = that.jidHandlers[from];
+      if (fn) {
+        fn(msg);
+      }
     });
 
+    return this;
+  },
+
+  /**
+   * Registers a message event handler for a JID. Only one
+   * handler is active at a time per JID.
+   *
+   * @example
+   * var ox = OX.Connection.extend().initConnection();
+   * ox.registerJIDHandler('pubsub.active-calls.xmpp.onsip.com', function (packet) {
+   *   ...
+   * });
+   *
+   * @param {String} jid The jid who's events we listen to.
+   * @param {Function} handler Function of one argument: the message packet received.
+   * @return {OX.Connection}
+   *
+   * @see OX.Connection#unregisterJIDHandler
+   */
+  registerJIDHandler: function (jid, handler) {
+    this.jidHandlers[jid] = handler;
+    return this;
+  },
+
+  /**
+   * Unregister the handler, if any, for a JID.
+   *
+   * @example
+   * var ox = OX.Connection.extend().initConnection();
+   * ox.unregisterJIDHandler('pubsub.active-calls.xmpp.onsip.com');
+   *
+   * @param {String} jid The jid who's events we listen to.
+   * @return {OX.Connection}
+   *
+   * @see OX.Connection#registerJIDHandler
+   */
+  unregisterJIDHandler: function (jid) {
+    delete this.jidHandlers[jid];
     return this;
   }
 });
