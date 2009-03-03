@@ -54,10 +54,9 @@ OX.Mixins.CallLabeler = /** @lends OX.Mixins.CallLabeler# */{
 /**
  * Subscribable mixin.
  *
- * To use this mixin your base object must supply a +pubsubURI+ property.
- *
  * @namespace
- * @requires connection property which is an OX.ConnectionAdapter object on receiving object
+ * @requires connection property which is an OX.ConnectionAdapter object on receiving object.
+ * @requires pubSubURI The URI of the PubSub service.
  */
 OX.Mixins.Subscribable = /** @lends OX.Mixins.Subscribable# */{
   /**
