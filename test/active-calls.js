@@ -69,21 +69,21 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isObject(item, 'ActiveCalls.itemFromPacket did not return an object.');
     Assert.areSame(this.conn, item.connection,
                    'Active calls item connection is wrong.');
-    Assert.areSame('created', this.dialogState,
+    Assert.areSame('created', item.dialogState,
                    'Active call item dialog state is wrong.');
-    Assert.areSame('jill@example.com', this.uacAOR,
+    Assert.areSame('jill@example.com', item.uacAOR,
                    'Active call item uac aor is wrong.');
-    Assert.areSame('jack@example.com', this.uasAOR,
+    Assert.areSame('jack@example.com', item.uasAOR,
                    'Active call item uas aor is wrong.');
-    Assert.areSame('123', this.callID,
+    Assert.areSame('123', item.callID,
                    'Active call item call id is wrong.');
-    Assert.areSame('sip:jill@example.com', this.fromURI,
+    Assert.areSame('sip:jill@example.com', item.fromURI,
                    'Active call item from URI is wrong.');
-    Assert.areSame('sip:jack@example.com', this.toURI,
+    Assert.areSame('sip:jack@example.com', item.toURI,
                    'Active call item to URI is wrong.');
-    Assert.areSame('999', this.fromTag,
+    Assert.areSame('999', item.fromTag,
                    'Active call item from tag is wrong.');
-    Assert.areSame('666', this.toTag,
+    Assert.areSame('666', item.toTag,
                    'Active call item to tag is wrong.');
   },
 
