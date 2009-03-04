@@ -7,6 +7,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
      */
     ignore: {
       testServiceMixin:   true,
+      testPubSubURI:      true,
       testItemFromPacket: true
     }
   },
@@ -50,6 +51,14 @@ OXTest.Directories = new YAHOO.tool.TestCase({
                     'Directories mixin is not available');
     Assert.isObject(this.Directories, 'Directories is not initialized');
     Assert.areSame(this.ox,           this.ox.Directories.connection);
+  },
+
+  testPubSubURI: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame('xmpp:pubsub.directories.xmpp.onsip.com',
+                   this.Directories.pubSubURI,
+                   'Directories.pubSub URI is wrong.');
   },
 
   testItemFromPacket: function () {

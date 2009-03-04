@@ -7,6 +7,7 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
      */
     ignore: {
       testServiceMixin:   true,
+      testPubSubURI:      true,
       testItemFromPacket: true,
       testCallID:         true,
       testLabel:          true
@@ -33,6 +34,14 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
                     'RecentCalls mixin is not available');
     Assert.isObject(this.ox.RecentCalls, 'RecentCalls is not initialized');
     Assert.areSame(this.ox,              this.ox.RecentCalls.connection);
+  },
+
+  testPubSubURI: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame('xmpp:pubsub.recent-calls.xmpp.onsip.com',
+                   this.Directories.pubSubURI,
+                   'RecentCalls.pubSub URI is wrong.');
   },
 
   testItemFromPacket: function () {

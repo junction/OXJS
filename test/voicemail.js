@@ -23,6 +23,14 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
     Assert.areSame(this.ox,         this.ox.Voicemail.connection);
   },
 
+  testPubSubURI: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame('xmpp:pubsub.voicemail.xmpp.onsip.com',
+                   this.Voicemail.pubSubURI,
+                   'Voicemail.pubSub URI is wrong.');
+  },
+
   testItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 

@@ -118,6 +118,11 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  */
 OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.UserAgents */{
   /**
+   * URI for this PubSub service.
+   */
+  pubSubURI: 'xmpp:pubsub.user-agents.xmpp.onsip.com',
+
+  /**
    * User Agent Item.
    * @name OX.Services.UserAgents.Item
    * @namespace
@@ -142,6 +147,11 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
 OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Voicemail */{
+  /**
+   * URI for this PubSub service.
+   */
+  pubSubURI: 'xmpp:pubsub.voicemail.xmpp.onsip.com',
+
   /**
    * Voicemail Item.
    * @name OX.Services.Voicemail.Item

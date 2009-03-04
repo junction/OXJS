@@ -7,6 +7,7 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
      */
     ignore: {
       testServiceMixin:   true,
+      testPubSubURI:      true,
       testItemFromPacket: true
     }
   },
@@ -31,6 +32,14 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
                     'Preferences mixin is not available');
     Assert.isObject(this.ox.Preferences, 'Preferences is not initialized');
     Assert.areSame(this.ox,              this.ox.Preferences.connection);
+  },
+
+  testPubSubURI: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame('xmpp:pubsub.preferences.xmpp.onsip.com',
+                   this.Preferences.pubSubURI,
+                   'Preferences.pubSub URI is wrong.');
   },
 
   testItemFromPacket: function () {

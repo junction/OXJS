@@ -23,6 +23,14 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     Assert.areSame(this.ox,             this.ox.UserAgents.connection);
   },
 
+  testPubSubURI: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.areSame('xmpp:pubsub.user-agents.xmpp.onsip.com',
+                   this.UserAgents.pubSubURI,
+                   'UserAgents.pubSub URI is wrong.');
+  },
+
   testItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 
