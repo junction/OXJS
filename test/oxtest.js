@@ -15,7 +15,7 @@ OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
   },
 
   nextResponse: function () {
-    return this._responses.pop();
+    return this._responses.shift();
   },
 
   fireEvent: function (event) {

@@ -110,20 +110,33 @@ OX.Mixins.Subscribable = function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
-  function subscriptionHandler (packet, node, callbacks) {
+  function subscriptionHandler (packet, node, callbacks, origNode, redirects) {
     callbacks = callbacks || {};
+    redirects = redirects || 0;
 
     if (!packet)
       return;
 
-    var reqURI = getURI().extend({query: ';node=' + node});
+    var finalURI = getURI().extend({query: ';node=' + node}),
+        reqURI   = getURI().extend({query: ';node=' + (origNode || node)});
     if (packet.getType() === 'error') {
-      if (callbacks.onError) {
-        callbacks.onError(reqURI, reqURI, packet);
+      var error = packet.getDoc().getElementsByTagName('error')[0];
+      if (redirects < 5 && error && error.firstChild &&
+          (error.firstChild.tagName === 'redirect' ||
+           error.firstChild.tagName === 'gone')) {
+        var uri     = OX.URI.parse(error.firstChild.textContent),
+            path    = uri.path,
+            newNode = uri.queryParam('node');
+        if (path && newNode) {
+          this.subscribe(newNode, callbacks, origNode, redirects + 1);
+        }
+      } else if (callbacks.onError) {
+        callbacks.onError(reqURI, finalURI, packet);
       }
     } else {
       if (callbacks.onSuccess) {
-        callbacks.onSuccess(reqURI, reqURI, packet);
+        origNode = origNode || node;
+        callbacks.onSuccess(reqURI, finalURI, packet);
 
         var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0];
         if (pubSub) {
@@ -158,7 +171,7 @@ OX.Mixins.Subscribable = function () {
 
   return /** @lends OX.Mixins.Subscribable# */{
     /**
-     * Subscribe to +node+
+     * Subscribe to a nade.
      *
      * @param {String} node The node ID to subscribe to
      * @param {Function} callbacks an object supplying functions for 'onSuccess', and 'onError'
@@ -183,11 +196,16 @@ OX.Mixins.Subscribable = function () {
 
       var that = this;
       var cb = function () { subscriptionHandler.apply(that, arguments); };
-      this.connection.send(iq.toString(), cb, [node, callbacks]);
+
+      // arguments[2] is the original node, if available.
+      // arguments[3] is the redirect count, if available.
+      this.connection.send(iq.toString(), cb,
+                           [node, callbacks,
+                            arguments[2] || node, arguments[3]]);
     },
 
     /**
-     * Unsubscribe from +node+
+     * Unsubscribe from a node.
      *
      * @param {String} node The node ID to subscribe to
      * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
