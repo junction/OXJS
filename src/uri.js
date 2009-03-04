@@ -85,6 +85,48 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
   fragment: null,
 
   /**
+   * Return the action, if any, in the query parameters.
+   *
+   * @example
+   * uri.action();
+   *
+   * @returns {String} The action of this query, or undefined if none found.
+   */
+  action: function () {
+    if (!this.query)
+      return undefined;
+
+    var parts = this.query.split(';');
+    if (parts[0] === '')
+      return undefined;
+    else
+      return parts[0];
+  },
+
+  /**
+   * Return the value, if any, for a parameter in the query
+   * parameters.
+   *
+   * @example
+   * uri.queryParam('paramName');
+   *
+   * @param {String} param The parameter who's value is looked up.
+   * @returns {String} The value of the parameter, or undefined if not found.
+   */
+  queryParam: function (param) {
+    if (!this.query)
+      return undefined;
+
+    var parts = this.query.split(';');
+    for (var i = 1, len = parts.length; i < len; i++) {
+      var kvp = parts[i].split('=');
+      if (kvp[0] === param)
+        return kvp[1] || '';
+    }
+    return undefined;
+  },
+
+  /**
    * Convert URI object to string representation.
    */
   toString: function () {

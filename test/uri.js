@@ -100,8 +100,51 @@ OXTest.URI = new YAHOO.tool.TestCase({
                                  path:      'foo@bar.com',
                                  query:     'message;subject=Hi',
                                  fragment:  'baz'});
-    Assert.areSame('xmpp://enoch@example.com/foo@bar.com?message;subject=Hi#baz',
+     Assert.areSame('xmpp://enoch@example.com/foo@bar.com?message;subject=Hi#baz',
                    uri.toString());
+  },
+
+  testActionParse: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uri = OX.URI.fromObject({query: 'message;subject=Hi'});
+    Assert.isFunction(uri.action,
+                      'URI action accessor is not a function.');
+    Assert.areSame('message', uri.action(),
+                   'URI action is wrong.');
+  },
+
+  testActionEmptyParse: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uri = OX.URI.fromObject({query: ';subject=Hi'});
+    Assert.isUndefined(uri.action(), 'URI action is wrong.');
+  },
+
+  testParamParse: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uri = OX.URI.fromObject({query: ';subject=Hi'});
+    Assert.isFunction(uri.queryParam,
+                      'URI query parameter accessor is not a function.');
+    Assert.areSame('Hi', uri.queryParam('subject'),
+                   'URI subject parameter is wrong.');
+  },
+
+  testParamEmptyParse: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uri = OX.URI.fromObject({query: 'message'});
+    Assert.isUndefined(uri.queryParam('subject'),
+                       'URI subject parameter is wrong.');
+  },
+
+  testParamNoValueParse: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var uri = OX.URI.fromObject({query: ';foo'});
+    Assert.areSame('', uri.queryParam('foo'),
+                   'URI empty parameter is wrong.');
   }
 });
 
