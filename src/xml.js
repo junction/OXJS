@@ -14,6 +14,11 @@ OX.XMPP = {};
  * A simple XML element class, call +extend+ to generate objects
  * that you can then call +toString+ on for an XML representation.
  *
+ * @example
+ * var newElement = OX.XML.Element.extend({name: 'foo'})
+ * newElement.attr('bar','bam');
+ * newElement.addChild(OX.XML.Element.extend({name: 'child'});
+ *
  * @extends OX.Base
  * @class
  */
@@ -90,16 +95,18 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
    * and setting attrs and elements in a single function
    *
    * @param {Object} [attrs] a hash of attribute names to attribute values
-   * @param {Array} [elements] an array of OX.XML.Element to assign as children
+   * @param {OX.XML.Element[]} [elements] an array of OX.XML.Element to assign as children
    * @returns {OX.XML.Element}
    */
   create: function(attrs, elements) {
     var ret = this.extend();
 
     if (attrs) for(var k in attrs) {
-      var v = attrs[k];
-      if (!v) continue;
-      ret.attr(k,v);
+      if (attrs.hasOwnProperty(k)) {
+        var v = attrs[k];
+        if (!v) continue;
+        ret.attr(k,v);
+      }
     }
 
     if (elements && elements.length) for(var i=0,len=elements.length; i < len; i++) {
@@ -108,7 +115,7 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
 
     return ret;
   }
-})
+});
 
 /**
  * @extends OX.XML.Element
