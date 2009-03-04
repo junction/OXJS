@@ -1,6 +1,16 @@
 OXTest.Directories = new YAHOO.tool.TestCase({
   name: 'Directories Tests',
 
+  _should: {
+    /*
+     * Don't target any directories tests for now.
+     */
+    ignore: {
+      testServiceMixin:   true,
+      testItemFromPacket: true
+    }
+  },
+
   setUp: function () {
     this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
