@@ -177,13 +177,13 @@ YAHOO.util.Assert.isUnsubscribe = function (xml, jid, node, ourJID) {
 YAHOO.util.Assert.isGetItems = function (xml, jid, node) {
   var doc = OXTest.DOMParser.parse(xml);
 
-  this.areSame('set',
+  this.areSame('get',
                doc.getPathValue('/iq/@type'),
-               'unsubscribe iq is not type set.');
+               'get items iq is not type get.');
   this.areSame(jid,
                doc.getPathValue('/iq/@to'),
-               'unsubscribe iq is sent to wrong jid.');
+               'get items iq is sent to wrong jid.');
   this.areSame(node,
                doc.getPathValue('/iq/ps:pubsub/ps:items/@node'),
-               'unsubscribe node is wrong');
+               'get items node is wrong');
 };

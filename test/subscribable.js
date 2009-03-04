@@ -8,7 +8,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var that = this;
     var itemFromPacket = function () {
-      that.itemFromPacket.apply(that, arguments);
+      return that.itemFromPacket.apply(that, arguments);
     };
 
     this.Subscribable = OX.Base.extend(OX.Mixins.Subscribable, {
@@ -284,13 +284,50 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testGetItemsSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isTrue(false, 'Verify that get items success handler fires and delivers items.');
+    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="/"/><item id="item"><foo>bar</foo></item></pubsub></iq>');
+    this.conn._response = packet;
+
+    var successFlag = false, errorFlag = false;
+    this.Subscribable.getItems('/', {
+      onSuccess: function (items) {
+        successFlag = true;
+        Assert.areSame(1, items.length,
+                       'Wrong number of items passed to success handler.');
+        Assert.areSame('item', items[0],
+                       'Item was not translated in success handler.');
+      },
+
+      onError: function (error) {
+        errorFlag = true;
+      }
+    });
+
+    Assert.isGetItems(this.conn._data, 'pubsub@example.com', '/');
+    Assert.isFalse(errorFlag, 'Got error trying to fetch items.');
+    Assert.isTrue(successFlag, 'Did not get success trying to fetch items.');
   },
 
   testGetItemsError: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isTrue(false, 'Verify that get items error handler fires and delivers packets.');
+    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="error" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="/"/></pubsub><error type="cancel"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/><invalid-jid xmlns="http://jabber.org/protocol/pubsub#errors"/></error></iq>');
+    this.conn._response = packet;
+
+    var successFlag = false, errorFlag = false;
+    this.Subscribable.getItems('/', {
+      onSuccess: function (items) {
+        successFlag = true;
+      },
+
+      onError: function (error) {
+        errorFlag = true;
+        Assert.areSame(packet, error, 'Error packet does not match.');
+      }
+    });
+
+    Assert.isGetItems(this.conn._data, 'pubsub@example.com', '/');
+    Assert.isFalse(successFlag, 'Was successful trying to fetch items.');
+    Assert.isTrue(errorFlag, 'Did not error trying to fetch items.');
   }
 });
 

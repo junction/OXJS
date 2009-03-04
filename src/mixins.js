@@ -110,7 +110,7 @@ OX.Mixins.Subscribable = function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
-  function iqHandler (packet, node, callbacks) {
+  function subscriptionHandler (packet, node, callbacks) {
     callbacks = callbacks || {};
 
     if (!packet)
@@ -133,11 +133,34 @@ OX.Mixins.Subscribable = function () {
     }
   }
 
+  function getItemsHandler (packet, callbacks) {
+    callbacks = callbacks || {};
+
+    if (!packet)
+      return;
+
+    if (packet.getType() === 'error') {
+      if (callbacks.onError) {
+        callbacks.onError(packet);
+      }
+    } else {
+      if (callbacks.onSuccess) {
+        var items = [];
+        var psItems = packet.getDoc().getElementsByTagName('items');
+
+        for (var i = 0, len = psItems.length; i < len; i++) {
+          items.push(this.itemFromPacket(psItems[i]));
+        }
+        callbacks.onSuccess(items);
+      }
+    }
+  }
+
   return /** @lends OX.Mixins.Subscribable# */{
     /**
      * Subscribe to +node+
      *
-       * @param {String} node The node ID to subscribe to
+     * @param {String} node The node ID to subscribe to
      * @param {Function} callbacks an object supplying functions for 'onSuccess', and 'onError'
      *
      * @example
@@ -159,7 +182,7 @@ OX.Mixins.Subscribable = function () {
       iq.addChild(pubsub.addChild(subscribe));
 
       var that = this;
-      var cb = function () { iqHandler.apply(that, arguments); };
+      var cb = function () { subscriptionHandler.apply(that, arguments); };
       this.connection.send(iq.toString(), cb, [node, callbacks]);
     },
 
@@ -188,7 +211,7 @@ OX.Mixins.Subscribable = function () {
       iq.addChild(pubsub.addChild(unsubscribe));
 
       var that = this;
-      var cb = function () { iqHandler.apply(that, arguments); };
+      var cb = function () { subscriptionHandler.apply(that, arguments); };
       this.connection.send(iq.toString(), cb, [node, callbacks]);
     },
 
@@ -204,7 +227,21 @@ OX.Mixins.Subscribable = function () {
      *   onError:   function (errorPacket) {}
      * });
      */
-    getItems: function (node, callbacks) {},
+    getItems: function (node, callbacks) {
+      var iq     = OX.XMPP.IQ.extend(),
+          pubsub = OX.XML.Element.extend({name:  'pubsub',
+                                          xmlns: 'http://jabber.org/protocol/pubsub'}),
+          items  = OX.XML.Element.extend({name: 'items'});
+
+      iq.to(getURI.call(this).path);
+      iq.type('get');
+      items.attr('node', node);
+      iq.addChild(pubsub.addChild(items));
+
+      var that = this;
+      var cb = function () { getItemsHandler.apply(that, arguments); };
+      this.connection.send(iq.toString(), cb, [callbacks]);
+    },
 
     /**
      * Registers appropriate handlers with the connection for
