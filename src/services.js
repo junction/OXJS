@@ -141,7 +141,23 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
  * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
-OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Voicemail */{});
+OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Voicemail */{
+  /**
+   * Voicemail Item.
+   * @name OX.Services.Voicemail.Item
+   * @namespace
+   * @extends OX.Item
+   */
+  Item: OX.Item.extend({mailbox:  null,
+                        callerID: null,
+                        created:  null,
+                        duration: null,
+                        labels:   null}),
+
+  itemFromPacket: function (packet) {
+    return this.Item.extend({connection: this.connection});
+  }
+});
 
 /**
  * Namespace for directory related services.
