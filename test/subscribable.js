@@ -260,13 +260,25 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testPublishHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isTrue(false, 'Verify that publish handler fires and delivers items.');
+    var publishFlag = false;
+    this.Subscribable.registerHandler('onPublish', function () {
+      publishFlag = true;
+    });
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item"><foo>bar</foo></item></items></event></message>');
+    this.conn.fireEvent('message', packet);
+    Assert.isTrue(publishFlag, 'Publish handler did not fire.');
   },
 
   testRetractHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isTrue(false, 'Verify that retract handler fires and delivers URIs.');
+    var retractFlag = false;
+    this.Subscribable.registerHandler('onRetract', function () {
+      retractFlag = true;
+    });
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><retract id="item"/></items></event></message>');
+    this.conn.fireEvent('message', packet);
+    Assert.isTrue(retractFlag, 'Retract handler did not fire.');
   },
 
   testGetItemsSuccess: function () {

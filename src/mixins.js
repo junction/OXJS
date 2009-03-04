@@ -72,9 +72,10 @@ OX.Mixins.Subscribable = function () {
     case 'subscription':
       return element.getAttribute('subscription');
     case 'items':
-      return 'publish';
-    case 'retract':
-      return 'retract';
+      if (element.firstChild.tagName === 'retract')
+        return 'retract';
+      else
+        return 'publish';
     default:
       return undefined;
     }
