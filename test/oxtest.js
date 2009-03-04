@@ -6,9 +6,17 @@ OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
 
   _data: null,
 
-  _response: null,
+  _responses: [],
 
   jid: 'mock@example.com',
+
+  addResponse: function (response) {
+    this._responses.push(response);
+  },
+
+  nextResponse: function () {
+    return this._responses.pop();
+  },
 
   fireEvent: function (event) {
     var handler = this._handlers[event],
@@ -23,7 +31,7 @@ OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
   send: function (xml, callback, args) {
     this._data = xml;
     args = args || [];
-    args.unshift(this._response);
+    args.unshift(this.nextResponse());
     callback.apply(callback, args);
   },
 
@@ -41,8 +49,8 @@ OXTest.DOMParser = OX.Base.extend({
 
   prefixMap: {
     cmd: 'http://jabber.org/protocol/commands',
-    x: 'jabber:x:data',
-    ps: 'http://jabber.org/protocol/pubsub'
+    x:   'jabber:x:data',
+    ps:  'http://jabber.org/protocol/pubsub'
   },
 
   nsResolver: function (ns) {
