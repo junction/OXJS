@@ -29,7 +29,7 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
     Assert.isFunction(this.Voicemail.itemFromPacket,
                       'Voicemail service cannot turn packet into item.');
 
-    var itemXML = '';
+    var itemXML = '<message from="voicemail.xmpp.onsip.com" to="me@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.com/me"></items></event></message>';
     var packet = OXTest.Message.extend({
       from: 'user-agents.xmpp.onsip.com',
       to:   'me@example.com',
