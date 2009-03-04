@@ -58,13 +58,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFunction(this.ActiveCalls.itemFromPacket,
                       'Active call service cannot turn packet into item.');
 
-    var itemXML = '<event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.onsip.com/foo"><item id="301:NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU."><active-call xmlns="onsip:active-calls"><dialog-state>created</dialog-state><uac-aor>jill@example.com</uac-aor><uas-aor>jack@example.com</uas-aor><call-id>123</call-id><from-uri>sip:jill@example.com</from-uri><to-uri>sip:jack@example.com</to-uri><from-tag>999</from-tag><to-tag>666</to-tag></active-call></item></items></event>';
-
-    var packet = OXTest.Message.extend({
-      from: 'user-agents.xmpp.onsip.com',
-      to:   'me@example.com',
-      doc:  OXTest.DOMParser.parse(itemXML)
-    });
+    var packet = OXTest.Packet.extendWithXML('<event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.onsip.com/foo"><item id="301:NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU."><active-call xmlns="onsip:active-calls"><dialog-state>created</dialog-state><uac-aor>jill@example.com</uac-aor><uas-aor>jack@example.com</uas-aor><call-id>123</call-id><from-uri>sip:jill@example.com</from-uri><to-uri>sip:jack@example.com</to-uri><from-tag>999</from-tag><to-tag>666</to-tag></active-call></item></items></event>');
     var item = this.ActiveCalls.itemFromPacket(packet);
     Assert.isObject(item, 'ActiveCalls.itemFromPacket did not return an object.');
     Assert.areSame(this.ox, item.connection,
