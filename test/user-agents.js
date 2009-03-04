@@ -20,7 +20,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Services.UserAgents,
                     'UserAgents mixin is not available');
     Assert.isObject(this.ox.UserAgents, 'UserAgents is not initialized');
-    Assert.areSame(this.conn,           this.ox.UserAgents.connection);
+    Assert.areSame(this.ox,             this.ox.UserAgents.connection);
   },
 
   testItemFromPacket: function () {
@@ -38,7 +38,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     });
     var item = this.UserAgents.itemFromPacket(packet);
     Assert.isObject(item, 'UserAgents.itemFromPacket did not return an object.');
-    Assert.areSame(this.conn, item.connection,
+    Assert.areSame(this.ox, item.connection,
                    'User agent item connection is wrong.');
     Assert.areSame('sip:jill@example.com:5060', item.contact,
                    'Contact is wrong');

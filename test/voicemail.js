@@ -20,7 +20,7 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Services.Voicemail,
                     'Voicemail mixin is not available');
     Assert.isObject(this.Voicemail, 'Voicemail is not initialized');
-    Assert.areSame(this.conn,       this.ox.Voicemail.connection);
+    Assert.areSame(this.ox,         this.ox.Voicemail.connection);
   },
 
   testItemFromPacket: function () {

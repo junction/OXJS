@@ -20,7 +20,7 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Services.Auth,
                     'Auth mixin is not available');
     Assert.isObject(this.Auth, 'Auth mixin is not initialized');
-    Assert.areSame(this.conn,  this.ox.Auth.connection);
+    Assert.areSame(this.ox,    this.ox.Auth.connection);
   },
 
   testAuthorizePlainWithoutJID: function () {

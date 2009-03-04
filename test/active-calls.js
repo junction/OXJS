@@ -25,7 +25,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Services.ActiveCalls,
                     'ActiveCalls mixin is not available');
     Assert.isObject(this.ActiveCalls, 'ActiveCalls is not initialized');
-    Assert.areSame(this.conn,         this.ox.ActiveCalls.connection);
+    Assert.areSame(this.ox,           this.ox.ActiveCalls.connection);
   },
 
   testPubSubURI: function () {
@@ -67,7 +67,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     });
     var item = this.ActiveCalls.itemFromPacket(packet);
     Assert.isObject(item, 'ActiveCalls.itemFromPacket did not return an object.');
-    Assert.areSame(this.conn, item.connection,
+    Assert.areSame(this.ox, item.connection,
                    'Active calls item connection is wrong.');
     Assert.areSame('created', item.dialogState,
                    'Active call item dialog state is wrong.');
@@ -85,109 +85,6 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    'Active call item from tag is wrong.');
     Assert.areSame('666', item.toTag,
                    'Active call item to tag is wrong.');
-  },
-
-  testGetItems: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isFunction(this.ActiveCalls.getItems,
-                      'ActiveCalls.getItems is not a function.');
-
-    this.ActiveCalls.getItems('/me/jid', {
-      onSucess: function (items) {
-        this.successFlag = true;
-        Assert.areSame(requestedURI, finalURI,
-                       'requested and final uri differ when successful.');
-        Assert.areSame('/me/jid', requestedURI,
-                       'requestedURI is not actual requested uri');
-      },
-
-      onError: function (error) {
-        this.errorFlag = true;
-        Assert.areSame(requestedURI, finalURI,
-                       'requested and final uri differ on error.');
-        Assert.areSame('/me/jid', requestedURI,
-                       'requestedURI is not actual requested uri');
-      }
-    });
-
-    Assert.isGetItems(this.conn._data, 'pubsub.active-calls.xmpp.onsip.com', '/');
-    Assert.areSame(false, this.errorFlag,
-                   'Got error trying to get items on /');
-    Assert.areSame(true,  this.successFlag,
-                   'Was not successful trying to get items on /');
-  },
-
-  testPendingHandler: function () {
-    var Assert = YAHOO.util.Assert;
-
-    var pendingFired = false;
-    this.ActiveCalls.registerHandler({
-      onPending: function (requestedURI, finalURI) { pendingFired = true; }
-    });
-    this.conn.fireEvent('onPending');
-    Assert.isTrue(pendingFired, 'pending subscription handler did not fire.');
-  },
-
-  testSubscribedHandler: function () {
-    var Assert = YAHOO.util.Assert;
-
-    var subscribedFired = false;
-    this.ActiveCalls.registerHandler({
-      onSubscribed: function (requestedURI, finalURI) { subscribedFired = true; }
-    });
-    Assert.isTrue(subscribedFired, 'subscribed subscription handler did not fire.');
-  },
-
-  testPublishHandler: function () {
-    var Assert = YAHOO.util.Assert;
-
-    var publishFired = false;
-    this.ActiveCalls.registerHandler({
-      onPublish: function (item) { publishFired = true; }
-    });
-    Assert.isTrue(publishFired, 'publish subscription handler did not fire.');
-  },
-
-  testRetractHandler: function () {
-    var Assert = YAHOO.util.Assert;
-
-    var retractFired = false;
-    this.ActiveCalls.registerHandler({
-      onRetract: function (uri) { retractFired = true; }
-    });
-    Assert.isTrue(retractFired, 'retract subscription handler did not fire.');
-  },
-
-  testUnregisterHandler: function () {
-    var Assert = YAHOO.util.Assert;
-
-    var pendingFired    = false,
-        subscribedFired = false,
-        publishFired    = false,
-        retractFired    = false;
-
-    var pendingHandler    = function () { pendingFired    = true; };
-    var subscribedHandler = function () { subscribedFired = true; };
-    var publishHandler    = function () { publishFired    = true; };
-    var retractHandler    = function () { retractFired    = true; };
-
-    this.ActiveCalls.registerHandler({onPending:    pendingHandler,
-                                      onSubscribed: subscribedHandler,
-                                      onPublish:    publishHandler,
-                                      onRetract:    retractHandler});
-
-    Assert.isFunction(this.ActiveCalls.unregisterHandler,
-                      'ActiveCalls.unregisterHandler is not a function.');
-    this.ActiveCalls.unregisterHandler({onPending:    pendingHandler,
-                                        onSubscribed: subscribedHandler,
-                                        onPublish:    publishHandler,
-                                        onRetract:    retractHandler});
-
-    Assert.isFalse(pendingFired,    'pending subscription handler fired.');
-    Assert.isFalse(subscribedFired, 'subscribed subscription handler fired.');
-    Assert.isFalse(publishFired,    'publish subscription handler fired.');
-    Assert.isFalse(retractFired,    'retract subscription handler fired.');
   },
 
   testCreate: function () {

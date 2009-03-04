@@ -1,10 +1,14 @@
 /* Namespace for OXJS tests. */
 var OXTest = {};
 
-OXTest.ConnectionMock = OX.Base.extend({
+OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
   _handlers: {},
 
   _data: null,
+
+  _response: null,
+
+  jid: 'mock@example.com',
 
   fireEvent: function (event) {
     var handler = this._handlers[event],
@@ -18,6 +22,8 @@ OXTest.ConnectionMock = OX.Base.extend({
 
   send: function (xml, callback, args) {
     this._data = xml;
+    args = args || [];
+    args.unshift(this._response);
     callback.apply(callback, args);
   },
 
@@ -73,8 +79,17 @@ OXTest.DOMParser = OX.Base.extend({
 OXTest.Packet = OX.Base.extend({
   from:  null,
   to:    null,
-  pType: null,
+  type:  null,
   doc:   null,
+
+  extendWithXML: function (xml) {
+    var doc = OXTest.DOMParser.parse(xml);
+
+    var from = doc.getPathValue('//@from'),
+        to   = doc.getPathValue('//@to'),
+        type = doc.getPathValue('//@type');
+    return OXTest.Packet.extend({from: from, to: to, type: type, doc: doc.doc});
+  },
 
   getFrom: function () {
     return this.from;

@@ -4,6 +4,8 @@
  * @example
  * var conn = new JSJaCConnection();
  * var adapter = OX.ConnectionAdapter.extend({
+ *   jid = 'jill@example.com',
+ *
  *   registerHandler: function (event, handler) {
  *     return conn.registerHandler(event, handler);
  *   },
@@ -23,6 +25,11 @@
  * @extends OX.Base
  */
 OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
+  /**
+   * The JID of this connection.
+   */
+  jid: null,
+
   /**
    * Sends +xml+ to +this.connection+.
    *

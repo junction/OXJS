@@ -4,6 +4,7 @@ OXTest.ConnectionAdapter = new YAHOO.tool.TestCase({
   testInterface: function () {
     var Assert = YAHOO.util.Assert;
 
+    Assert.isNotUndefined(OX.ConnectionAdapter.jid);
     Assert.isNotUndefined(OX.ConnectionAdapter.send);
     Assert.isNotUndefined(OX.ConnectionAdapter.registerHandler);
     Assert.isNotUndefined(OX.ConnectionAdapter.unregisterHandler);

@@ -20,7 +20,7 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Services.RecentCalls,
                     'RecentCalls mixin is not available');
     Assert.isObject(this.ox.RecentCalls, 'RecentCalls is not initialized');
-    Assert.areSame(this.conn,            this.ox.RecentCalls.connection);
+    Assert.areSame(this.ox,              this.ox.RecentCalls.connection);
   },
 
   testItemFromPacket: function () {

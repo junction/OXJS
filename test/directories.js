@@ -39,7 +39,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Services.Directories,
                     'Directories mixin is not available');
     Assert.isObject(this.Directories, 'Directories is not initialized');
-    Assert.areSame(this.conn,         this.ox.Directories.connection);
+    Assert.areSame(this.ox,           this.ox.Directories.connection);
   },
 
   testItemFromPacket: function () {
@@ -57,46 +57,6 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     Assert.isObject(item, 'Directories.itemFromPacket did not return an object.');
     Assert.areSame(this.conn, item.connection,
                    'Directory item connection is wrong.');
-  },
-
-  testSubscribe: function () {
-    var Assert = YAHOO.util.Assert;
-    this.Directories.subscribe('/me/jid', {
-      onSucess: function (requestedURI, finalURI) {
-        this.successFlag = true;
-        Assert.areSame(requestedURI, finalURI,
-                       'requested and final uri differ when successful.');
-        Assert.areSame('/me/jid', requestedURI,
-                       'requestedURI is not actual requested uri');
-      },
-
-      onError: function (requestedURI, finalURI) {
-        this.errorFlag = true;
-        Assert.areSame(requestedURI, finalURI,
-                       'requested and final uri differ on error.');
-        Assert.areSame('/me/jid', requestedURI,
-                       'requestedURI is not actual requested uri');
-      }
-    });
-
-    Assert.isSubscribe(this.conn._data, 'pubsub.directories.xmpp.onsip.com',
-                       '/', 'test@example.com');
-
-    Assert.areSame(false, this.errorFlag,
-                   'Got error trying to subscribe to /');
-    Assert.areSame(true,  this.successFlag,
-                   'Was not successful trying to subscribe to /');
-  },
-
-  testRedirect: function () {
-    var Assert = YAHOO.util.Assert;
-
-    this.Directories.subscribe('/', this.subHandlers);
-
-    Assert.areSame(false, this.errorFlag,
-                   'Got error trying to subscribe to /');
-    Assert.areSame(true,  this.successFlag,
-                   'Was not successful trying to subscribe to /');
   }
 });
 

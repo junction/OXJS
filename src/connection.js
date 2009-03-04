@@ -53,7 +53,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
     for (var s in this.services) if (this.services.hasOwnProperty(s)) {
       var service = this.services[s];
 
-      this[s] = service.extend({connection: this.connection});
+      this[s] = service.extend({connection: this});
       if (service.pubSubURI) {
         serviceMap[service.pubSubURI] = service;
       }
@@ -70,6 +70,30 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
     });
 
     return this;
+  },
+
+  /**
+   * Sends an XML string to the connection adapter.
+   *
+   * @param {String} xml The XML String to send.
+   * @param {Function} callback Called when a response to this packet is received with the first argument being the received packet.
+   * @param {Array} args An array of arguments to be passed to callback after the packet.
+   *
+   */
+  send: function (xml, callback, args) {
+    this.connection.send(xml, callback, args);
+  },
+
+  /**
+   * Returns the JID of this connection.
+   *
+   * @example
+   * ox.getJID();
+   *
+   * @returns {String} This connection's JID.
+   */
+  getJID: function () {
+    return this.connection.jid;
   },
 
   /**
