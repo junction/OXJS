@@ -8,12 +8,12 @@ TEMPLATE = $(JSDOCDIR)/templates/jsdoc
 
 JAVA =	java
 
-all: ox.js
+all: ox.js $(DOCDIR)/index.html
 
 ox.js:	Makefile $(SRC)
 	cat $(SRC) > $@
 
-doc:	Makefile $(SRC)
+$(DOCDIR)/index.html: Makefile $(SRC)
 	$(JAVA) -jar $(JSDOCDIR)/jsrun.jar $(JSDOCDIR)/app/run.js -a -p -t=$(TEMPLATE) -d=$(DOCDIR) $(SRC)
 
 clean-doc:
