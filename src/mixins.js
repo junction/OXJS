@@ -14,24 +14,73 @@ OX.Mixins = {};
  * @requires fromTag property on receiving object.
  * @requires toTag property on receiving object.
  */
-OX.Mixins.CallDialog = /** @lends OX.Mixins.CallDialog# */{
-  /**
-   * Transfer a call to +to+.
-   * @param {String} to To whom to transfer the active call.
-   *
-   * @example
-   * call.transfer('lisa@example.com');
-   */
-  transfer: function (to) {},
+OX.Mixins.CallDialog = function () {
+  function getTransferURI () {
+    if (arguments.callee._cached === undefined) {
+      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.transfer);
+    }
+    return arguments.callee._cached;
+  }
 
-  /**
-   * Hangup this call.
-   *
-   * @example
-   * call.hangup();
-   */
-  hangup: function () {}
-};
+  function getHangupURI () {
+    if (arguments.callee._cached === undefined) {
+      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.hangup);
+    }
+    return arguments.callee._cached;
+  }
+
+  return /** @lends OX.Mixins.CallDialog# */{
+    /**
+     * Transfer a call to +to+.
+     * @param {String} to To whom to transfer the active call.
+     *
+     * @example
+     * call.transfer('lisa@example.com');
+     */
+    transfer: function (to) {
+      var iq    = OX.XMPP.IQ.extend(),
+          cmd   = OX.XMPP.Command.extend(),
+          xData = OX.XMPP.XDataForm.extend();
+
+      iq.to(getTransferURI().path);
+      iq.type('set');
+      cmd.node('transfer');
+      xData.type('submit');
+      xData.addField('call-id',    this.callID);
+      xData.addField('from-tag',   this.fromTag);
+      xData.addField('to-tag',     this.toTag);
+      xData.addField('to-address', to);
+
+      iq.addChild(cmd.addChild(xData));
+
+      this.connection.send(iq.toString(), function () {}, []);
+    },
+
+    /**
+     * Hangup this call.
+     *
+     * @example
+     * call.hangup();
+     */
+    hangup: function () {
+      var iq    = OX.XMPP.IQ.extend(),
+          cmd   = OX.XMPP.Command.extend(),
+          xData = OX.XMPP.XDataForm.extend();
+
+      iq.to(getHangupURI().path);
+      iq.type('set');
+      cmd.node('hangup');
+      xData.type('submit');
+      xData.addField('call-id',  this.callID);
+      xData.addField('from-tag', this.fromTag);
+      xData.addField('to-tag',   this.toTag);
+
+      iq.addChild(cmd.addChild(xData));
+
+      this.connection.send(iq.toString(), function () {}, []);
+    }
+  };
+}();
 
 /**
  * CallLabeler mixin.

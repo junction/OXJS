@@ -27,10 +27,10 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
                       'CallDialog.transfer is not a function.');
     this.CallDialog.transfer('alice@example.com');
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
-                     'transfer', {'to-address': 'transfer@example.onsip.com',
+                     'transfer', {'to-address': 'alice@example.com',
                                   'call-id':    'call-id',
-                                  'to-tag':     'from-tag',
-                                  'from-tag':   'to-tag'});
+                                  'to-tag':     'to-tag',
+                                  'from-tag':   'from-tag'});
   },
 
   testHangup: function () {
@@ -41,8 +41,8 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     this.CallDialog.hangup();
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
                      'hangup', {'call-id':  'call-id',
-                                'to-tag':   'from-tag',
-                                'from-tag': 'to-tag'});
+                                'to-tag':   'to-tag',
+                                'from-tag': 'from-tag'});
   }
 });
 

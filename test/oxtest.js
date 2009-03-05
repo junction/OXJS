@@ -144,7 +144,7 @@ YAHOO.util.Assert.isCommand = function (xml, jid, node, fields) {
     var path = '/iq/cmd:command/x:x/x:field[@var="' + f + '"]/x:value/text()';
 
     this.areSame(fields[f], doc.getPathValue(path),
-                   'field value for ' + f + 'is wrong.');
+                   'field value for ' + f + ' is wrong.');
   }
 };
 
