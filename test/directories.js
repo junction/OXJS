@@ -8,7 +8,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     ignore: {
       testServiceMixin:   true,
       testPubSubURI:      true,
-      testItemFromDocument: true
+      testItemFromElement: true
     }
   },
 
@@ -61,19 +61,19 @@ OXTest.Directories = new YAHOO.tool.TestCase({
                    'Directories.pubSub URI is wrong.');
   },
 
-  testItemFromDocument: function () {
+  testItemFromElement: function () {
     var Assert = YAHOO.util.Assert;
 
     var itemXML = '';
-    Assert.isFunction(this.Directories.itemFromDocument,
+    Assert.isFunction(this.Directories.itemFromElement,
                       'Directory service cannot turn packet into item.');
     var packet = OXTest.Message.extend({
       from: 'user-agents.xmpp.onsip.com',
       to:   'me@example.com',
       doc:  OXTest.DOMParser.parse(itemXML)
     });
-    var item = this.Directories.itemFromDocument(packet.doc);
-    Assert.isObject(item, 'Directories.itemFromDocument did not return an object.');
+    var item = this.Directories.itemFromElement(packet.doc);
+    Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
     Assert.areSame(this.conn, item.connection,
                    'Directory item connection is wrong.');
   }

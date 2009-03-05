@@ -273,7 +273,7 @@ OX.Mixins.Subscribable = function () {
         var psItems = packet.getDoc().getElementsByTagName('items');
 
         for (var i = 0, len = psItems.length; i < len; i++) {
-          items.push(this.itemFromDocument(psItems[i]));
+          items.push(this.itemFromElement(psItems[i]));
         }
         callbacks.onSuccess(items);
       }

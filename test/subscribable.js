@@ -7,19 +7,19 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.ox.initConnection();
 
     var that = this;
-    var itemFromDocument = function () {
-      return that.itemFromDocument.apply(that, arguments);
+    var itemFromElement = function () {
+      return that.itemFromElement.apply(that, arguments);
     };
 
     this.Subscribable = OX.Base.extend(OX.Mixins.Subscribable, {
       connection:     this.ox,
       pubSubURI:      'xmpp:pubsub@example.com',
-      itemFromDocument: itemFromDocument
+      itemFromElement: itemFromElement
     });
     this.Subscribable.registerSubscriptionHandlers();
   },
 
-  itemFromDocument: function (doc) {
+  itemFromElement: function (doc) {
     return 'item';
   },
 
