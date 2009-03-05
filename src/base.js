@@ -5,13 +5,15 @@
 OX.Base = {
   /**
    * Creates a new object which extends the current object.  Any
-   * arguments are mixed in to the new object as if +OX.Base.extend+ was
-   * called on the new object with remaining args.
+   * arguments are mixed in to the new object as if {@link OX.Base.mixin}
+   * was called on the new object with remaining args.
    *
    * @example
    * var obj = OX.Base.extend({param: value});
    *
    * @returns {OX.Base} the new object
+   *
+   * @see OX.Base.mixin
    */
   extend: function () {
     var F = function () {};
@@ -31,6 +33,8 @@ OX.Base = {
    * obj.mixin({param: value});
    *
    * @returns {OX.Base} the receiver
+   *
+   * @see OX.Base.extend
    */
   mixin: function () {
     for (var i = 0, len = arguments.length; i < len; i++) {

@@ -1,6 +1,7 @@
 /**
  * Connection object to use for all OXJS connections. The +initConnection+
- * method MUST be called after extending this object.
+ * {@link OX.Connection#initConnection} method MUST be called after
+ * extending this object.
  *
  * @class
  * @extends OX.Base
@@ -79,6 +80,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @param {Function} callback Called when a response to this packet is received with the first argument being the received packet.
    * @param {Array} args An array of arguments to be passed to callback after the packet.
    *
+   * @see OX.ConnectionAdapter#send
    */
   send: function (xml, callback, args) {
     this.connection.send(xml, callback, args);
@@ -91,6 +93,8 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * ox.getJID();
    *
    * @returns {String} This connection's JID.
+   *
+   * @see OX.ConnectionAdapter#jid
    */
   getJID: function () {
     return this.connection.jid;
@@ -108,9 +112,10 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    *
    * @param {String} jid The jid who's events we listen to.
    * @param {Function} handler Function of one argument: the message packet received.
-   * @return {OX.Connection}
+   * @return {OX.Connection} The receiver.
    *
-   * @see OX.Connection#unregisterJIDHandler
+   * @see OX.Connection#registerJIDHandler
+   * @see OX.ConnectionAdapter#registerHandler
    */
   registerJIDHandler: function (jid, handler) {
     this.jidHandlers[jid] = handler;
@@ -125,9 +130,10 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * ox.unregisterJIDHandler('pubsub.active-calls.xmpp.onsip.com');
    *
    * @param {String} jid The jid who's events we listen to.
-   * @return {OX.Connection}
+   * @return {OX.Connection} The receiver.
    *
-   * @see OX.Connection#registerJIDHandler
+   * @see OX.Connection#unregisterJIDHandler
+   * @see OX.ConnectionAdapter#unregisterHandler
    */
   unregisterJIDHandler: function (jid) {
     delete this.jidHandlers[jid];

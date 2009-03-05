@@ -5,7 +5,7 @@
  */
 OX.URI = OX.Base.extend(/** @lends OX.URI */{
   /**
-   * Parse +string+ as an OX.URI.Base object.
+   * Parse a string into an OX.URI.Base object.
    *
    * @param {String} uriString the URI to parse
    * @returns {OX.URI.Base} A new OX.URI.Base object
@@ -38,7 +38,7 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
   },
 
   /**
-   * Convert +object+ into an OX.URI.Base object
+   * Convert an object into an OX.URI.Base object.
    *
    * @param {Object} object an object with these members: scheme, path, authority, query, fragment
    * @returns {OX.URI.Base} A new URI object

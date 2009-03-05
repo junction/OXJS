@@ -1,22 +1,15 @@
 /**
  * Namespace for XML elements
  * @namespace
- * */
+ */
 OX.XML = {};
 
 /**
- * Namespace for XMPP XML elements
- * @namespace
- * */
-OX.XMPP = {};
-
-/**
- * A simple XML element class, call +extend+ to generate objects
- * that you can then call +toString+ on for an XML representation.
+ * A simple XML element class.
  *
  * @example
  * var newElement = OX.XML.Element.extend({name: 'foo'})
- * newElement.attr('bar','bam');
+ * newElement.attr('bar', 'bam');
  * newElement.addChild(OX.XML.Element.extend({name: 'child'});
  *
  * @extends OX.Base
@@ -30,11 +23,11 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
   text: null,
 
   /**
-   * Get or set attributes on the receiver
+   * Get or set attributes on the receiver.
    *
-   * @param {String} name The attributes name
-   * @param {String} [value] If value is supplied, the attribute will be set
-   * @returns {String} the value of the attribute
+   * @param {String} name The attributes name.
+   * @param {String} [value] If value is supplied, the attribute will be set.
+   * @returns {String} the value of the attribute.
    */
   attr: function(name,value) {
     this.attributes = this.attributes || {};
@@ -45,10 +38,10 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
   },
 
   /**
-   * Add a XML child element to the receiver
+   * Add a XML child element to the receiver.
    *
-   * @param {OX.XML.Element} child the XML element to add as a child
-   * @returns {OX.XML.Element} this
+   * @param {OX.XML.Element} child The XML element to add as a child.
+   * @returns {OX.XML.Element} The receiver.
    */
   addChild: function(child) {
     this.children = this.children || [];
@@ -59,7 +52,9 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
   },
 
   /**
-   * @returns {String} this XML element as XML text
+   * Return an XML string representation of this element.
+   *
+   * @returns {String} This XML element as XML text.
    */
   toString: function() {
     var ret = "";
@@ -91,11 +86,11 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
 }, /** @lends OX.XML.Element */ {
 
   /**
-   * +create+ is a static convenience function for creating a new OX.XML.Element
-   * and setting attrs and elements in a single function
+   * Convenience function for creating a new OX.XML.Element and
+   * setting attrs and elements in a single function
    *
-   * @param {Object} [attrs] a hash of attribute names to attribute values
-   * @param {OX.XML.Element[]} [elements] an array of OX.XML.Element to assign as children
+   * @param {Object} [attrs] A hash of attribute names to attribute values.
+   * @param {OX.XML.Element[]} [elements] An array of OX.XML.Element to assign as children.
    * @returns {OX.XML.Element}
    */
   create: function(attrs, elements) {
@@ -118,6 +113,14 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
 });
 
 /**
+ * Namespace for XMPP XML elements.
+ * @namespace
+ */
+OX.XMPP = {};
+
+/**
+ * Generic XMPP stanza.
+ *
  * @extends OX.XML.Element
  * @class
  */
@@ -132,6 +135,8 @@ OX.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XMPP.Stanza# */{
 });
 
 /**
+ * XMPP IQ stanza.
+ *
  * @extends OX.XMPP.Stanza
  * @class
  */
@@ -144,6 +149,8 @@ OX.XMPP.IQ = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.IQ# */{
 });
 
 /**
+ * XMPP Message stanza.
+ *
  * @extends OX.XMPP.Stanza
  * @class
  */
@@ -152,6 +159,8 @@ OX.XMPP.Message = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.Message# */{
 });
 
 /**
+ * XMPP AdHoc Command element.
+ *
  * @extends OX.XML.Element
  * @class
  */
@@ -169,6 +178,8 @@ OX.XMPP.Command = OX.XML.Element.extend(/** @lends OX.XMPP.Command# */{
 });
 
 /**
+ * XMPP XDataForm element.
+ *
  * @extends OX.XML.Element
  * @class
  */
@@ -181,13 +192,14 @@ OX.XMPP.XDataForm = OX.XML.Element.extend(/** @lends OX.XMPP.XDataForm# */{
   },
 
   /**
-   * A convenience method for adding fields and values to the XDataForm.  Calling
-   * this method will add an XDataField and value to this XDataForm.
+   * A convenience method for adding fields and values to the
+   * XDataForm. Calling this method will add an XDataField and value to
+   * this XDataForm.
    *
-   * @param {String} name the name of the field, as identified in the 'var' attribute
-   * @param {String} value the text to insert into the 'value' element
-   * @param {String} type XDataField type see XEP: 0004
-   * @returns {OX.XMPP.XDataForm} this
+   * @param {String} name The name of the field, as identified in the 'var' attribute.
+   * @param {String} value The text to insert into the 'value' element.
+   * @param {String} type XDataField type see XEP: 0004.
+   * @returns {OX.XMPP.XDataForm} The receiver.
    */
   addField: function(name,value,type) {
     var f,v;

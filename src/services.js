@@ -2,9 +2,12 @@
  * Namespace for service mixins.
  *
  * These objects should not be used directly, but only when
- * instantiated from an OX.Connection after calling initConnection.
+ * instantiated from an {@link OX.Connection} after calling
+ * {@link OX.Connection#initConnection}.
  *
  * @namespace
+ *
+ * @see OX.Connection
  */
 OX.Services = {};
 
@@ -12,23 +15,23 @@ OX.Services = {};
  * Namespace for auth related services.
  * @namespace
  * @extends OX.Base
- * @requires connection property inherited from an OX.ConnectionAdapter.
+ * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
   /** */
   commandURIs: {
-    /**
-     * URI for authenticate-plain Ad Hoc commnd.
-     */
+    /** URI for authenticate-plain Ad Hoc commnd. */
     authenticatePlain: 'xmpp:commands.auth.xmpp.onsip.com?;node=authenticate-plain'
   },
 
   /**
-   * Authenticate +jid+ for +address+ with +password+
+   * Authorize a JID for a SIP address, authenticated via a password. This
+   * password is sent in clear text to the XMPP API, so your connection
+   * should be encrypted for your own safety.
    *
    * @param {String} address The SIP address to authenticate as.
-   * @param {String} password The web password for +address+.
-   * @param {String} [jid] The JID to authorize for +address+. If unspecified, use the current JID from the underlying connection.
+   * @param {String} password The web password for the SIP address.
+   * @param {String} [jid] The JID to authorize for the SIP address. If unspecified, use the current JID from the underlying connection.
    * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
    *
    * @example
@@ -75,7 +78,7 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
  * @namespace
  * @extends OX.Base
  * @extends OX.Mixins.Subscribable
- * @requires connection property inherited from an OX.ConnectionAdapter.
+ * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.ActiveCalls */ {
   /**
@@ -85,19 +88,13 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
 
   /** */
   commandURIs: {
-    /**
-     * URI for create Ad Hoc commnd.
-     */
+    /** URI for create Ad Hoc commnd. */
     create: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=create',
 
-    /**
-     * URI for transfer Ad Hoc commnd.
-     */
+    /** URI for transfer Ad Hoc commnd. */
     transfer: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=transfer',
 
-    /**
-     * URI for hangup Ad Hoc commnd.
-     */
+    /** URI for hangup Ad Hoc commnd. */
     hangup: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate'
   },
 
@@ -109,14 +106,29 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    * @extends OX.Mixins.CallDialog
    * @extends OX.Mixins.CallLabeler
    */
-  Item: OX.Item.extend(OX.Mixins.CallDialog, OX.Mixins.CallLabeler, /** @lends OX.Services.ActiveCalls.Item */{
+  Item: OX.Item.extend(OX.Mixins.CallDialog, OX.Mixins.CallLabeler, /** @lends OX.Services.ActiveCalls.Item# */{
+    /** The current dialog state. */
     dialogState: null,
+
+    /** The call ID of this call. */
     callID: null,
+
+    /** The URI of the call originator. */
     fromURI: null,
+
+    /** The URI of the call terminator. */
     toURI: null,
+
+    /** The Address of Record for the User Agent Client. */
     uacAOR: null,
+
+    /** The Address of Record for the User Agent Server. */
     uasAOR: null,
+
+    /** The tag for the originating leg of the call. */
     fromTag: null,
+
+    /** The tag for the terminating leg of the call. */
     toTag: null
   }),
 
@@ -139,7 +151,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * @namespace
  * @extends OX.Base
  * @extends OX.Mixins.Subscribable
- * @requires connection property inherited from an OX.ConnectionAdapter.
+ * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.UserAgents */{
   /**
@@ -153,11 +165,19 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
    * @namespace
    * @extends OX.Item
    */
-  Item: OX.Item.extend({contact:  null,
-                        received: null,
-                        device:   null,
-                        expires:  null,
-                        event:    null}),
+  Item: OX.Item.extend(/** @lends OX.Services.UserAgents.Item# */{
+    /** The contact of this user agent. */
+    contact:  null,
+
+    /** The time this user agent last registered. */
+    received: null,
+
+    /** The user agent identifier string. */
+    device:   null,
+
+    /** The time at which the user agent registration will expire. */
+    expires:  null
+  }),
 
   itemFromPacket: function (packet) {
     return this.Item.extend({connection: this.connection});
@@ -169,7 +189,7 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
  * @namespace
  * @extends OX.Base
  * @extends OX.Mixins.Subscribable
- * @requires connection property inherited from an OX.ConnectionAdapter.
+ * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Voicemail */{
   /**
@@ -183,11 +203,22 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Ser
    * @namespace
    * @extends OX.Item
    */
-  Item: OX.Item.extend({mailbox:  null,
-                        callerID: null,
-                        created:  null,
-                        duration: null,
-                        labels:   null}),
+  Item: OX.Item.extend(/** @lends OX.Services.Voicemail.Item# */{
+    /** The mailbox number for this voicemail. */
+    mailbox:  null,
+
+    /** The caller ID of this voicemail. */
+    callerID: null,
+
+    /** The time this voicemail was created. */
+    created:  null,
+
+    /** How long, in seconds, this voicemail is. */
+    duration: null,
+
+    /** An array of labels for this voicemail. */
+    labels:   null
+  }),
 
   itemFromPacket: function (packet) {
     return this.Item.extend({connection: this.connection});
@@ -199,16 +230,16 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Ser
  * @namespace
  * @extends OX.Base
  * @extends OX.Mixins.Subscribable
- * @requires connection property inherited from an OX.ConnectionAdapter.
+ * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.Directories = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Directories */{});
 
 /**
- * Namespace for preference related services.
+ * Namespace for preferences related services.
  * @namespace
  * @extends OX.Base
  * @extends OX.Mixins.Subscribable
- * @requires connection property inherited from an OX.ConnectionAdapter.
+ * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Preferences */{});
 
@@ -217,14 +248,12 @@ OX.Services.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * @namespace
  * @extends OX.Base
  * @extends OX.Mixins.Subscribable
- * @requires connection property inherited from an OX.ConnectionAdapter.
+ * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.RecentCalls */{
   /** */
   commandURIs: {
-    /**
-     * URI for label Ad Hoc commnd.
-     */
+    /** URI for label Ad Hoc commnd. */
     label: 'xmpp:commands.recent-calls.xmpp.onsip.com?;node=label'
   }
 });
