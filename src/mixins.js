@@ -248,8 +248,8 @@ OX.Mixins.Subscribable = function () {
     /**
      * Subscribe to a nade.
      *
-     * @param {String} node The node ID to subscribe to
-     * @param {Function} callbacks an object supplying functions for 'onSuccess', and 'onError'
+     * @param {String} node The node ID to subscribe to.
+     * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'.
      *
      * @example
      * service.subscribe('/', {
