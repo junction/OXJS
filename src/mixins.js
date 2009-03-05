@@ -90,17 +90,41 @@ OX.Mixins.CallDialog = function () {
  * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
  * @requires callID property on receiving object.
  */
-OX.Mixins.CallLabeler = /** @lends OX.Mixins.CallLabeler# */{
-  /**
-   * Label a call with a short string.
-   *
-   * @param {String} label A short string used to label this call.
-   *
-   * @example
-   * call.label('alice');
-   */
-  label: function (label) {}
-};
+OX.Mixins.CallLabeler = function () {
+  function getLabelURI () {
+    if (arguments.callee._cached === undefined) {
+      arguments.callee._cached = OX.URI.parse(OX.Services.RecentCalls.commandURIs.label);
+    }
+    return arguments.callee._cached;
+  }
+
+  return /** @lends OX.Mixins.CallLabeler# */{
+    /**
+     * Label a call with a short string.
+     *
+     * @param {String} label A short string used to label this call.
+     *
+     * @example
+     * call.label('alice');
+     */
+    label: function (label) {
+        var iq    = OX.XMPP.IQ.extend(),
+            cmd   = OX.XMPP.Command.extend(),
+            xData = OX.XMPP.XDataForm.extend();
+
+        iq.to(getLabelURI().path);
+        iq.type('set');
+        cmd.node('label');
+        xData.type('submit');
+        xData.addField('call-id', this.callID);
+        xData.addField('label',   label);
+
+        iq.addChild(cmd.addChild(xData));
+
+        this.connection.send(iq.toString(), function () {}, []);
+    }
+  };
+}();
 
 /**
  * Subscribable mixin.

@@ -58,8 +58,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    */
   pubSubURI: 'xmpp:pubsub.active-calls.xmpp.onsip.com',
 
-  /**
-   */
+  /** */
   commandURIs: {
     /**
      * URI for create Ad Hoc commnd.
@@ -194,4 +193,12 @@ OX.Services.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an OX.ConnectionAdapter.
  */
-OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.RecentCalls */{});
+OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.RecentCalls */{
+  /** */
+  commandURIs: {
+    /**
+     * URI for label Ad Hoc commnd.
+     */
+    label: 'xmpp:commands.recent-calls.xmpp.onsip.com?;node=label'
+  }
+});

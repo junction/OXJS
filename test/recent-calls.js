@@ -40,8 +40,18 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.areSame('xmpp:pubsub.recent-calls.xmpp.onsip.com',
-                   this.Directories.pubSubURI,
+                   this.RecentCalls.pubSubURI,
                    'RecentCalls.pubSub URI is wrong.');
+  },
+
+  testCommandURIs: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isObject(this.RecentCalls.commandURIs,
+                    'RecentCalls.commandURIs is not an object.');
+    Assert.areSame('xmpp:commands.recent-calls.xmpp.onsip.com?;node=label',
+                   this.RecentCalls.commandURIs.label,
+                   'RecentCalls.commandURIs.transfer is wrong');
   },
 
   testItemFromPacket: function () {
