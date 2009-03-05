@@ -45,7 +45,7 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
   testItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.Preferences.itemFromPacket,
+    Assert.isFunction(this.Preferences.itemFromDocument,
                       'Preferences service cannot turn packet into item.');
 
     var itemXML = '';
@@ -54,8 +54,8 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
       to:   'me@example.com',
       doc:  OXTest.DOMParser.parse(itemXML)
     });
-    var item = this.Preferences.itemFromPacket(packet);
-    Assert.isObject(item, 'Preferences.itemFromPacket did not return an object.');
+    var item = this.Preferences.itemFromDocument(packet.doc);
+    Assert.isObject(item, 'Preferences.itemFromDocument did not return an object.');
     Assert.areSame(this.conn, item.connection,
                    'Preferences item connection is wrong.');
   }

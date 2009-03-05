@@ -57,7 +57,7 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
   testItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.RecentCalls.itemFromPacket,
+    Assert.isFunction(this.RecentCalls.itemFromDocument,
                       'Recent call service cannot turn packet into item.');
 
     var itemXML = '';
@@ -66,8 +66,8 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
       to:   'me@example.com',
       doc:  OXTest.DOMParser.parse(itemXML)
     });
-    var item = this.RecentCalls.itemFromPacket(packet);
-    Assert.isObject(item, 'RecentCalls.itemFromPacket did not return an object.');
+    var item = this.RecentCalls.itemFromDocument(packet.doc);
+    Assert.isObject(item, 'RecentCalls.itemFromDocument did not return an object.');
     Assert.areSame(this.conn, item.connection,
                    'Recent call item connection is wrong.');
   },

@@ -34,12 +34,12 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
   testItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.Voicemail.itemFromPacket,
+    Assert.isFunction(this.Voicemail.itemFromDocument,
                       'Voicemail service cannot turn packet into item.');
 
     var packet = OXTest.Packet.extendWithXML('<message from="voicemail.xmpp.onsip.com" to="me@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.com/me"><item id="9f921c83b50f47e781920f2627019064"><voicemail xmlns="onsip:voicemail"><mailbox>1</mailbox><caller-id>"Steve" &lt;steve&gt;</caller-id><created>2009-03-04T13:24:01-05:00</created><duration>2</duration><labels><label>INBOX</label></labels></voicemail></item></items></event></message>');
-    var item = this.Voicemail.itemFromPacket(packet);
-    Assert.isObject(item, 'Voicemail.itemFromPacket did not return an object.');
+    var item = this.Voicemail.itemFromDocument(packet.doc);
+    Assert.isObject(item, 'Voicemail.itemFromDocument did not return an object.');
     Assert.areSame(this.ox, item.connection,
                    'Voicemail item connection is wrong.');
     Assert.areSame(1, item.mailbox, 'Mailbox is wrong.');
@@ -55,12 +55,12 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
   testLabelItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.Voicemail.itemFromPacket,
+    Assert.isFunction(this.Voicemail.itemFromDocument,
                       'Voicemail service cannot turn packet into item.');
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub.voicemail.xmpp.onsip.com" to="foo@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.com/vm_foo"><item id="labels"><labels xmlns="onsip:voicemail"><label>Family</label><label>INBOX</label></labels></item></items></event><headers xmlns="http://jabber.org/protocol/shim"><header name="Collection">/me/foo@example.com</header></headers></message>');
 
-    var item = this.Voicemail.itemFromPacket(packet);
-    Assert.isObject(item, 'Voicemail.itemFromPacket did not return an object.');
+    var item = this.Voicemail.itemFromDocument(packet.doc);
+    Assert.isObject(item, 'Voicemail.itemFromDocument did not return an object.');
     Assert.isArray(item.labels, 'Labels is not an array.');
     Assert.areSame(2, item.labels.length, 'Wrong number of labels.');
     Assert.areSame('Family', item.labels[0], 'Wrong first label.');

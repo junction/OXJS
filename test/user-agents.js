@@ -34,12 +34,12 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
   testItemFromPacket: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.UserAgents.itemFromPacket,
+    Assert.isFunction(this.UserAgents.itemFromDocument,
                       'User agent service cannot turn packet into item.');
 
     var packet = OXTest.Packet.extendWithXML('<message from="user-agents.xmpp.onsip.com" to="me@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.com/me"><item id="sip:jill@example.com:5060"><user-agent xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received>sip:jack@example.com:5060</received><device>Test UA</device><expires>2009-03-02T15:58:23Z</expires></user-agent></item></items></event></message>');
-    var item = this.UserAgents.itemFromPacket(packet);
-    Assert.isObject(item, 'UserAgents.itemFromPacket did not return an object.');
+    var item = this.UserAgents.itemFromDocument(packet.doc);
+    Assert.isObject(item, 'UserAgents.itemFromDocument did not return an object.');
     Assert.areSame(this.ox, item.connection,
                    'User agent item connection is wrong.');
     Assert.areSame('sip:jill@example.com:5060', item.contact,

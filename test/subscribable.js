@@ -7,19 +7,19 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.ox.initConnection();
 
     var that = this;
-    var itemFromPacket = function () {
-      return that.itemFromPacket.apply(that, arguments);
+    var itemFromDocument = function () {
+      return that.itemFromDocument.apply(that, arguments);
     };
 
     this.Subscribable = OX.Base.extend(OX.Mixins.Subscribable, {
       connection:     this.ox,
       pubSubURI:      'xmpp:pubsub@example.com',
-      itemFromPacket: itemFromPacket
+      itemFromDocument: itemFromDocument
     });
     this.Subscribable.registerSubscriptionHandlers();
   },
 
-  itemFromPacket: function (packet) {
+  itemFromDocument: function (doc) {
     return 'item';
   },
 
@@ -135,7 +135,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Did not get error trying to unsubscribe.');
   },
 
-  testFiresPendingWithEvent: function () { 
+  testFiresPendingWithEvent: function () {
     var Assert = YAHOO.util.Assert;
 
     var pendingFlag = false;
@@ -150,7 +150,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Did not get pending event trying to subscribe.');
   },
 
-  testFiresSubscribedWithEvent: function () { 
+  testFiresSubscribedWithEvent: function () {
     var Assert = YAHOO.util.Assert;
 
     var subscribedFlag = false;
