@@ -31,7 +31,7 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
                    'Voicemail.pubSub URI is wrong.');
   },
 
-  testItemFromPacket: function () {
+  testItemFromDocument: function () {
     var Assert = YAHOO.util.Assert;
 
     Assert.isFunction(this.Voicemail.itemFromDocument,
@@ -52,7 +52,7 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
     Assert.areSame('INBOX', items.lables[0], 'Label is wrong.');
   },
 
-  testLabelItemFromPacket: function () {
+  testLabelItemFromDocument: function () {
     var Assert = YAHOO.util.Assert;
 
     Assert.isFunction(this.Voicemail.itemFromDocument,

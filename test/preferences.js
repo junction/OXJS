@@ -8,7 +8,7 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
     ignore: {
       testServiceMixin:   true,
       testPubSubURI:      true,
-      testItemFromPacket: true
+      testItemFromDocument: true
     }
   },
 
@@ -42,7 +42,7 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
                    'Preferences.pubSub URI is wrong.');
   },
 
-  testItemFromPacket: function () {
+  testItemFromDocument: function () {
     var Assert = YAHOO.util.Assert;
 
     Assert.isFunction(this.Preferences.itemFromDocument,

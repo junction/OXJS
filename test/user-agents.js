@@ -31,7 +31,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
                    'UserAgents.pubSub URI is wrong.');
   },
 
-  testItemFromPacket: function () {
+  testItemFromDocument: function () {
     var Assert = YAHOO.util.Assert;
 
     Assert.isFunction(this.UserAgents.itemFromDocument,

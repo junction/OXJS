@@ -8,7 +8,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     ignore: {
       testServiceMixin:   true,
       testPubSubURI:      true,
-      testItemFromPacket: true
+      testItemFromDocument: true
     }
   },
 
@@ -61,7 +61,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
                    'Directories.pubSub URI is wrong.');
   },
 
-  testItemFromPacket: function () {
+  testItemFromDocument: function () {
     var Assert = YAHOO.util.Assert;
 
     var itemXML = '';

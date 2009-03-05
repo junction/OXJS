@@ -8,7 +8,7 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
     ignore: {
       testServiceMixin:   true,
       testPubSubURI:      true,
-      testItemFromPacket: true,
+      testItemFromDocument: true,
       testCallID:         true,
       testLabel:          true
     }
@@ -54,7 +54,7 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
                    'RecentCalls.commandURIs.transfer is wrong');
   },
 
-  testItemFromPacket: function () {
+  testItemFromDocument: function () {
     var Assert = YAHOO.util.Assert;
 
     Assert.isFunction(this.RecentCalls.itemFromDocument,
