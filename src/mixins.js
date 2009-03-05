@@ -7,7 +7,6 @@ OX.Mixins = {};
 /**
  * CallDialog mixin.
  *
- * To use this mixin your base object must supply a +callID+ property
  * @namespace
  * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
  * @requires callID property on receiving object.
@@ -31,8 +30,10 @@ OX.Mixins.CallDialog = function () {
 
   return /** @lends OX.Mixins.CallDialog# */{
     /**
-     * Transfer a call to +to+.
+     * Transfer a call to a sip address.
+     *
      * @param {String} to To whom to transfer the active call.
+     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
      * @example
      * call.transfer('lisa@example.com');
@@ -58,6 +59,8 @@ OX.Mixins.CallDialog = function () {
 
     /**
      * Hangup this call.
+     *
+     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
      * @example
      * call.hangup();
@@ -85,7 +88,6 @@ OX.Mixins.CallDialog = function () {
 /**
  * CallLabeler mixin.
  *
- * To use this mixin your base object must supply a +callID+ property.
  * @namespace
  * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
  * @requires callID property on receiving object.
@@ -103,6 +105,7 @@ OX.Mixins.CallLabeler = function () {
      * Label a call with a short string.
      *
      * @param {String} label A short string used to label this call.
+     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
      * @example
      * call.label('alice');
@@ -283,7 +286,7 @@ OX.Mixins.Subscribable = function () {
      * Unsubscribe from a node.
      *
      * @param {String} node The node ID to subscribe to
-     * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
+     * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'
      *
      * @example
      * service.unsubscribe('/', {
@@ -309,10 +312,10 @@ OX.Mixins.Subscribable = function () {
     },
 
     /**
-     * Get the items on +node+
+     * Get the items on a PubSub node.
      *
      * @param {String} node The node ID to subscribe to
-     * @param {Object} callbacks an object supplying functions for 'onSuccess', and 'onError'
+     * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'
      *
      * @example
      * service.getItems('/', {
@@ -350,7 +353,7 @@ OX.Mixins.Subscribable = function () {
     },
 
     /**
-     * Registers +handler+ for +event+.
+     * Registers a handler for an event.
      *
      * Only one handler can be registered for a given event at a time.
      *
@@ -365,7 +368,7 @@ OX.Mixins.Subscribable = function () {
     },
 
     /**
-     * Unregisters +handler+ for +event+.
+     * Unregisters an event handler.
      *
      * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
      *

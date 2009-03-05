@@ -129,6 +129,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    *
    * @param {String} to the SIP address to terminate the call at
    * @param {String} from the SIP address to originate the call from
+   * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
    */
   create: function (to, from) {}
 });
