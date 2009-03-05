@@ -9,6 +9,7 @@ OX.Mixins = {};
  *
  * To use this mixin your base object must supply a +callID+ property
  * @namespace
+ * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
  * @requires callID property on receiving object.
  * @requires fromTag property on receiving object.
  * @requires toTag property on receiving object.
@@ -37,6 +38,7 @@ OX.Mixins.CallDialog = /** @lends OX.Mixins.CallDialog# */{
  *
  * To use this mixin your base object must supply a +callID+ property.
  * @namespace
+ * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
  * @requires callID property on receiving object.
  */
 OX.Mixins.CallLabeler = /** @lends OX.Mixins.CallLabeler# */{
