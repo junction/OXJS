@@ -18,19 +18,25 @@ OXTest.CallLabeler = new YAHOO.tool.TestCase({
     delete this.CallLabeler;
   },
 
+  testLabel: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.CallLabeler.label,
+                      'CallLabeler.label is not a function.');
+    this.CallLabeler.label('wauug');
+    Assert.isCommand(this.conn._data, 'commands.recent-calls.xmpp.onsip.com',
+                     'label', {'call-id': 'call-id',
+                               'label':   'wauug'});
+  },
+
   testLabelSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, errorFlag = false;
-    Assert.isFunction(this.CallLabeler.label,
-                      'CallLabeler.label is not a function.');
     this.CallLabeler.label('wauug', {
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
-    Assert.isCommand(this.conn._data, 'commands.recent-calls.xmpp.onsip.com',
-                     'label', {'call-id': 'call-id',
-                               'label':   'wauug'});
     Assert.isFalse(errorFlag, 'Got error labeling a call.');
     Assert.isTrue(successFlag, 'Was not successful labeling a call.');
   },
@@ -39,15 +45,10 @@ OXTest.CallLabeler = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, errorFlag = false;
-    Assert.isFunction(this.CallLabeler.label,
-                      'CallLabeler.label is not a function.');
     this.CallLabeler.label('wauug', {
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
-    Assert.isCommand(this.conn._data, 'commands.recent-calls.xmpp.onsip.com',
-                     'label', {'call-id': 'call-id',
-                               'label':   'wauug'});
     Assert.isFalse(successFlag, 'Was successful labeling a call.');
     Assert.isTrue(errorFlag, 'Did not get error labeling a call.');
   }

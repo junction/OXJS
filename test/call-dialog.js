@@ -20,21 +20,27 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     delete this.CallDialog;
   },
 
-  testTransferSuccess: function () {
+  testTransfer: function () {
     var Assert = YAHOO.util.Assert;
 
-    var successFlag = false, errorFlag = false;
     Assert.isFunction(OX.Mixins.CallDialog.transfer,
                       'CallDialog.transfer is not a function.');
-    this.CallDialog.transfer('alice@example.com', {
-      onSuccess: function () { successFlag = true; },
-      onError:   function () { errorFlag   = true; }
-    });
+    this.CallDialog.transfer('alice@example.com');
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
                      'transfer', {'to-address': 'alice@example.com',
                                   'call-id':    'call-id',
                                   'to-tag':     'to-tag',
                                   'from-tag':   'from-tag'});
+  },
+
+  testTransferSuccess: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var successFlag = false, errorFlag = false;
+    this.CallDialog.transfer('alice@example.com', {
+      onSuccess: function () { successFlag = true; },
+      onError:   function () { errorFlag   = true; }
+    });
     Assert.isFalse(errorFlag, 'Got error transferring a call.');
     Assert.isTrue(successFlag, 'Was not successful transferring a call.');
   },
@@ -43,35 +49,34 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, errorFlag = false;
-    Assert.isFunction(OX.Mixins.CallDialog.transfer,
-                      'CallDialog.transfer is not a function.');
     this.CallDialog.transfer('alice@example.com', {
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
-    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
-                     'transfer', {'to-address': 'alice@example.com',
-                                  'call-id':    'call-id',
-                                  'to-tag':     'to-tag',
-                                  'from-tag':   'from-tag'});
     Assert.isFalse(successFlag, 'Was successful transferring a call.');
     Assert.isTrue(errorFlag, 'Did not get error transferring a call.');
+  },
+
+  testHangup: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(OX.Mixins.CallDialog.hangup,
+                      'CallDialog.hangup is not a function.');
+    this.CallDialog.hangup();
+    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
+                     'hangup', {'call-id':  'call-id',
+                                'to-tag':   'to-tag',
+                                'from-tag': 'from-tag'});
   },
 
   testHangupSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, errorFlag = false;
-    Assert.isFunction(OX.Mixins.CallDialog.hangup,
-                      'CallDialog.hangup is not a function.');
     this.CallDialog.hangup({
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
-    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
-                     'hangup', {'call-id':  'call-id',
-                                'to-tag':   'to-tag',
-                                'from-tag': 'from-tag'});
     Assert.isFalse(errorFlag, 'Got error hanging up a call.');
     Assert.isTrue(successFlag, 'Was not successful hanging up a call.');
   },
@@ -80,16 +85,10 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, errorFlag = false;
-    Assert.isFunction(OX.Mixins.CallDialog.hangup,
-                      'CallDialog.hangup is not a function.');
     this.CallDialog.hangup({
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
-    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
-                     'hangup', {'call-id':  'call-id',
-                                'to-tag':   'to-tag',
-                                'from-tag': 'from-tag'});
     Assert.isFalse(successFlag, 'Was successful hanging up a call.');
     Assert.isTrue(errorFlag, 'Did not get error hanging up a call.');
   }
