@@ -38,10 +38,12 @@ OX.Mixins.CallDialog = function () {
      * @example
      * call.transfer('lisa@example.com');
      */
-    transfer: function (to) {
+    transfer: function (to, callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
           xData = OX.XMPP.XDataForm.extend();
+
+      callbacks = callbacks || {};
 
       iq.to(getTransferURI().path);
       iq.type('set');
@@ -54,7 +56,16 @@ OX.Mixins.CallDialog = function () {
 
       iq.addChild(cmd.addChild(xData));
 
-      this.connection.send(iq.toString(), function () {}, []);
+      this.connection.send(iq.toString(), function (packet) {
+        if (!packet)
+          return;
+
+        if (packet.getType() === 'error' && callbacks.onError) {
+          callbacks.onError(packet);
+        } else if (callbacks.onSuccess) {
+          callbacks.onSuccess();
+        }
+      }, []);
     },
 
     /**
@@ -65,10 +76,12 @@ OX.Mixins.CallDialog = function () {
      * @example
      * call.hangup();
      */
-    hangup: function () {
+    hangup: function (callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
           xData = OX.XMPP.XDataForm.extend();
+
+      callbacks = callbacks || {};
 
       iq.to(getHangupURI().path);
       iq.type('set');
@@ -80,7 +93,16 @@ OX.Mixins.CallDialog = function () {
 
       iq.addChild(cmd.addChild(xData));
 
-      this.connection.send(iq.toString(), function () {}, []);
+      this.connection.send(iq.toString(), function (packet) {
+        if (!packet)
+          return;
+
+        if (packet.getType() === 'error' && callbacks.onError) {
+          callbacks.onError(packet);
+        } else if (callbacks.onSuccess) {
+          callbacks.onSuccess();
+        }
+      }, []);
     }
   };
 }();
@@ -110,21 +132,32 @@ OX.Mixins.CallLabeler = function () {
      * @example
      * call.label('alice');
      */
-    label: function (label) {
-        var iq    = OX.XMPP.IQ.extend(),
-            cmd   = OX.XMPP.Command.extend(),
-            xData = OX.XMPP.XDataForm.extend();
+    label: function (label, callbacks) {
+      var iq    = OX.XMPP.IQ.extend(),
+          cmd   = OX.XMPP.Command.extend(),
+          xData = OX.XMPP.XDataForm.extend();
 
-        iq.to(getLabelURI().path);
-        iq.type('set');
-        cmd.node('label');
-        xData.type('submit');
-        xData.addField('call-id', this.callID);
-        xData.addField('label',   label);
+      callbacks = callbacks || {};
 
-        iq.addChild(cmd.addChild(xData));
+      iq.to(getLabelURI().path);
+      iq.type('set');
+      cmd.node('label');
+      xData.type('submit');
+      xData.addField('call-id', this.callID);
+      xData.addField('label',   label);
 
-        this.connection.send(iq.toString(), function () {}, []);
+      iq.addChild(cmd.addChild(xData));
+
+      this.connection.send(iq.toString(), function (packet) {
+        if (!packet)
+          return;
+
+        if (packet.getType() === 'error' && callbacks.onError) {
+          callbacks.onError(packet);
+        } else if (callbacks.onSuccess) {
+          callbacks.onSuccess();
+        }
+      }, []);
     }
   };
 }();

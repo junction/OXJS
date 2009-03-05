@@ -32,6 +32,8 @@ OXTest.CallLabeler = new YAHOO.tool.TestCase({
   testLabelSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.recent-calls.xmpp.onsip.com" to="mock@example.com" id="test"/>'));
+
     var successFlag = false, errorFlag = false;
     this.CallLabeler.label('wauug', {
       onSuccess: function () { successFlag = true; },
@@ -43,6 +45,8 @@ OXTest.CallLabeler = new YAHOO.tool.TestCase({
 
   testLabelError: function () {
     var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.recent-calls.xmpp.onsip.com" to="mock@example.com" type="error" id="test"><error type="cancel"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>'));
 
     var successFlag = false, errorFlag = false;
     this.CallLabeler.label('wauug', {

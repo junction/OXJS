@@ -36,6 +36,8 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
   testTransferSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test"/>'));
+
     var successFlag = false, errorFlag = false;
     this.CallDialog.transfer('alice@example.com', {
       onSuccess: function () { successFlag = true; },
@@ -47,6 +49,8 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
 
   testTransferError: function () {
     var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test" type="error"><error type="cancel"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>'));
 
     var successFlag = false, errorFlag = false;
     this.CallDialog.transfer('alice@example.com', {
@@ -72,6 +76,8 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
   testHangupSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test"/>'));
+
     var successFlag = false, errorFlag = false;
     this.CallDialog.hangup({
       onSuccess: function () { successFlag = true; },
@@ -83,6 +89,8 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
 
   testHangupError: function () {
     var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test" type="error"><error type="cancel"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>'));
 
     var successFlag = false, errorFlag = false;
     this.CallDialog.hangup({
