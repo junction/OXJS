@@ -132,8 +132,73 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     toTag: null
   }),
 
-  itemFromPacket: function (packet) {
-    return this.Item.extend({connection: this.connection});
+  /**
+   * Returns an OX.Service.ActiveCalls.Item from an XML Document.
+   * This method should be called once for each item to be constructed.
+   * If a DOMElement contains more than one item node, only the first
+   * item node will be returned as an OX.Service.ActiveCalls.Item
+   *
+   * @param {DOMElement} element
+   * @returns {OX.Services.ActiveCalls.Item} item
+   */
+  itemFromElement: function (element) {
+    var items = element && element.getElementsByTagName('item'),
+      activeCallNode = items && items[0] && items[0].getElementsByTagName('active-call');
+      attrs = {connection: this.connection};
+
+    if (!activeCallNode || !activeCallNode[0]) return undefined;
+
+    var childNodes = activeCallNode[0].childNodes,
+      getFirstNodeValue = function(n) {
+        var child = n.firstChild;
+        if(child && child.nodeValue == null && child.firstChild) {
+          return getFirstNodeValue(child);
+        }else if(child && child.nodeValue) {
+          return child.nodeValue;
+        }
+        return undefined;
+      };
+
+    for(var i=0,len=childNodes.length;i<len;i++) {
+      var node = childNodes[i];
+
+      //
+      // using 'el.childNodes' over 'el.children' due to lack of support in FF 2/3,
+      // unfortunately this means we need to check node type
+      // see http://www.quirksmode.org/dom/w3c_core.html#domtree
+      //
+      // TODO: do we need constants?  e.g. "OX.Const.DOM_NODE_TYPE_ELEMENT = 1"
+      if (node.nodeType != 1) continue; // nodeType "1" is Element
+
+      switch(node.nodeName.toLowerCase()) {
+      case 'dialog-state':
+        attrs['dialogState'] = getFirstNodeValue(node);
+        break;
+      case 'uac-aor':
+        attrs['uacAOR'] = getFirstNodeValue(node);
+        break;
+      case 'uas-aor':
+        attrs['uasAOR'] = getFirstNodeValue(node);
+        break;
+      case 'call-id':
+        attrs['callID'] = getFirstNodeValue(node);
+        break;
+      case 'from-uri':
+        attrs['fromURI'] = getFirstNodeValue(node);
+        break;
+      case 'to-uri':
+        attrs['toURI'] = getFirstNodeValue(node);
+        break;
+      case 'from-tag':
+        attrs['fromTag'] = getFirstNodeValue(node);
+        break;
+      case 'to-tag':
+        attrs['toTag'] = getFirstNodeValue(node);
+        break;
+      }
+    } // for
+
+    return this.Item.extend(attrs);
   },
 
   /**
