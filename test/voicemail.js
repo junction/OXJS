@@ -47,8 +47,24 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
     Assert.areSame('2009-03-04T13:24:01-05:00', item.created,
                    'Created time is wrong.');
     Assert.areSame(2, item.duration, 'Duration is wrong.');
+    Assert.isArray(item.labels, 'Labels is not an array.');
     Assert.areSame(1, item.labels.length, 'Wrong number of labels.');
     Assert.areSame('INBOX', items.lables[0], 'Label is wrong.');
+  },
+
+  testLabelItemFromPacket: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.Voicemail.itemFromPacket,
+                      'Voicemail service cannot turn packet into item.');
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub.voicemail.xmpp.onsip.com" to="foo@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/example.com/vm_foo"><item id="labels"><labels xmlns="onsip:voicemail"><label>Family</label><label>INBOX</label></labels></item></items></event><headers xmlns="http://jabber.org/protocol/shim"><header name="Collection">/me/foo@example.com</header></headers></message>');
+
+    var item = this.Voicemail.itemFromPacket(packet);
+    Assert.isObject(item, 'Voicemail.itemFromPacket did not return an object.');
+    Assert.isArray(item.labels, 'Labels is not an array.');
+    Assert.areSame(2, item.labels.length, 'Wrong number of labels.');
+    Assert.areSame('Family', item.labels[0], 'Wrong first label.');
+    Assert.areSame('INBOX', item.labels[1], 'Wrong second label.');
   },
 
   testMailbox: function () {
