@@ -8,7 +8,11 @@ TEMPLATE = $(JSDOCDIR)/templates/jsdoc
 
 JAVA =	java
 
-all: ox.js $(DOCDIR)/index.html
+all:	src doc
+
+src:	ox.js
+
+doc:	$(DOCDIR)/index.html
 
 ox.js:	Makefile $(SRC)
 	cat $(SRC) > $@

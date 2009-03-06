@@ -6,3 +6,6 @@ all:	rhinodom
 
 rhinodom:
 	cd rhinodom && ant -Drhino.dir=$(RHINODIR) dist
+
+clean:
+	cd rhinodom && ant -Drhino.dir=$(RHINODIR) clean
