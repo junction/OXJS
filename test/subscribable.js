@@ -19,7 +19,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.Subscribable.registerSubscriptionHandlers();
   },
 
-  itemFromElement: function (doc) {
+  itemFromElement: function (element) {
     return 'item';
   },
 
@@ -138,13 +138,19 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testFiresPendingWithEvent: function () {
     var Assert = YAHOO.util.Assert;
 
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><subscription node="/" jid="mock@example.com" subscription="pending"/></event></message>');
+
     var pendingFlag = false;
-    this.Subscribable.registerHandler('onPending', function () {
+    this.Subscribable.registerHandler('onPending', function (requestedURI, finalURI) {
       pendingFlag = true;
+      Assert.areSame('xmpp:pubsub@example.com?;node=/',
+                     requestedURI.toString(),
+                     'Requested URI for pending is wrong.');
+      Assert.areSame(requestedURI.toString(), finalURI.toString(),
+                     'Requested URI differs from final for pending.');
     });
     this.Subscribable.subscribe('/');
 
-    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><subscription node="/" jid="mock@example.com" subscription="pending"/></event></message>');
     this.conn.fireEvent('message', packet);
     Assert.areSame(true, pendingFlag,
                    'Did not get pending event trying to subscribe.');
@@ -153,13 +159,19 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testFiresSubscribedWithEvent: function () {
     var Assert = YAHOO.util.Assert;
 
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><subscription node="/" jid="mock@example.com" subscription="subscribed"/></event></message>');
+
     var subscribedFlag = false;
-    this.Subscribable.registerHandler('onSubscribed', function () {
+    this.Subscribable.registerHandler('onSubscribed', function (requestedURI, finalURI) {
       subscribedFlag = true;
+      Assert.areSame('xmpp:pubsub@example.com?;node=/',
+                     requestedURI.toString(),
+                     'Requested URI for subscribed is wrong.');
+      Assert.areSame(requestedURI.toString(), finalURI.toString(),
+                     'Requested URI differs from final for subscribed..');
     });
     this.Subscribable.subscribe('/');
 
-    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><subscription node="/" jid="mock@example.com" subscription="subscribed"/></event></message>');
     this.conn.fireEvent('message', packet);
     Assert.areSame(true, subscribedFlag,
                    'Did not get subscribed event trying to subscribe.');
@@ -340,21 +352,28 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testPublishHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    var publishFlag = false;
-    this.Subscribable.registerHandler('onPublish', function () {
-      publishFlag = true;
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo>bar</foo></item><item id="item2"><foo>baz</foo></item></items></event></message>');
+
+    var publishCount = 0;
+    this.Subscribable.registerHandler('onPublish', function (item) {
+      publishCount++;
+      Assert.areSame('item', item, 'Item is not coerced for publish handler.');
     });
-    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item"><foo>bar</foo></item></items></event></message>');
+
     this.conn.fireEvent('message', packet);
-    Assert.isTrue(publishFlag, 'Publish handler did not fire.');
+    Assert.areSame(2, publishCount, 'Wrong number of items when publishing.');
   },
 
   testRetractHandler: function () {
     var Assert = YAHOO.util.Assert;
 
     var retractFlag = false;
-    this.Subscribable.registerHandler('onRetract', function () {
+    this.Subscribable.registerHandler('onRetract', function (uri) {
       retractFlag = true;
+      Assert.isObject(uri, 'URI in retract handler is not an object.');
+      Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item',
+                     uri.toString(),
+                     'Retract item URI is wrong.');
     });
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><retract id="item"/></items></event></message>');
     this.conn.fireEvent('message', packet);
@@ -364,16 +383,18 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testGetItemsSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
-    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="/"/><item id="item"><foo>bar</foo></item></pubsub></iq>');
+    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="/"><item id="item1"><foo>bar</foo></item><item id="item2"><foo>baz</foo></item></items></pubsub></iq>');
     this.conn.addResponse(packet);
 
     var successFlag = false, errorFlag = false;
     this.Subscribable.getItems('/', {
       onSuccess: function (items) {
         successFlag = true;
-        Assert.areSame(1, items.length,
+        Assert.areSame(2, items.length,
                        'Wrong number of items passed to success handler.');
         Assert.areSame('item', items[0],
+                       'Item was not translated in success handler.');
+        Assert.areSame('item', items[1],
                        'Item was not translated in success handler.');
       },
 
