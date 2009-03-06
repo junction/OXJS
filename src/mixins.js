@@ -235,8 +235,17 @@ OX.Mixins.Subscribable = function () {
       }
       break;
     case 'retract':
+      var doc    = packet.getDoc(),
+          from   = doc.firstChild.getAttribute('from'),
+          items  = doc.firstChild.firstChild.firstChild,
+          node   = items.getAttribute('node'),
+          itemID = items.firstChild.getAttribute('id');
+
+      var retractURI = OX.URI.fromObject({path:  from,
+                                          query: ';node=' + node +
+                                                 ';item=' + itemID});
       if (this._subscriptionHandlers.onRetract)
-        this._subscriptionHandlers.onRetract('XXX - item uri');
+        this._subscriptionHandlers.onRetract(retractURI);
       break;
     }
   }
