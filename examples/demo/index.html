@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+          "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>OXJS Demo</title>
+  </head>
+
+  <body>
+    <h1>OXJS Demo</h1>
+
+    <!-- Load the OXJS library. -->
+    <script src="../../src/ox.js"></script>
+
+    <!-- Load our demo application -->
+    <script src="http://jqueryjs.googlecode.com/files/jquery-1.3.2.js"></script>
+    <script src="glue.js"></script>
+    <script src="jsjac.js"></script>
+
+    <div id="auth_xmpp_onsip_com" class="service">
+      <h2>auth.xmpp.onsip.com</h2>
+      <div class="commands">
+        <h3>Commands</h3>
+        <div class="command authenticate-plain">
+          <h4>authenticate-plain</h4>
+          <form onsubmit="return DemoApp.authenticate($(this).attr('id'));" 
+                id="auth_xmpp_onsip_com-commands-authenticate-plain">
+            <table>
+              <tr><td>SIP Address:</td><td><input name="sip-address" type="text"></input></td></tr>
+              <tr><td>Password:</td><td><input name="password" type="password"></input></td></tr>
+              <tr><td>JID*:</td><td><input name="jid" type="text"></input></td></tr>
+              <tr><td><input type="submit" value="Submit"></input></td></tr>
+            </table>
+          </form>
+          <ul class="output"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="active-calls_xmpp_onsip_com" class="service">
+      <h2>active-calls.xmpp.onsip.com</h2>
+      <div class="commands">
+        <h3>Commands</h3>
+        <div class="command create">
+          <h4>Create</h4>
+          <form onsubmit="return DemoApp.createCall(this);"
+                id="active-calls_xmpp_onsip_com-commands-create">
+            <table>
+              <tr><td>From:</td><td><input name="from" type="text"></input></td></tr>
+              <tr><td>To:</td><td><input name="to" type="text"></input></td></tr>
+              <tr><td><input type="submit" value="Submit"></input></td></tr>
+            </table>
+          </form>
+          <ul class="output create"></ul>
+        </div>
+        <div class="command terminate">
+          <h4>Terminate</h4>
+          <form onsubmit="return DemoApp.terminateCall(this);"
+                id="active-calls_xmpp_onsip_com-commands-terminate">
+            <table>
+              <tr><td>From:</td><td><input name="from" type="text"></input></td></tr>
+              <tr><td>To:</td><td><input name="to" type="text"></input></td></tr>
+              <tr><td><input type="submit" value="Submit"></input></td></tr>
+            </table>
+          </form>
+          <ul class="output terminate"></ul>
+        </div>
+      </div>
+
+      <div class="pubsub">
+        <h3>PubSub</h3>
+          <form onsubmit="return DemoApp.subscribeActiveCalls(this);"
+                id="active-calls_xmpp_onsip_com-pubsub-subscribe">
+          <table>
+            <tr>
+              <td>Node:</td><td><input type="text" name="node"></input></td>
+            </tr>
+            <tr>
+              <td>JID:</td><td><input type="text" name="jid"></input></td>
+            </tr>
+            <tr><td><input type="submit" value="Submit"></input></td></tr>
+          </table>
+        </form>
+
+        <h4>Subscriptions</h4>
+        <ul class="output subscriptions"></ul>
+
+        <h4>Events</h4>
+        <ul class="output events"></ul>
+      </div>
+    </div>
+
+  </body>
+</html>
