@@ -59,6 +59,9 @@ OXTest.XML = new YAHOO.tool.TestCase({
 
     var doc = OXTest.DOMParser.parse(createdElement.toString());
     Assert.areEqual('the text', doc.getPathValue('/test/child/text()'));
+
+    var createdElement2 = typeOfElement.create(createdAttrs, createdChild);
+    Assert.areEqual(createdElement.toString(), createdElement2.toString());
   },
 
   testDemoXMLStructure: function() {

@@ -223,11 +223,9 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     return function (to, from, cb) {
       var uri = getCreateURI(),
         xData = OX.XMPP.XDataForm.create({type: 'submit'});
-        cmd = OX.XMPP.Command.create({node: uri.queryParam('node')}),
-        iq = OX.XMPP.IQ.create({to: uri.path, type: 'set'});
+        cmd = OX.XMPP.Command.create({node: uri.queryParam('node')}, xData),
+        iq = OX.XMPP.IQ.create({to: uri.path, type: 'set'}, cmd);
 
-      iq.addChild(cmd);
-      cmd.addChild(xData);
       xData.addField('to', to);
       xData.addField('from', from);
 

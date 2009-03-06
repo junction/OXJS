@@ -104,6 +104,7 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
       }
     }
 
+    elements = (elements && elements.addChild) ? [elements] : elements;
     if (elements && elements.length) for(var i=0,len=elements.length; i < len; i++) {
       ret.addChild(elements[i]);
     }
