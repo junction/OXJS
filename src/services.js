@@ -234,8 +234,6 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
       this.connection.send(iq.toString(), function(packet) {
         if(!packet) return;
 
-        console.log(packet);
-
         if(packet.getType() === 'error' && cb.onError && cb.onError.constructor == Function) {
           cb.onError(packet);
         } else if(cb.onSuccess && cb.onSuccess.constructor == Function) {
