@@ -141,13 +141,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><subscription node="/" jid="mock@example.com" subscription="pending"/></event></message>');
 
     var pendingFlag = false;
-    this.Subscribable.registerHandler('onPending', function (requestedURI, finalURI) {
+    this.Subscribable.registerHandler('onPending', function (uri) {
       pendingFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                     requestedURI.toString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
                      'Requested URI for pending is wrong.');
-      Assert.areSame(requestedURI.toString(), finalURI.toString(),
-                     'Requested URI differs from final for pending.');
     });
     this.Subscribable.subscribe('/');
 
@@ -162,13 +159,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><subscription node="/" jid="mock@example.com" subscription="subscribed"/></event></message>');
 
     var subscribedFlag = false;
-    this.Subscribable.registerHandler('onSubscribed', function (requestedURI, finalURI) {
+    this.Subscribable.registerHandler('onSubscribed', function (uri) {
       subscribedFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                     requestedURI.toString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
                      'Requested URI for subscribed is wrong.');
-      Assert.areSame(requestedURI.toString(), finalURI.toString(),
-                     'Requested URI differs from final for subscribed..');
     });
     this.Subscribable.subscribe('/');
 

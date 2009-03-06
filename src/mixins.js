@@ -218,14 +218,38 @@ OX.Mixins.Subscribable = function () {
   }
 
   function fireEvent(type, packet) {
+    function subscriptionURI() {
+      var doc    = packet.getDoc(),
+          from   = doc.firstChild.getAttribute('from'),
+          sub    = doc.firstChild.firstChild.firstChild,
+          node   = sub.getAttribute('node');
+
+      return OX.URI.fromObject({path:   from, query: ';node=' + node});
+    }
+
+    function retractURI() {
+      var doc    = packet.getDoc(),
+          from   = doc.firstChild.getAttribute('from'),
+          items  = doc.firstChild.firstChild.firstChild,
+          node   = items.getAttribute('node'),
+          itemID = items.firstChild.getAttribute('id');
+
+      return OX.URI.fromObject({path:  from,
+                                query: ';node=' + node + ';item=' + itemID});
+    }
+
     switch (type) {
     case 'subscribed':
-      if (this._subscriptionHandlers.onSubscribed)
-        this._subscriptionHandlers.onSubscribed('XXX - requested', 'XXX - final');
+      if (this._subscriptionHandlers.onSubscribed) {
+        var subscribedURI = subscriptionURI();
+        this._subscriptionHandlers.onSubscribed(subscribedURI);
+      }
       break;
     case 'pending':
-      if (this._subscriptionHandlers.onPending)
-        this._subscriptionHandlers.onPending('XXX - requested', 'XXX - final');
+      if (this._subscriptionHandlers.onPending) {
+        var pendingURI = subscriptionURI();
+        this._subscriptionHandlers.onPending(pendingURI);
+      }
       break;
     case 'publish':
       if (this._subscriptionHandlers.onPublish) {
@@ -235,17 +259,10 @@ OX.Mixins.Subscribable = function () {
       }
       break;
     case 'retract':
-      var doc    = packet.getDoc(),
-          from   = doc.firstChild.getAttribute('from'),
-          items  = doc.firstChild.firstChild.firstChild,
-          node   = items.getAttribute('node'),
-          itemID = items.firstChild.getAttribute('id');
-
-      var retractURI = OX.URI.fromObject({path:  from,
-                                          query: ';node=' + node +
-                                                 ';item=' + itemID});
-      if (this._subscriptionHandlers.onRetract)
+      if (this._subscriptionHandlers.onRetract) {
+        var retractURI = retractURI();
         this._subscriptionHandlers.onRetract(retractURI);
+      }
       break;
     }
   }
@@ -459,39 +476,37 @@ OX.Mixins.Subscribable = function () {
        * This handler is called when we get a pending subscription
        * notification.
        *
-       * @param requestedURI The original URI of the subscription request.
-       * @param finalURI The final URI of the subscription request, after redirects.
+       * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
        */
-      onPending: function (requestedURI, finalURI) {},
+      onPending: function (uri) {},
 
       /**
        * This handler is called when we get a completed subscription.
        *
-       * @param requestedURI The original URI of the subscription request.
-       * @param finalURI The final URI of the subscription request, after redirects.
+       * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
        */
-      onSubscribed: function (requestedURI, finalURI) {},
+      onSubscribed: function (uri) {},
 
       /**
        * This handler is called when we our subscription is removed.
        *
-       * @param nodeURI The node we were unsubscribed from.
+       * @param {OX.URI.Base} uri The node we were unsubscribed from.
        */
-      onUnsubscribed: function (nodeURI) {},
+      onUnsubscribed: function (uri) {},
 
       /**
        * This handler is called when an item is published.
        *
-       * @param item The published item.
+       * @param {OX.Item} item The published item.
        */
       onPublish: function (item) {},
 
       /**
        * This handler is called when an item is retracted.
        *
-       * @param itemURI The URI of the retracted item.
+       * @param {OX.URI.Base} uri The URI of the retracted item.
        */
-      onRetract: function (itemURI) {}
+      onRetract: function (uri) {}
     }
   };
 }();
