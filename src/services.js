@@ -142,61 +142,60 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    * @returns {OX.Services.ActiveCalls.Item} item
    */
   itemFromElement: function (element) {
-    var items = element && element.getElementsByTagName('item'),
-      activeCallNode = items && items[0] && items[0].getElementsByTagName('active-call');
-      attrs = {connection: this.connection};
+    if (!element)
+      return undefined;
 
-    if (!activeCallNode || !activeCallNode[0]) return undefined;
+    var activeCallNode = element.getElementsByTagName('active-call'),
+        attrs          = {connection: this.connection};
 
-    var childNodes = activeCallNode[0].childNodes,
-      getFirstNodeValue = function(n) {
-        var child = n.firstChild;
-        if(child && child.nodeValue == null && child.firstChild) {
-          return getFirstNodeValue(child);
-        }else if(child && child.nodeValue) {
-          return child.nodeValue;
-        }
-        return undefined;
-      };
+    if (!activeCallNode || !activeCallNode[0])
+      return undefined;
 
-    for(var i=0,len=childNodes.length;i<len;i++) {
+    var childNodes = activeCallNode[0].childNodes;
+
+    function getFirstNodeValue(node) {
+      var child = node.firstChild;
+      if (child && child.nodeValue == null && child.firstChild) {
+        return arguments.callee(child);
+      } else if (child && child.nodeValue) {
+        return child.nodeValue;
+      }
+      return undefined;
+    }
+
+    for (var i = 0, len = childNodes.length; i < len; i++) {
       var node = childNodes[i];
 
-      //
-      // using 'el.childNodes' over 'el.children' due to lack of support in FF 2/3,
-      // unfortunately this means we need to check node type
-      // see http://www.quirksmode.org/dom/w3c_core.html#domtree
-      //
-      // TODO: do we need constants?  e.g. "OX.Const.DOM_NODE_TYPE_ELEMENT = 1"
-      if (node.nodeType != 1) continue; // nodeType "1" is Element
+      if (!node.nodeName)
+        continue;
 
-      switch(node.nodeName.toLowerCase()) {
+      switch (node.nodeName.toLowerCase()) {
       case 'dialog-state':
-        attrs['dialogState'] = getFirstNodeValue(node);
+        attrs.dialogState = node.firstChild.nodeValue;
         break;
       case 'uac-aor':
-        attrs['uacAOR'] = getFirstNodeValue(node);
+        attrs.uacAOR = node.firstChild.nodeValue;
         break;
       case 'uas-aor':
-        attrs['uasAOR'] = getFirstNodeValue(node);
+        attrs.uasAOR = node.firstChild.nodeValue;
         break;
       case 'call-id':
-        attrs['callID'] = getFirstNodeValue(node);
+        attrs.callID = node.firstChild.nodeValue;
         break;
       case 'from-uri':
-        attrs['fromURI'] = getFirstNodeValue(node);
+        attrs.fromURI = node.firstChild.nodeValue;
         break;
       case 'to-uri':
-        attrs['toURI'] = getFirstNodeValue(node);
+        attrs.toURI = node.firstChild.nodeValue;
         break;
       case 'from-tag':
-        attrs['fromTag'] = getFirstNodeValue(node);
+        attrs.fromTag = node.firstChild.nodeValue;
         break;
       case 'to-tag':
-        attrs['toTag'] = getFirstNodeValue(node);
+        attrs.toTag = node.firstChild.nodeValue;
         break;
       }
-    } // for(i < childNodes.length)
+    }
 
     return this.Item.extend(attrs);
   },
@@ -221,10 +220,10 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     };
 
     return function (to, from, cb) {
-      var uri = getCreateURI(),
-        xData = OX.XMPP.XDataForm.create({type: 'submit'});
-        cmd = OX.XMPP.Command.create({node: uri.queryParam('node')}, xData),
-        iq = OX.XMPP.IQ.create({to: uri.path, type: 'set'}, cmd);
+      var uri   = getCreateURI(),
+          xData = OX.XMPP.XDataForm.create({type: 'submit'}),
+          cmd   = OX.XMPP.Command.create({node: uri.queryParam('node')}, xData),
+          iq    = OX.XMPP.IQ.create({to: uri.path, type: 'set'}, cmd);
 
       xData.addField('to', to);
       xData.addField('from', from);
@@ -278,8 +277,40 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
     expires:  null
   }),
 
-  itemFromPacket: function (packet) {
-    return this.Item.extend({connection: this.connection});
+  itemFromElement: function (element) {
+    if (!element)
+      return undefined;
+
+    var userAgentNode = element.getElementsByTagName('user-agent'),
+        attrs         = {connection: this.connection};
+
+    if (!userAgentNode || !userAgentNode[0])
+      return undefined;
+    var children = userAgentNode[0].childNodes;
+
+    for (var i = 0, len = children.length; i < len; i++) {
+      var node = children[i];
+
+      if (!node.nodeName)
+        continue;
+
+      switch (node.nodeName.toLowerCase()) {
+      case 'contact':
+        attrs.contact = node.firstChild.nodeValue;
+        break;
+      case 'received':
+        attrs.received = node.firstChild.nodeValue;
+        break;
+      case 'device':
+        attrs.device = node.firstChild.nodeValue;
+        break;
+      case 'expires':
+        attrs.expires = node.firstChild.nodeValue;
+        break;
+      }
+    }
+
+    return this.Item.extend(attrs);
   }
 });
 
@@ -290,39 +321,143 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
  * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an {@link OX.Connection}.
  */
-OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Voicemail */{
-  /**
-   * URI for this PubSub service.
-   */
-  pubSubURI: 'xmpp:pubsub.voicemail.xmpp.onsip.com',
-
-  /**
-   * Voicemail Item.
-   * @name OX.Services.Voicemail.Item
-   * @namespace
-   * @extends OX.Item
-   */
-  Item: OX.Item.extend(/** @lends OX.Services.Voicemail.Item# */{
-    /** The mailbox number for this voicemail. */
-    mailbox:  null,
-
-    /** The caller ID of this voicemail. */
-    callerID: null,
-
-    /** The time this voicemail was created. */
-    created:  null,
-
-    /** How long, in seconds, this voicemail is. */
-    duration: null,
-
-    /** An array of labels for this voicemail. */
-    labels:   null
-  }),
-
-  itemFromPacket: function (packet) {
-    return this.Item.extend({connection: this.connection});
+OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
+  function itemType(element) {
+    if (!element)
+      return undefined;
+    else if (element.getElementsByTagName('voicemail').length > 0)
+      return 'voicemail';
+    else if (element.getElementsByTagName('labels').length > 0)
+      return 'labels';
+    else
+      return undefined;
   }
-});
+
+  function voicemailItem(element) {
+    if (!element)
+      return undefined;
+
+    var rc = {};
+    var voicemailNode = element.getElementsByTagName('voicemail');
+
+    if (!voicemailNode || !voicemailNode[0])
+      return undefined;
+
+    var children = voicemailNode[0].childNodes;
+    for (var i = 0, len = children.length; i < len; i++) {
+      var node = children[i];
+
+      if (!node.nodeName)
+        continue;
+
+      switch (node.nodeName.toLowerCase()) {
+      case 'mailbox':
+        rc.mailbox = parseInt(node.firstChild.nodeValue);
+        break;
+      case 'caller-id':
+        rc.callerID = node.firstChild.nodeValue;
+        break;
+      case 'created':
+        rc.created = node.firstChild.nodeValue;
+        break;
+      case 'duration':
+        rc.duration = parseInt(node.firstChild.nodeValue);
+        break;
+      case 'labels':
+        var labels = [];
+        for (var j = 0, jlen = node.childNodes.length; j < jlen; j++) {
+          var elt = node.childNodes[j];
+          if (elt.tagName && elt.tagName == 'label')
+            labels.push(elt.firstChild.nodeValue);
+        }
+        rc.labels = labels;
+        break;
+      }
+    }
+    return rc;
+  }
+
+  function labelItem(element) {
+    if (!element)
+      return undefined;
+
+    var rc = {labels: []};
+    var labelsNode = element.getElementsByTagName('labels');
+
+    if (!labelsNode || !labelsNode[0])
+      return undefined;
+
+    var children = labelsNode[0].childNodes;
+    for (var i = 0, len = children.length; i < len; i++) {
+      var node = children[i];
+
+      if (node.nodeName && node.nodeName == 'label')
+        rc.labels.push(node.firstChild.nodeValue);
+    }
+    return rc;
+  }
+
+  return /** @lends OX.Services.Voicemail */{
+    /**
+     * URI for this PubSub service.
+     */
+    pubSubURI: 'xmpp:pubsub.voicemail.xmpp.onsip.com',
+
+    /**
+     * Voicemail Item.
+     * @name OX.Services.Voicemail.Item
+     * @namespace
+     * @extends OX.Item
+     */
+    Item: OX.Item.extend(/** @lends OX.Services.Voicemail.Item# */{
+      /** The mailbox number for this voicemail. */
+      mailbox:  null,
+
+      /** The caller ID of this voicemail. */
+      callerID: null,
+
+      /** The time this voicemail was created. */
+      created:  null,
+
+      /** How long, in seconds, this voicemail is. */
+      duration: null,
+
+      /** An array of labels for this voicemail. */
+      labels:   null
+    }),
+
+    /**
+     * Voicemail Label Item
+     *
+     * @name OX.Services.Voicemail.LabelItem
+     * @namespace
+     * @extends OX.Item
+     */
+    LabelItem: OX.Item.extend(/** @lends OX.Services.Voicemail.LabelItem#*/{
+      /** An array of all voicemail labels. */
+      labels: null
+    }),
+
+    itemFromElement: function (element) {
+      var rc, item;
+
+      switch (itemType(element)) {
+      case 'voicemail':
+        item = voicemailItem(element);
+        if (item)
+          rc = this.Item.extend(item, {connection: this.connection});
+        break;
+      case 'labels':
+        item = labelItem(element);
+        if (item)
+          rc = this.LabelItem.extend(item, {connection: this.connection});
+        break;
+      }
+
+      return rc;
+    }
+  };
+}());
 
 /**
  * Namespace for directory related services.

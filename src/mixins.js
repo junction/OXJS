@@ -171,14 +171,14 @@ OX.Mixins.CallLabeler = function () {
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
 OX.Mixins.Subscribable = function () {
-  function getURI () {
+  function getURI() {
     if (arguments.callee._cached === undefined) {
       arguments.callee._cached = OX.URI.parse(this.pubSubURI);
     }
     return arguments.callee._cached;
   };
 
-  function packetType (element) {
+  function packetType(element) {
     switch (element.tagName) {
     case 'subscription':
       return element.getAttribute('subscription');
@@ -192,7 +192,32 @@ OX.Mixins.Subscribable = function () {
     }
   }
 
-  function fireEvent (type, packet) {
+  function convertItems(document) {
+    /*
+     * TODO: Without XPath we're taking some schema risks
+     * here. Really we only want `/iq/pubsub/items/item'
+     * nodes. Since we can't do that easily, just grab any `items'
+     * elements and pass any immediate descendants named `item' to
+     * itemFromElement.
+     */
+    var rc    = [],
+        items = document.getElementsByTagName('items') || [];
+
+    // Grab the first `items' node found.
+    items = items[0];
+    if (items && items.childNodes) {
+      var children = items.childNodes;
+      for (var i = 0, len = children.length; i < len; i++) {
+        if (children[i].tagName && children[i].tagName === 'item') {
+          rc.push(this.itemFromElement(children[i]));
+        }
+      }
+    }
+
+    return rc;
+  }
+
+  function fireEvent(type, packet) {
     switch (type) {
     case 'subscribed':
       if (this._subscriptionHandlers.onSubscribed)
@@ -203,8 +228,11 @@ OX.Mixins.Subscribable = function () {
         this._subscriptionHandlers.onPending('XXX - requested', 'XXX - final');
       break;
     case 'publish':
-      if (this._subscriptionHandlers.onPublish)
-        this._subscriptionHandlers.onPublish('XXX - item');
+      if (this._subscriptionHandlers.onPublish) {
+        var items = convertItems.call(this, packet.getDoc());
+        for (var i = 0, len = items.length; i < len; i++)
+          this._subscriptionHandlers.onPublish(items[i]);
+      }
       break;
     case 'retract':
       if (this._subscriptionHandlers.onRetract)
@@ -213,7 +241,7 @@ OX.Mixins.Subscribable = function () {
     }
   }
 
-  function jidHandler (packet) {
+  function jidHandler(packet) {
     var event = packet.getDoc().getElementsByTagName('event')[0];
     if (!event)
       return;
@@ -221,7 +249,7 @@ OX.Mixins.Subscribable = function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
-  function subscriptionHandler (packet, node, callbacks, origNode, redirects) {
+  function subscriptionHandler(packet, node, callbacks, origNode, redirects) {
     callbacks = callbacks || {};
     redirects = redirects || 0;
 
@@ -257,7 +285,7 @@ OX.Mixins.Subscribable = function () {
     }
   }
 
-  function getItemsHandler (packet, callbacks) {
+  function getItemsHandler(packet, callbacks) {
     callbacks = callbacks || {};
 
     if (!packet)
@@ -269,13 +297,7 @@ OX.Mixins.Subscribable = function () {
       }
     } else {
       if (callbacks.onSuccess) {
-        var items = [];
-        var psItems = packet.getDoc().getElementsByTagName('items');
-
-        for (var i = 0, len = psItems.length; i < len; i++) {
-          items.push(this.itemFromElement(psItems[i]));
-        }
-        callbacks.onSuccess(items);
+        callbacks.onSuccess(convertItems.call(this, packet.getDoc()));
       }
     }
   }
