@@ -86,19 +86,54 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    'Active call item to tag is wrong.');
   },
 
-  testCreate: function () {
+  testCreateAPI: function() {
     var Assert = YAHOO.util.Assert;
-
     Assert.isFunction(this.ActiveCalls.create,
                       'ActiveCalls.create is not a function.');
 
-    this.ActiveCalls.create('to@example.com', 'from@example.com');
+  },
+
+  testCreateSuccess: function () {
+    var Assert = YAHOO.util.Assert,
+      successCalled = false,
+      response = OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" type="result" to="jid@foo.com" id="theid" ><command xmlns="http://jabber.org/protocol/commands" status="completed" node="create" sessionid="123aSessID" ><x xmlns="jabber:x:data" type="result" ><field type="fixed" var="call-id" ><value>123aCallID</value></field></x></command></iq>');
+
+    this.conn.addResponse(response);
+
+    var callbacks = {
+      onSuccess: function(packet) {
+        successCalled = true;
+        Assert.isObject(packet, "param to onSuccess is not an object");
+      }
+    };
+
+    this.ActiveCalls.create('to@example.com', 'from@example.com', callbacks);
+
+    Assert.areEqual(true, successCalled, "onSuccess was not called");
 
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
                      'create', {to:   'to@example.com',
                                 from: 'from@example.com'});
   },
 
+  testCreateErorr: function() {
+    var Assert = YAHOO.util.Assert,
+      errorCalled = false,
+      response = OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" type="error" xml:lang="en" to="erick!junctionnetworks.com@dashboard.onsip.com/erocksbox" id="abb0a" ><command xmlns="http://jabber.org/protocol/commands" node="create" sessionid="df9818099854adbecd803b6be17a1bd2" ><x xmlns="jabber:x:data" type="submit" ><field type="text-single" var="from" ><value>foo</value></field><field type="text-single" var="to" ><value>bar</value></field></x></command><error type="modify" code="400" ><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/><text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">Validation Errors; Field \'from\' is in an invalid format with value: foo; Field \'to\' is in an invalid format with value: bar</text><bad-payload xmlns="http://jabber.org/protocol/commands"/></error></iq>');
+
+    this.conn.addResponse(response);
+
+    var callbacks = {
+      onError: function(packet) {
+        errorCalled = true;
+        Assert.isObject(packet, "param to onError is not an object");
+      }
+    };
+
+    this.ActiveCalls.create('bar', 'foo', callbacks);
+
+    Assert.areEqual(true, errorCalled, "onError was not called");
+  },
 
   testHangup: function () {
     var Assert = YAHOO.util.Assert;

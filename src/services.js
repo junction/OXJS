@@ -196,7 +196,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
         attrs['toTag'] = getFirstNodeValue(node);
         break;
       }
-    } // for
+    } // for(i < childNodes.length)
 
     return this.Item.extend(attrs);
   },
@@ -204,11 +204,49 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
   /**
    * Create a new call.
    *
+   * @function
    * @param {String} to the SIP address to terminate the call at
    * @param {String} from the SIP address to originate the call from
-   * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+   * @param {Object} [cb] An object supplying callback functions for 'onSuccess', and 'onError'.
    */
-  create: function (to, from) {}
+  create: function() {
+    /**
+     * @private
+     */
+    var getCreateURI = function() {
+      if (arguments.callee._cached === undefined) {
+        arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.create);
+      }
+      return arguments.callee._cached;
+    };
+
+    return function (to, from, cb) {
+      var uri = getCreateURI(),
+        xData = OX.XMPP.XDataForm.create({type: 'submit'});
+        cmd = OX.XMPP.Command.create({node: uri.queryParam('node')}),
+        iq = OX.XMPP.IQ.create({to: uri.path, type: 'set'});
+
+      iq.addChild(cmd);
+      cmd.addChild(xData);
+      xData.addField('to', to);
+      xData.addField('from', from);
+
+      cb = cb || {};
+
+      this.connection.send(iq.toString(), function(packet) {
+        if(!packet) return;
+
+        console.log(packet);
+
+        if(packet.getType() === 'error' && cb.onError && cb.onError.constructor == Function) {
+          cb.onError(packet);
+        } else if(cb.onSuccess && cb.onSuccess.constructor == Function) {
+          cb.onSuccess(packet);
+        }
+      }, []);
+
+    };
+  }()
 });
 
 /**
