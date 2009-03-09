@@ -37,6 +37,7 @@
     <div id="logged_in_pane" style="display: none;">
 
       <div>
+        <div>Your are logged in as: <em id="logged_in_as"></em></div>
         <input type="submit" onclick="DemoApp.JSJaC.quit();" value="Logout"/>
       </div>
 
@@ -51,7 +52,7 @@
           <h3>Commands</h3>
           <div class="command authenticate-plain">
             <h4>authenticate-plain</h4>
-            <form onsubmit="return DemoApp.authenticate($(this).attr('id'));" 
+            <form onsubmit="DemoApp.OX.authenticate($(this).attr('id')); return false;" 
                   id="auth_xmpp_onsip_com-commands-authenticate-plain"
                   action="#">
               <table>
@@ -72,7 +73,7 @@
           <h3>Commands</h3>
           <div class="command create">
             <h4>Create</h4>
-            <form onsubmit="return DemoApp.createCall(this);"
+            <form onsubmit="return DemoApp.OX.createCall(this);"
                   id="active-calls_xmpp_onsip_com-commands-create"
                   action="#">
               <table>
@@ -85,7 +86,7 @@
           </div>
           <div class="command terminate">
             <h4>Terminate</h4>
-            <form onsubmit="return DemoApp.terminateCall(this);"
+            <form onsubmit="return DemoApp.OX.terminateCall(this);"
                   id="active-calls_xmpp_onsip_com-commands-terminate"
                   action="#">
               <table>
@@ -100,7 +101,7 @@
 
         <div class="pubsub">
           <h3>PubSub</h3>
-          <form onsubmit="return DemoApp.subscribeActiveCalls(this);"
+          <form onsubmit="return DemoApp.OX.subscribeActiveCalls(this);"
                 id="active-calls_xmpp_onsip_com-pubsub-subscribe"
                 action="#">
             <table>

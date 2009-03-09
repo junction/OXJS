@@ -2,6 +2,8 @@ DemoApp = {};
 
 DemoApp.OX = function() {
 
+  con: undefined;
+
   /** private **/
   var _getFormValue = function(formID, inputName) {
     return $('form#' + formID + ' input[name=' + inputName + ']').val();
@@ -13,12 +15,34 @@ DemoApp.OX = function() {
 
   /** public **/
   return {
+    setup: function(jsjacCon) {
+
+      var adapter = OX.ConnectionAdapter.extend({
+        jid: jsjacCon.jid,
+
+        registerHandler: function(event, handler) {
+          return jsjacCon.registerHandler(event, handler);
+        },
+
+        unregisterHandler: function(event, handler) {
+          return jsjacCon.unregisterHandler(event, handler);
+        },
+
+        send: function(xml, cb, args) {
+          return jsjacCon._sendRaw(xml,cb,args);
+        }
+      });
+
+      this.con = OX.Connection.extend({connection: adapter});
+      this.con.initConnection();
+    },
+
     authenticate: function(formID) {
       var sip = _getFormValue(formID, 'sip-address'),
         pw= _getFormValue(formID, 'password'),
         jid= _getFormValue(formID, 'jid');
 
-      _addOutput('#auth_xmpp_onsip_com .commands .output', "authd for " + sip + " as " + jid);
+      this.con.Auth.authenticatePlain(sip, pw, jid);
 
       return false;
     },
@@ -35,6 +59,7 @@ DemoApp.OX = function() {
 }();
 
 DemoApp.JSJaC = function() {
+  /** private **/
   var outputMessage = function(xml,outbound) {
     var sent = (!!outbound) ? 'outbound' : 'inbound',
       msg = "<div class='msg %s'>" + xml + "</div>";
@@ -42,14 +67,15 @@ DemoApp.JSJaC = function() {
     msg = msg.replace(/%s/, sent);
 
     $('#message_pane_inner').append(msg);
-    $('#message_pane_inner .msg:last')[0].scrollIntoView();
   }
 
   var handlePacketIn = function(aPacket) {
+    console.log(aPacket);
     outputMessage(aPacket.xml().htmlEnc());
   }
 
   var handlePacketOut = function(aPacket) {
+    console.log(aPacket);
     outputMessage(aPacket.xml().htmlEnc(), true);
   }
 
@@ -84,6 +110,7 @@ DemoApp.JSJaC = function() {
 
     document.getElementById('err').innerHTML = '';
   
+    $('#logged_in_as').text(DemoApp.JSJaC.con.jid);
     DemoApp.JSJaC.con.send(new JSJaCPresence());
   }
   
@@ -117,8 +144,10 @@ DemoApp.JSJaC = function() {
     con.registerHandler('packet_out', handlePacketOut);
     
     con.registerIQGet('query', NS_TIME, handleIqTime);
+    
+    DemoApp.OX.setup(con);
   }
-  
+
   var sendMsg = function(aForm) {
     if (aForm.msg.value == '' || aForm.sendTo.value == '')
       return false;
@@ -144,8 +173,9 @@ DemoApp.JSJaC = function() {
   }
     
   return {
+    /** public **/
+
     con: undefined,
-    ox: undefined,
 
     doLogin: function(aForm) {
       document.getElementById('err').innerHTML = ''; // reset
