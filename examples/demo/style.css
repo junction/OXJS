@@ -1,0 +1,29 @@
+#logged_in_pane { 
+  position: relative;
+}
+
+#message_pane {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  width: 450px;
+  height: 500px;
+  padding: 1ex;
+  border: 1px solid #999;
+  background-color: #eee;
+
+  overflow: auto;
+}
+
+#message_pane .msg { 
+  position: relative;
+  margin-top: 1ex;
+}
+
+#message_pane .msg.outbound { 
+  color: red;
+}
+
+#message_pane .msg.inbound { 
+  color: blue;
+}
