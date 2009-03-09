@@ -10,7 +10,7 @@
  * @example
  * var conn = new JSJaCConnection();
  * var adapter = OX.ConnectionAdapter.extend({
- *   jid = 'jill@example.com',
+ *   jid: conn.jid,
  *
  *   registerHandler: function (event, handler) {
  *     return conn.registerHandler(event, handler);
