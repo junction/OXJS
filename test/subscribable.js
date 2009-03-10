@@ -190,6 +190,19 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Was not pending trying to subscribe.');
   },
 
+  testFiresPendingWithIQNoCallbacks: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var pendingFlag = false;
+    this.Subscribable.registerHandler('onPending', function () {
+      pendingFlag = true;
+    });
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="pending"/></pubsub></iq>'));
+    this.Subscribable.subscribe('/');
+    Assert.areSame(true, pendingFlag,
+                   'Was not pending trying to subscribe.');
+  },
+
   testFiresSubscribedWithIQ: function () {
     var Assert = YAHOO.util.Assert;
 
@@ -205,6 +218,19 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     });
     Assert.areSame(true, successFlag,
                    'Was not successful trying to subscribe.');
+    Assert.areSame(true, subscribedFlag,
+                   'Was not subscribed trying to subscribe.');
+  },
+
+  testFiresSubscribedWithIQNoCallbacks: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var subscribedFlag = false;
+    this.Subscribable.registerHandler('onSubscribed', function () {
+      subscribedFlag = true;
+    });
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));
+    this.Subscribable.subscribe('/');
     Assert.areSame(true, subscribedFlag,
                    'Was not subscribed trying to subscribe.');
   },
