@@ -67,7 +67,7 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
       if (packet.getType() === 'error' && callbacks.onError) {
         callbacks.onError(packet);
       } else if (callbacks.onSuccess) {
-        callbacks.onSuccess();
+        callbacks.onSuccess(packet);
       }
     }, []);
   }

@@ -84,24 +84,11 @@
             </form>
             <ul class="output create"></ul>
           </div>
-          <div class="command terminate">
-            <h4>Terminate</h4>
-            <form onsubmit="return DemoApp.OX.terminateCall(this);"
-                  id="active-calls_xmpp_onsip_com-commands-terminate"
-                  action="#">
-              <table>
-                <tr><td>From:</td><td><input name="from" type="text"></input></td></tr>
-                <tr><td>To:</td><td><input name="to" type="text"></input></td></tr>
-                <tr><td><input type="submit" value="Submit"></input></td></tr>
-              </table>
-            </form>
-            <ul class="output terminate"></ul>
-          </div>
         </div>
 
         <div class="pubsub">
           <h3>PubSub</h3>
-          <form onsubmit="return DemoApp.OX.subscribeActiveCalls(this);"
+          <form onsubmit="DemoApp.OX.subscribeActiveCalls($(this).attr('id')); return false;"
                 id="active-calls_xmpp_onsip_com-pubsub-subscribe"
                 action="#">
             <table>

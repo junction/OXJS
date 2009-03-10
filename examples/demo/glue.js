@@ -30,41 +30,43 @@ DemoApp.OX = function() {
 
         send: function(xml, cb, args) {
           var wrapped = function() {
-            var doc = arguments[0],
-              newArgs = [],
-              packetAdapter = {
-                ptype: doc.firstChild.getAttribue('type').value,
-                from: doc.firstChild.getAttribute('from').value,
-                to: doc.firstChild.getAttribute('to').value,
-                type: doc.firstChild.getAttribute('type').value,
+            var iqElement = arguments[0],
+              newArgs = [];
 
-                getFrom: function() {
-                  return this.from;
-                },
+            var packetAdapter = {
+              doc: iqElement,
+              ptype: iqElement.getAttribute('type'),
+              from: iqElement.getAttribute('from'),
+              to: iqElement.getAttribute('to'),
+              type: iqElement.getAttribute('type'),
 
-                getType: function() {
-                  return this.type;
-                },
-
-                getTo: function() {
-                  return this.to;
-                }
-              };
+              getFrom: function() { return this.from; },
+              getType: function() { return this.type; },
+              getTo: function() { return this.to; },
+              getDoc: function() { return this.doc; }
+            };
 
             newArgs.push(packetAdapter);
             for(var i=1,len=arguments.length;i<len;i++) {
               newArgs.push(arguments[i]);
             }
 
+            DemoApp.JSJaC.outputMessage(iqElement.xml.htmlEnc());
             return cb.apply(cb, newArgs);
           };
 
+          DemoApp.JSJaC.outputMessage(xml.htmlEnc(),true);
           return jsjacCon._sendRaw(xml,wrapped,args);
         }
       });
 
       this.con = OX.Connection.extend({connection: adapter});
       this.con.initConnection();
+
+      this.con.ActiveCalls.registerSubscriptionHandlers();
+      this.con.ActiveCalls.registerHandler('onPublish', this._handleActiveCallPublish);
+      this.con.ActiveCalls.registerHandler('onRetract', this._handleActiveCallRetract);
+      this.con.ActiveCalls.registerHandler('onSubscribe', this._handleActiveCallSubscribe);
     },
 
     authenticate: function(formID) {
@@ -72,7 +74,17 @@ DemoApp.OX = function() {
         pw= _getFormValue(formID, 'password'),
         jid= _getFormValue(formID, 'jid');
 
-      this.con.Auth.authenticatePlain(sip, pw, jid);
+      var onsuccess = function(packet) {
+        var f = packet.doc.getElementsByTagName('x')[0].getElementsByTagName('field')[0];
+        var expiry = f.getElementsByTagName('value')[0].firstChild.nodeValue;
+        _addOutput('#auth_xmpp_onsip_com .output', 'Authorized until: ' + expiry);
+      };
+
+      var onerror = function(packet) {
+        alert('ARRGGGGG!!!!!');
+      };
+
+      this.con.Auth.authenticatePlain(sip, pw, jid, {onSuccess: onsuccess, onError: onerror});
 
       return false;
     },
@@ -81,32 +93,80 @@ DemoApp.OX = function() {
       var to = _getFormValue(formID,'to'),
         from = _getFormValue(formID,'from');
 
-      alert("to: " + to + " from: " + from);
+      var onsuccess = function(packet) {
+      };
+
+      var onerror = function(packet) {
+        console.log('boooooo');
+      };
+
+      this.con.ActiveCalls.create(to, from, {onSuccess: onsuccess, onError: onerror});
 
       return false;
+    },
+
+    subscribeActiveCalls: function(formID) {
+      var node = _getFormValue(formID,'node');
+
+      var onsuccess = function(requestedURI, finalURI) {
+        _addOutput('#active-calls_xmpp_onsip_com-pubsub-subscribe .output.subscriptions', finalURI);
+      }
+      var onerror = function(requestedURI, finalURI) {
+        _addOutput('#active-calls_xmpp_onsip_com-pubsub-subscribe .output.subscriptions', 'failed to subscribe to: ' + finalURI);
+      }
+
+      this.con.ActiveCalls.subscribe(node, {onSuccess: onsuccess, onError: onerror});
+    },
+
+    _handleActiveCallRetract: function(itemURI) {
+      console.log(itemURI);
+    },
+
+    _handleActiveCallPublish: function(item) {
+      console.log('handling an item publish');
+      var itemID = item.callID.replace('.', '');
+      var html = "<div id='%s'><h4>From %s; To %s</h4><ul><li>State: %s</li><li>From Tag: %s</li><li>To Tag: %s</li></ul><input type='submit' value='Hangup'/></div>";
+      html = html
+        .replace(/%s/,itemID)
+        .replace(/%s/,item.uacAOR)
+        .replace(/%s/,item.uasAOR)
+        .replace(/%s/,item.dialogState)
+        .replace(/%s/,item.fromTag)
+        .replace(/%s/,item.toTag);
+
+      console.log(html);
+      
+      var el = $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID);
+      if (el.length && el.length > 0) {
+        el.html(html);
+      } else {
+        _addOutput('#active-calls_xmpp_onsip_com .pubsub .events', html);
+      }
+
+      console.log($('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID + ' input'))
+      $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID + ' input').click(function() {
+                                                                                           console.log('doing a hangup');
+                                                                                           item.hangup();
+                                                                                         });
+      
+    },
+
+    _handleActiveCallSubscribe: function(item) {
+      console.log('handling a subscription');
+      console.log(item);
     }
+
   };
 }();
 
 DemoApp.JSJaC = function() {
   /** private **/
-  var outputMessage = function(xml,outbound) {
-    var sent = (!!outbound) ? 'outbound' : 'inbound',
-      msg = "<div class='msg %s'>" + xml + "</div>";
-
-    msg = msg.replace(/%s/, sent);
-
-    $('#message_pane_inner').append(msg);
-  }
-
   var handlePacketIn = function(aPacket) {
-    console.log(aPacket);
-    outputMessage(aPacket.xml().htmlEnc());
+    DemoApp.JSJaC.outputMessage(aPacket.xml().htmlEnc());
   }
 
   var handlePacketOut = function(aPacket) {
-    console.log(aPacket);
-    outputMessage(aPacket.xml().htmlEnc(), true);
+    DemoApp.JSJaC.outputMessage(aPacket.xml().htmlEnc(), true);
   }
 
   var handleIQ = function(aIQ) {
@@ -174,8 +234,6 @@ DemoApp.JSJaC = function() {
     con.registerHandler('packet_out', handlePacketOut);
 
     con.registerIQGet('query', NS_TIME, handleIqTime);
-
-    DemoApp.OX.setup(con);
   }
 
   var sendMsg = function(aForm) {
@@ -204,6 +262,14 @@ DemoApp.JSJaC = function() {
 
   return {
     /** public **/
+    outputMessage: function(xml,outbound) {
+      var sent = (!!outbound) ? 'outbound' : 'inbound',
+      msg = "<div class='msg %s'>" + xml + "</div>";
+
+      msg = msg.replace(/%s/, sent);
+
+      $('#message_pane_inner').append(msg);
+    },
 
     con: undefined,
 
@@ -231,6 +297,7 @@ DemoApp.JSJaC = function() {
         oArgs.pass = aForm.password.value;
         oArgs.register = false;
         this.con.connect(oArgs);
+        DemoApp.OX.setup(this.con);
       } catch (e) {
         document.getElementById('err').innerHTML = e.toString();
       } finally {
@@ -270,7 +337,7 @@ DemoApp.JSJaC = function() {
         setupCon(this.con);
 
         if (this.con.resume()) {
-
+          DemoApp.OX.setup(this.con);
           document.getElementById('logged_out_pane').style.display = 'none';
           document.getElementById('err').innerHTML = '';
 

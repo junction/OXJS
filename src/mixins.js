@@ -47,7 +47,7 @@ OX.Mixins.CallDialog = function () {
 
       iq.to(getTransferURI().path);
       iq.type('set');
-      cmd.node('transfer');
+      cmd.node(getTransferURI().queryParam('node'));
       xData.type('submit');
       xData.addField('call-id',    this.callID);
       xData.addField('from-tag',   this.fromTag);
@@ -79,13 +79,14 @@ OX.Mixins.CallDialog = function () {
     hangup: function (callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
-          xData = OX.XMPP.XDataForm.extend();
+          xData = OX.XMPP.XDataForm.extend(),
+          uri   = getHangupURI();
 
       callbacks = callbacks || {};
 
-      iq.to(getHangupURI().path);
+      iq.to(uri.path);
       iq.type('set');
-      cmd.node('hangup');
+      cmd.node(uri.queryParam('node'));
       xData.type('submit');
       xData.addField('call-id',  this.callID);
       xData.addField('from-tag', this.fromTag);
