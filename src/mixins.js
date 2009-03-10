@@ -221,8 +221,8 @@ OX.Mixins.Subscribable = function () {
   function fireEvent(type, packet) {
     function subscriptionURI() {
       var doc    = packet.getDoc(),
-          from   = doc.firstChild.getAttribute('from'),
-          sub    = doc.firstChild.firstChild.firstChild,
+          from   = doc.getAttribute('from'),
+          sub    = doc.firstChild.firstChild,
           node   = sub.getAttribute('node');
 
       return OX.URI.fromObject({path:   from, query: ';node=' + node});
@@ -230,8 +230,8 @@ OX.Mixins.Subscribable = function () {
 
     function retractURI() {
       var doc    = packet.getDoc(),
-          from   = doc.firstChild.getAttribute('from'),
-          items  = doc.firstChild.firstChild.firstChild,
+          from   = doc.getAttribute('from'),
+          items  = doc.firstChild.firstChild,
           node   = items.getAttribute('node'),
           itemID = items.firstChild.getAttribute('id');
 
