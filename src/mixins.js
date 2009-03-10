@@ -8,7 +8,8 @@ OX.Mixins = {};
  * CallDialog mixin.
  *
  * @namespace
- * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
+ *
+ * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires callID property on receiving object.
  * @requires fromTag property on receiving object.
  * @requires toTag property on receiving object.
@@ -112,7 +113,7 @@ OX.Mixins.CallDialog = function () {
  * CallLabeler mixin.
  *
  * @namespace
- * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
+ * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires callID property on receiving object.
  */
 OX.Mixins.CallLabeler = function () {
@@ -167,7 +168,7 @@ OX.Mixins.CallLabeler = function () {
  * Subscribable mixin.
  *
  * @namespace
- * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
+ * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires pubSubURI The URI of the PubSub service.
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
@@ -221,8 +222,9 @@ OX.Mixins.Subscribable = function () {
   function fireEvent(type, packet) {
     function subscriptionURI() {
       var doc    = packet.getDoc(),
-          from   = doc.firstChild.getAttribute('from'),
-          sub    = doc.firstChild.firstChild.firstChild,
+          elt    = doc.getAttribute ? doc : doc.firstChild,
+          from   = elt.getAttribute('from'),
+          sub    = elt.firstChild.firstChild,
           node   = sub.getAttribute('node');
 
       return OX.URI.fromObject({path:   from, query: ';node=' + node});
@@ -230,8 +232,9 @@ OX.Mixins.Subscribable = function () {
 
     function retractURI() {
       var doc    = packet.getDoc(),
-          from   = doc.firstChild.getAttribute('from'),
-          items  = doc.firstChild.firstChild.firstChild,
+          elt    = doc.getAttribute ? doc : doc.firstChild,
+          from   = elt.getAttribute('from'),
+          items  = elt.firstChild.firstChild,
           node   = items.getAttribute('node'),
           itemID = items.firstChild.getAttribute('id');
 
@@ -303,11 +306,12 @@ OX.Mixins.Subscribable = function () {
       if (callbacks.onSuccess) {
         origNode = origNode || node;
         callbacks.onSuccess(reqURI, finalURI, packet);
+      }
 
-        var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0];
-        if (pubSub) {
-          fireEvent.call(this, packetType(pubSub.firstChild), packet);
-        }
+      var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0] || {},
+          subscription = pubSub.firstChild;
+      if (subscription && subscription.tagName === 'subscription') {
+        fireEvent.call(this, packetType(subscription), packet);
       }
     }
   }
