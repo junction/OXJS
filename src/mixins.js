@@ -304,9 +304,10 @@ OX.Mixins.Subscribable = function () {
         origNode = origNode || node;
         callbacks.onSuccess(reqURI, finalURI, packet);
 
-        var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0];
-        if (pubSub) {
-          fireEvent.call(this, packetType(pubSub.firstChild), packet);
+        var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0] || {},
+            subscription = pubSub.firstChild;
+        if (subscription && subscription.tagName === 'subscription') {
+          fireEvent.call(this, packetType(subscription), packet);
         }
       }
     }
