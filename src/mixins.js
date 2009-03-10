@@ -8,7 +8,8 @@ OX.Mixins = {};
  * CallDialog mixin.
  *
  * @namespace
- * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
+ *
+ * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires callID property on receiving object.
  * @requires fromTag property on receiving object.
  * @requires toTag property on receiving object.
@@ -112,7 +113,7 @@ OX.Mixins.CallDialog = function () {
  * CallLabeler mixin.
  *
  * @namespace
- * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
+ * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires callID property on receiving object.
  */
 OX.Mixins.CallLabeler = function () {
@@ -167,7 +168,7 @@ OX.Mixins.CallLabeler = function () {
  * Subscribable mixin.
  *
  * @namespace
- * @requires connection A property which is an OX.ConnectionAdapter object on receiving object.
+ * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires pubSubURI The URI of the PubSub service.
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
