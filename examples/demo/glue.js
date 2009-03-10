@@ -154,6 +154,7 @@ DemoApp.OX = function() {
     _handleActiveCallSubscribe: function(uri) {
       console.log('handling an asynchronous subscription message');
       console.log(uri);
+      _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', uri.toString());
     },
 
     _handleActiveCallPending: function(uri) {
