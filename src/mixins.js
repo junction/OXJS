@@ -303,12 +303,12 @@ OX.Mixins.Subscribable = function () {
       if (callbacks.onSuccess) {
         origNode = origNode || node;
         callbacks.onSuccess(reqURI, finalURI, packet);
+      }
 
-        var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0] || {},
-            subscription = pubSub.firstChild;
-        if (subscription && subscription.tagName === 'subscription') {
-          fireEvent.call(this, packetType(subscription), packet);
-        }
+      var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0] || {},
+          subscription = pubSub.firstChild;
+      if (subscription && subscription.tagName === 'subscription') {
+        fireEvent.call(this, packetType(subscription), packet);
       }
     }
   }
