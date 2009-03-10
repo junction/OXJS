@@ -178,7 +178,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.Subscribable.registerHandler('onPending', function () {
       pendingFlag = true;
     });
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="pending"/></pubsub></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq type="result" from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="pending"/></pubsub></iq>'));
     this.Subscribable.subscribe('/', {
       onSuccess: function (requestedURI, finalURI, packet) {
         successFlag = true;

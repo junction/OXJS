@@ -110,17 +110,16 @@ DemoApp.OX = function() {
 
     subscribeActiveCalls: function(formID) {
       var node = _getFormValue(formID,'node');
-
-      var onsuccess = function(reqURI, finalURI, packet) {
-        console.log('called on success for subscription to:' + finalURI);
-        _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', finalURI);
+      var cb = {
+        onSuccess: function(reqURI, finalURI, packet) {
+          console.log('called onSuccess for subscription to:' + finalURI.toString());
+        },
+        onError:  function(reqURI, finalURI, packet) {
+          console.log('called onError for subscription to:' + finalURI.toString());
+        }
       }
-      var onerror = function(reqURI, finalURI, packet) {
-        console.log('called on error for subscription to:' + finalURI);
-        _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', 'failed to subscribe to: ' + finalURI);
-      }
 
-      this.con.ActiveCalls.subscribe(node, {onSuccess: onsuccess, onError: onerror});
+      this.con.ActiveCalls.subscribe(node, cb);
     },
 
     _handleActiveCallRetract: function(itemURI) {
