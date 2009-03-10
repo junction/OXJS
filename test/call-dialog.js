@@ -68,9 +68,9 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
                       'CallDialog.hangup is not a function.');
     this.CallDialog.hangup();
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
-                     'hangup', {'call-id':  'call-id',
-                                'to-tag':   'to-tag',
-                                'from-tag': 'from-tag'});
+                     'terminate', {'call-id':  'call-id',
+                                   'to-tag':   'to-tag',
+                                   'from-tag': 'from-tag'});
   },
 
   testHangupSuccess: function () {

@@ -66,7 +66,8 @@ DemoApp.OX = function() {
       this.con.ActiveCalls.registerSubscriptionHandlers();
       this.con.ActiveCalls.registerHandler('onPublish', this._handleActiveCallPublish);
       this.con.ActiveCalls.registerHandler('onRetract', this._handleActiveCallRetract);
-      this.con.ActiveCalls.registerHandler('onSubscribe', this._handleActiveCallSubscribe);
+      this.con.ActiveCalls.registerHandler('onPending', this._handleActiveCallPending);
+      this.con.ActiveCalls.registerHandler('onSubscribed', this._handleActiveCallSubscribe);
     },
 
     authenticate: function(formID) {
@@ -110,11 +111,11 @@ DemoApp.OX = function() {
     subscribeActiveCalls: function(formID) {
       var node = _getFormValue(formID,'node');
 
-      var onsuccess = function(finalURI) {
+      var onsuccess = function(reqURI, finalURI, packet) {
         console.log('called on success for subscription to:' + finalURI);
         _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', finalURI);
       }
-      var onerror = function(finalURI) {
+      var onerror = function(reqURI, finalURI, packet) {
         console.log('called on error for subscription to:' + finalURI);
         _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', 'failed to subscribe to: ' + finalURI);
       }
@@ -152,6 +153,11 @@ DemoApp.OX = function() {
 
     _handleActiveCallSubscribe: function(uri) {
       console.log('handling an asynchronous subscription message');
+      console.log(uri);
+    },
+
+    _handleActiveCallPending: function(uri) {
+      console.log('handling a pending response');
       console.log(uri);
     }
 
