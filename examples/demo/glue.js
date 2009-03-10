@@ -77,7 +77,8 @@ DemoApp.OX = function() {
       var onsuccess = function(packet) {
         var f = packet.doc.getElementsByTagName('x')[0].getElementsByTagName('field')[0];
         var expiry = f.getElementsByTagName('value')[0].firstChild.nodeValue;
-        _addOutput('#auth_xmpp_onsip_com .output', 'Authorized until: ' + expiry);
+        var note = packet.doc.getElementsByTagName('command')[0].getElementsByTagName('note')[0];
+        _addOutput('#auth_xmpp_onsip_com .output', note.firstChild.nodeValue + ', Authorized until: ' + expiry);
       };
 
       var onerror = function(packet) {
@@ -94,6 +95,7 @@ DemoApp.OX = function() {
         from = _getFormValue(formID,'from');
 
       var onsuccess = function(packet) {
+        console.log('successful call');
       };
 
       var onerror = function(packet) {
@@ -108,18 +110,21 @@ DemoApp.OX = function() {
     subscribeActiveCalls: function(formID) {
       var node = _getFormValue(formID,'node');
 
-      var onsuccess = function(requestedURI, finalURI) {
-        _addOutput('#active-calls_xmpp_onsip_com-pubsub-subscribe .output.subscriptions', finalURI);
+      var onsuccess = function(finalURI) {
+        console.log('called on success for subscription to:' + finalURI);
+        _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', finalURI);
       }
-      var onerror = function(requestedURI, finalURI) {
-        _addOutput('#active-calls_xmpp_onsip_com-pubsub-subscribe .output.subscriptions', 'failed to subscribe to: ' + finalURI);
+      var onerror = function(finalURI) {
+        console.log('called on error for subscription to:' + finalURI);
+        _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', 'failed to subscribe to: ' + finalURI);
       }
 
       this.con.ActiveCalls.subscribe(node, {onSuccess: onsuccess, onError: onerror});
     },
 
     _handleActiveCallRetract: function(itemURI) {
-      console.log(itemURI);
+      var itemID = itemURI.queryParam('item').replace(/(^.*\:)/,'').replace('.','');
+      $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID).parent().remove();
     },
 
     _handleActiveCallPublish: function(item) {
@@ -134,8 +139,6 @@ DemoApp.OX = function() {
         .replace(/%s/,item.fromTag)
         .replace(/%s/,item.toTag);
 
-      console.log(html);
-      
       var el = $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID);
       if (el.length && el.length > 0) {
         el.html(html);
@@ -143,17 +146,13 @@ DemoApp.OX = function() {
         _addOutput('#active-calls_xmpp_onsip_com .pubsub .events', html);
       }
 
-      console.log($('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID + ' input'))
-      $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID + ' input').click(function() {
-                                                                                           console.log('doing a hangup');
-                                                                                           item.hangup();
-                                                                                         });
+      $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID + ' input').click(function() { item.hangup(); });
       
     },
 
-    _handleActiveCallSubscribe: function(item) {
-      console.log('handling a subscription');
-      console.log(item);
+    _handleActiveCallSubscribe: function(uri) {
+      console.log('handling an asynchronous subscription message');
+      console.log(uri);
     }
 
   };

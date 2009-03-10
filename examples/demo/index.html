@@ -2,7 +2,7 @@
           "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title>OXJS Demo</title>
+    <title>OXJS Test Client</title>
 
     <!-- Load the OXJS library. -->
     <script src="../../src/ox.js"></script>
@@ -16,101 +16,111 @@
   </head>
 
   <body>
-    <h1>OXJS Demo</h1>
+    <div id="page">
+      <h1>OXJS Test Client</h1>
 
-    <div id="err"></div>
+      <div id="err"></div>
 
-    <div id="logged_out_pane">
-      <h2>Login</h2>
-      <form name="loginForm" onsubmit="return DemoApp.JSJaC.doLogin(this);" action="#">
-        <input type="hidden" name="server" id="server" value="dashboard.onsip.com"/>
-        <input type="hidden" name="http_base" id="http_base" value="/http-bind"/>
+      <div id="logged_out_pane">
+        <h2>Dashboard Login</h2>
+        <form name="loginForm" onsubmit="return DemoApp.JSJaC.doLogin(this);" action="#">
+          <input type="hidden" name="server" id="server" value="dashboard.onsip.com"/>
+          <input type="hidden" name="http_base" id="http_base" value="/http-bind"/>
 
-        <table>
-          <tr><th><label for="username">SIP Address</label></th><td><input type="text" name="username" id="username"/></td></tr>
-          <tr><th><label for="password">Password</label></th><td><input type="password" name="password" id="password"/></td></tr>
-          <tr><td></td><td><input type="submit" value="Login"></td></tr>
-        </table>
-      </form>
-    </div> <!-- #logged_out_pane -->
+          <table>
+            <tr><th><label for="username">SIP Address</label></th><td><input type="text" name="username" id="username"/></td></tr>
+            <tr><th><label for="password">Password</label></th><td><input type="password" name="password" id="password"/></td></tr>
+            <tr><td></td><td><input type="submit" value="Login"></td></tr>
+          </table>
+        </form>
+      </div> <!-- #logged_out_pane -->
 
-    <div id="logged_in_pane" style="display: none;">
+      <div id="logged_in_pane" style="display: none;">
 
-      <div>
-        <div>Your are logged in as: <em id="logged_in_as"></em></div>
-        <input type="submit" onclick="DemoApp.JSJaC.quit();" value="Logout"/>
-      </div>
-
-      <div id="message_pane">
-        <h2>Messages</h2>
-        <div id="message_pane_inner"></div>
-      </div>
-
-      <div id="auth_xmpp_onsip_com" class="service">
-        <h2>auth.xmpp.onsip.com</h2>
-        <div class="commands">
-          <h3>Commands</h3>
-          <div class="command authenticate-plain">
-            <h4>authenticate-plain</h4>
-            <form onsubmit="DemoApp.OX.authenticate($(this).attr('id')); return false;" 
-                  id="auth_xmpp_onsip_com-commands-authenticate-plain"
-                  action="#">
-              <table>
-                <tr><td>SIP Address:</td><td><input name="sip-address" type="text"></input></td></tr>
-                <tr><td>Password:</td><td><input name="password" type="password"></input></td></tr>
-                <tr><td>JID*:</td><td><input name="jid" type="text"></input></td></tr>
-                <tr><td><input type="submit" value="Submit"></input></td></tr>
-              </table>
-            </form>
-            <ul class="output"></ul>
-          </div>
+        <div>
+          <div>Your are logged in as: <em id="logged_in_as"></em></div>
+          <input type="submit" onclick="DemoApp.JSJaC.quit();" value="Logout"/>
         </div>
-      </div>
 
-      <div id="active-calls_xmpp_onsip_com" class="service">
-        <h2>active-calls.xmpp.onsip.com</h2>
-        <div class="commands">
-          <h3>Commands</h3>
-          <div class="command create">
-            <h4>Create</h4>
-            <form onsubmit="return DemoApp.OX.createCall(this);"
-                  id="active-calls_xmpp_onsip_com-commands-create"
-                  action="#">
-              <table>
-                <tr><td>From:</td><td><input name="from" type="text"></input></td></tr>
-                <tr><td>To:</td><td><input name="to" type="text"></input></td></tr>
-                <tr><td><input type="submit" value="Submit"></input></td></tr>
-              </table>
-            </form>
-            <ul class="output create"></ul>
+        <div id="message_pane">
+          <h2>XMPP Stanzas</h2>
+          <div id="message_pane_inner"></div>
+        </div>
+
+        <div id="auth_xmpp_onsip_com" class="service">
+          <h2>auth.xmpp.onsip.com</h2>
+          <div class="commands">
+            <h3><a href="http://wiki.junctionnetworks.com/docs/Auth_Component">Commands</a></h3>
+            <div class="command authenticate-plain">
+              <h4>Authenticate this JID for a SIP Address</h4>
+              <form onsubmit="DemoApp.OX.authenticate($(this).attr('id')); return false;" 
+                    id="auth_xmpp_onsip_com-commands-authenticate-plain"
+                    action="#">
+                <table>
+                  <tr><td>SIP Address:</td><td><input name="sip-address" type="text"></input></td></tr>
+                  <tr><td>Password:</td><td><input name="password" type="password"></input></td></tr>
+                  <tr><td>JID*:</td><td><input name="jid" type="text"></input></td></tr>
+                  <tr><td><input type="submit" value="Submit"></input></td></tr>
+                </table>
+              </form>
+              <ul class="output"></ul>
+            </div>
           </div>
         </div>
 
-        <div class="pubsub">
-          <h3>PubSub</h3>
-          <form onsubmit="DemoApp.OX.subscribeActiveCalls($(this).attr('id')); return false;"
-                id="active-calls_xmpp_onsip_com-pubsub-subscribe"
-                action="#">
-            <table>
-              <tr>
-                <td>Node:</td><td><input type="text" name="node"></input></td>
-              </tr>
-              <tr>
-                <td>JID:</td><td><input type="text" name="jid"></input></td>
-              </tr>
-              <tr><td><input type="submit" value="Submit"></input></td></tr>
-            </table>
-          </form>
+        <div id="active-calls_xmpp_onsip_com" class="service">
+          <h2>active-calls.xmpp.onsip.com</h2>
 
-          <h4>Subscriptions</h4>
-          <ul class="output subscriptions"></ul>
+          <div class="commands">
+            <h3><a href="http://wiki.junctionnetworks.com/docs/Active-Calls_Component">Commands</a></h3>
+            <div class="command create">
+              <h4>Create a Call</h4>
+              <form onsubmit="return DemoApp.OX.createCall(this);"
+                    id="active-calls_xmpp_onsip_com-commands-create"
+                    action="#">
+                <table>
+                  <tr><td>From:</td><td><input name="from" type="text"></input></td></tr>
+                  <tr><td>To:</td><td><input name="to" type="text"></input></td></tr>
+                  <tr><td><input type="submit" value="Submit"></input></td></tr>
+                </table>
+              </form>
+              <ul class="output create"></ul>
+            </div>
+          </div>
 
-          <h4>Events</h4>
-          <ul class="output events"></ul>
+          <div class="pubsub">
+            <h3><a href="http://wiki.junctionnetworks.com/docs/Active-Calls_Pubsub">Subscribe to Active Calls</a></h3>
+            <div>
+              Examples:
+              <ul class="example">
+                <li>/</li>
+                <li>/example.onsip.com</li>
+                <li>/me/enoch!example.onsip.com@dashboard.onsip.com</li>
+                <li>/me/enoch!example.onsip.com@dashboard.onsip.com/example.onsip.com</li>
+                <li>/example.onsip.com/enoch</li>
+              </ul>
+            </div>
+            <form onsubmit="DemoApp.OX.subscribeActiveCalls($(this).attr('id')); return false;"
+                  id="active-calls_xmpp_onsip_com-pubsub-subscribe"
+                  action="#">
+              <table>
+                <tr>
+                  <td>Node:</td><td><input type="text" name="node"></input></td>
+                </tr>
+                <tr><td><input type="submit" value="Submit"></input></td></tr>
+              </table>
+            </form>
+
+            <h4>Active Call Subscriptions</h4>
+            <ul class="output subscriptions"></ul>
+
+            <h4>Active Call Events</h4>
+            <ul class="output events"></ul>
+          </div>
+
         </div>
-      </div>
 
-    </div> <!-- #logged_in_pane -->
-
+      </div> <!-- #logged_in_pane -->
+    </div> <!-- #page -->
   </body>
 </html>

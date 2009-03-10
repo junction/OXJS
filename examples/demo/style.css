@@ -1,23 +1,63 @@
+*,body { 
+  margin: 0;
+  padding: 0;
+}
+
+body { 
+  font-family: helvetica, arial, sans-serif;
+  font-size: 11pt;
+}
+
+ul { 
+  margin: 1ex 0 1ex 2em;
+}
+
+h1 { margin: 25px 0; }
+h2 { margin: 20px 0; }
+h3 { margin: 15px 0; }
+h4,h5,h6 { margin: 10px 0; }
+
+input[type='text'],
+input[type='password'] {
+  width: 200px;
+}
+
+input { 
+  margin: 2px 0;
+}
+
+.example { 
+  font-family: courier;
+  font-size: 8pt;
+}
+
+#page { 
+  padding: 10px;
+}
+
 #logged_in_pane { 
   position: relative;
 }
 
 #message_pane {
-  position: absolute;
-  top: 0;
-  right: 10px;
-  width: 450px;
-  height: 500px;
+/*  position: absolute; */
+  float: right;
+/*  top: 0;
+  right: 10px; */
+  width: 500px;
+  height: 800px;
   padding: 1ex;
   border: 1px solid #999;
-  background-color: #eee;
-
+  background-color: #fafafa;
   overflow: auto;
 }
 
 #message_pane .msg { 
   position: relative;
-  margin-top: 1ex;
+  padding-top: 1ex;
+  margin-bottom: 1ex;
+  border-top: 1px solid #aaa;
+  
 }
 
 #message_pane .msg.outbound { 
