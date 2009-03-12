@@ -78,12 +78,12 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    *
    * @param {String} xml The XML String to send.
    * @param {Function} callback Called when a response to this packet is received with the first argument being the received packet.
-   * @param {Array} args An array of arguments to be passed to callback after the packet.
+   * @param {Array} [args] An array of arguments to be passed to callback after the packet.
    *
    * @see OX.ConnectionAdapter#send
    */
   send: function (xml, callback, args) {
-    this.connection.send(xml, callback, args);
+    this.connection.send(xml, callback, args || []);
   },
 
   /**
