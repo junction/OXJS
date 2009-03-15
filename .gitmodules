@@ -4,3 +4,6 @@
 [submodule "frameworks/strophejs"]
 	path = frameworks/strophejs
 	url = git://code.stanziq.com/strophejs
+[submodule "frameworks/jquery"]
+	path = frameworks/jquery
+	url = git://github.com/JackDanger/jquery.git
