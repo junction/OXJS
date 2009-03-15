@@ -30,7 +30,7 @@ DemoApp.OX = function() {
         send: function (xml, cb, args) {
           var wrapped = function (iqElement, cbArgs) {
             var packetAdapter = {
-              doc:   iqElement,
+              node:  iqElement,
               ptype: iqElement.getAttribute('type'),
               from:  iqElement.getAttribute('from'),
               to:    iqElement.getAttribute('to'),
@@ -39,7 +39,7 @@ DemoApp.OX = function() {
               getFrom: function () { return this.from; },
               getType: function () { return this.type; },
               getTo:   function () { return this.to; },
-              getDoc:  function () { return this.doc; }
+              getNode: function () { return this.node; }
             };
 
             var newArgs = [packetAdapter];

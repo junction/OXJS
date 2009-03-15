@@ -221,8 +221,7 @@ OX.Mixins.Subscribable = function () {
 
   function fireEvent(type, packet) {
     function subscriptionURI() {
-      var doc    = packet.getDoc(),
-          elt    = doc.getAttribute ? doc : doc.firstChild,
+      var elt    = packet.getNode(),
           from   = elt.getAttribute('from'),
           sub    = elt.firstChild.firstChild,
           node   = sub.getAttribute('node');
@@ -231,8 +230,7 @@ OX.Mixins.Subscribable = function () {
     }
 
     function retractURI() {
-      var doc    = packet.getDoc(),
-          elt    = doc.getAttribute ? doc : doc.firstChild,
+      var elt    = packet.getNode(),
           from   = elt.getAttribute('from'),
           items  = elt.firstChild.firstChild,
           node   = items.getAttribute('node'),
@@ -257,7 +255,7 @@ OX.Mixins.Subscribable = function () {
       break;
     case 'publish':
       if (this._subscriptionHandlers.onPublish) {
-        var items = convertItems.call(this, packet.getDoc());
+        var items = convertItems.call(this, packet.getNode());
         for (var i = 0, len = items.length; i < len; i++)
           this._subscriptionHandlers.onPublish(items[i]);
       }
@@ -272,7 +270,7 @@ OX.Mixins.Subscribable = function () {
   }
 
   function jidHandler(packet) {
-    var event = packet.getDoc().getElementsByTagName('event')[0];
+    var event = packet.getNode().getElementsByTagName('event')[0];
     if (!event)
       return;
 
@@ -289,7 +287,7 @@ OX.Mixins.Subscribable = function () {
     var finalURI = getURI().extend({query: ';node=' + node}),
         reqURI   = getURI().extend({query: ';node=' + (origNode || node)});
     if (packet.getType() === 'error') {
-      var error = packet.getDoc().getElementsByTagName('error')[0];
+      var error = packet.getNode().getElementsByTagName('error')[0];
       if (redirects < 5 && error && error.firstChild &&
           (error.firstChild.tagName === 'redirect' ||
            error.firstChild.tagName === 'gone')) {
@@ -308,7 +306,7 @@ OX.Mixins.Subscribable = function () {
         callbacks.onSuccess(reqURI, finalURI, packet);
       }
 
-      var pubSub = packet.getDoc().getElementsByTagName('pubsub')[0] || {},
+      var pubSub = packet.getNode().getElementsByTagName('pubsub')[0] || {},
           subscription = pubSub.firstChild;
       if (subscription && subscription.tagName === 'subscription') {
         fireEvent.call(this, packetType(subscription), packet);
@@ -328,7 +326,7 @@ OX.Mixins.Subscribable = function () {
       }
     } else {
       if (callbacks.onSuccess) {
-        callbacks.onSuccess(convertItems.call(this, packet.getDoc()));
+        callbacks.onSuccess(convertItems.call(this, packet.getNode()));
       }
     }
   }

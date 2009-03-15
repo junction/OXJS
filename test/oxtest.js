@@ -118,7 +118,7 @@ OXTest.Packet = OX.Base.extend({
     return this.type;
   },
 
-  getDoc: function () {
+  getNode: function () {
     return this.doc.firstChild;
   }
 });
