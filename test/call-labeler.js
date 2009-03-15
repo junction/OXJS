@@ -2,7 +2,7 @@ OXTest.CallLabeler = new YAHOO.tool.TestCase({
   name: 'CallLabeler Mixin Tests',
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend();
+    this.conn = OXTest.ConnectionMock.extend().init();
     this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initConnection();
 

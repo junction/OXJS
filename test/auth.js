@@ -2,7 +2,7 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   name: 'Auth Tests',
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend();
+    this.conn = OXTest.ConnectionMock.extend().init();
     this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initConnection();
 
@@ -20,7 +20,7 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     Assert.isObject(OX.Services.Auth,
                     'Auth mixin is not available');
     Assert.isObject(this.Auth, 'Auth mixin is not initialized');
-    Assert.areSame(this.ox,    this.ox.Auth.connection);
+    Assert.areSame(this.ox, this.ox.Auth.connection);
   },
 
   testCommandURIs: function () {
@@ -28,25 +28,25 @@ OXTest.Auth = new YAHOO.tool.TestCase({
 
     Assert.isObject(this.Auth.commandURIs,
                     'Auth.commandURIs is not an object.');
-    Assert.areSame('xmpp:commands.auth.xmpp.onsip.com?;node=authenticate-plain',
-                   this.Auth.commandURIs.authenticatePlain,
+    Assert.areSame('xmpp:commands.auth.xmpp.onsip.com?;node=authorize-plain',
+                   this.Auth.commandURIs.authorizePlain,
                    'Auth.commandURIs.transfer is wrong');
   },
 
   testAuthPlain: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(this.Auth.authenticatePlain,
+    Assert.isFunction(this.Auth.authorizePlain,
                       'Plaintext auth function not available.');
   },
 
   testAuthPlainWithoutJID: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.Auth.authenticatePlain('enoch@sip-example.com', 'example');
+    this.Auth.authorizePlain('enoch@sip-example.com', 'example');
 
     Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
-                     'authenticate-plain',
+                     'authorize-plain',
                      {'sip-address': 'enoch@sip-example.com',
                       'password':    'example',
                       'jid':         undefined});
@@ -55,11 +55,11 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   testAuthPlainWithJID: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.Auth.authenticatePlain('enoch@sip-example.com', 'example',
-                                'enoch@jid-example.com');
+    this.Auth.authorizePlain('enoch@sip-example.com', 'example',
+                             'enoch@jid-example.com');
 
     Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
-                     'authenticate-plain',
+                     'authorize-plain',
                      {'sip-address': 'enoch@sip-example.com',
                       'password':    'example',
                       'jid':         'enoch@jid-example.com'});
@@ -68,10 +68,10 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   testAuthPlainSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" to="mock@example.com" id="test"><command xmlns="http://jabber.org/protocol/commands" status="completed" node="authenticate-plain" sessionid="session-id"><note type="info">JID \'alice@example.com\' has been authorized to access resources for SIP Address \'alice@example.com\'</note><x xmlns="jabber:x:data" type="result"><field type="fixed" var="expires"><value>2009-02-19T21:08:38Z</value></field></x></command></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" to="mock@example.com" id="test" type="result"><command xmlns="http://jabber.org/protocol/commands" status="completed" node="authorize-plain" sessionid="session-id"><note type="info">JID \'alice@example.com\' has been authorized to access resources for SIP Address \'alice@example.com\'</note><x xmlns="jabber:x:data" type="result"><field type="fixed" var="expires"><value>2009-02-19T21:08:38Z</value></field></x></command></iq>'));
 
     var successFlag = false, errorFlag = false;
-    this.Auth.authenticatePlain('alice@example.com', 'password', {
+    this.Auth.authorizePlain('alice@example.com', 'password', {
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
@@ -83,10 +83,10 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   testAuthPlainError: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" type="error" xml:lang="en" to="mock@example.com" id="test"><command xmlns="http://jabber.org/protocol/commands" node="authenticate-plain" sessionid="session-id"><x xmlns="jabber:x:data" type="submit"><field type="text-single" var="sip-address"><value>alice@example.com</value></field><field type="text-private" var="password"><value>password</value></field><field type="hidden" var="jid" /></x></command><error type="modify" code="400"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/><text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">Execution Errors; base Authentication failed - invalid username or password.; missing response</text><bad-action xmlns="http://jabber.org/protocol/commands"/></error></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" type="error" xml:lang="en" to="mock@example.com" id="test"><command xmlns="http://jabber.org/protocol/commands" node="authorize-plain" sessionid="session-id"><x xmlns="jabber:x:data" type="submit"><field type="text-single" var="sip-address"><value>alice@example.com</value></field><field type="text-private" var="password"><value>password</value></field><field type="hidden" var="jid" /></x></command><error type="modify" code="400"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/><text xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">Execution Errors; base Authentication failed - invalid username or password.; missing response</text><bad-action xmlns="http://jabber.org/protocol/commands"/></error></iq>'));
 
     var successFlag = false, errorFlag = false;
-    this.Auth.authenticatePlain('alice@example.com', 'password', {
+    this.Auth.authorizePlain('alice@example.com', 'password', {
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });

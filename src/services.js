@@ -20,27 +20,27 @@ OX.Services = {};
 OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
   /** */
   commandURIs: {
-    /** URI for authenticate-plain Ad Hoc commnd. */
-    authenticatePlain: 'xmpp:commands.auth.xmpp.onsip.com?;node=authenticate-plain'
+    /** URI for authorize-plain Ad Hoc commnd. */
+    authorizePlain: 'xmpp:commands.auth.xmpp.onsip.com?;node=authorize-plain'
   },
 
   /**
-   * Authorize a JID for a SIP address, authenticated via a password. This
+   * Authorize a JID for a SIP address, authorized via a password. This
    * password is sent in clear text to the XMPP API, so your connection
    * should be encrypted for your own safety.
    *
-   * @param {String} address The SIP address to authenticate as.
+   * @param {String} address The SIP address for authentication.
    * @param {String} password The web password for the SIP address.
    * @param {String} [jid] The JID to authorize for the SIP address. If unspecified, use the current JID from the underlying connection.
    * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
    *
    * @example
-   * ox.Auth.authenticatePlain('sip@example.com', 'password', 'jid@example.com', {
+   * ox.Auth.authorizePlain('sip@example.com', 'password', 'jid@example.com', {
    *   onSuccess: function () {},
    *   onError:   function (error) {}
    * });
    */
-  authenticatePlain: function (address, password, jid) {
+  authorizePlain: function (address, password, jid) {
     var iq    = OX.XMPP.IQ.extend(),
         cmd   = OX.XMPP.Command.extend(),
         xData = OX.XMPP.XDataForm.extend();
@@ -51,7 +51,7 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
 
     iq.to('commands.auth.xmpp.onsip.com');
     iq.type('set');
-    cmd.node('authenticate-plain');
+    cmd.node('authorize-plain');
     xData.type('submit');
     xData.addField('sip-address', address);
     xData.addField('password', password);

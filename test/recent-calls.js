@@ -15,7 +15,7 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
   },
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend();
+    this.conn = OXTest.ConnectionMock.extend().init();
     this.ox = OX.Connection.extend({connection: this.conn});
     this.ox.initConnection();
     this.RecentCalls = this.ox.RecentCalls;
