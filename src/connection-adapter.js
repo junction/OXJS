@@ -48,9 +48,10 @@ OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
   /**
    * Registers an event handler.
    *
-   * @param {String} event One of the strings 'onPublish' or 'onRetract'.
-   * @param {Function} handler A function which accepts one argument, which is the packet response.
+   * @param {String} event The type of stanza for which to listen (i.e., `message', `iq', `presence.')
+   * @param {Function} handler The stanza is passed to this function when it is received.
    *
+   * @see OX.ConnectionAdapter#unregisterHandler
    * @see OX.Connection#registerJIDHandler
    */
   registerHandler: function (event, handler) {},
@@ -58,10 +59,10 @@ OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
   /**
    * Unregisters an event handler.
    *
-   * @param {String} event One of the strings 'onPublish' or 'onRetract'.
-   * @param {Function} handler A handler already registered for this event.
+   * @param {String} event The type of stanza we were listening to (i.e., `message', `iq', `presence.')
    *
+   * @see OX.ConnectionAdapter#registerHandler
    * @see OX.Connection#unregisterJIDHandler
    */
-  unregisterHandler: function (event, handler) {}
+  unregisterHandler: function (event) {}
 });
