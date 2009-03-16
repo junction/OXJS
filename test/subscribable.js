@@ -171,6 +171,24 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Did not get subscribed event trying to subscribe.');
   },
 
+  testFiresUnsubscribedWithEvent: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><subscription node="/" jid="mock@example.com" subscription="none"/></event></message>');
+
+    var unsubscribedFlag = false;
+    this.Subscribable.registerHandler('onUnsubscribed', function (uri) {
+      unsubscribedFlag = true;
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
+                     'Requested URI for subscribed is wrong.');
+    });
+    this.Subscribable.subscribe('/');
+
+    this.conn.fireEvent('message', packet);
+    Assert.areSame(true, unsubscribedFlag,
+                   'Did not get subscribed event trying to subscribe.');
+  },
+
   testFiresPendingWithIQ: function () {
     var Assert = YAHOO.util.Assert;
 
@@ -232,6 +250,38 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));
     this.Subscribable.subscribe('/');
     Assert.areSame(true, subscribedFlag,
+                   'Was not subscribed trying to subscribe.');
+  },
+
+  testFiresUnsubscribedWithIQ: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var successFlag = false, unsubscribedFlag = false;
+    this.Subscribable.registerHandler('onUnsubscribed', function () {
+      unsubscribedFlag = true;
+    });
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="none"/></pubsub></iq>'));
+    this.Subscribable.subscribe('/', {
+      onSuccess: function (requestedURI, finalURI, packet) {
+        successFlag = true;
+      }
+    });
+    Assert.areSame(true, successFlag,
+                   'Was not successful trying to subscribe.');
+    Assert.areSame(true, unsubscribedFlag,
+                   'Was not subscribed trying to subscribe.');
+  },
+
+  testFiresUnsubscribedWithIQNoCallbacks: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var unsubscribedFlag = false;
+    this.Subscribable.registerHandler('onUnsubscribed', function () {
+      unsubscribedFlag = true;
+    });
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="none"/></pubsub></iq>'));
+    this.Subscribable.subscribe('/');
+    Assert.areSame(true, unsubscribedFlag,
                    'Was not subscribed trying to subscribe.');
   },
 
@@ -366,6 +416,34 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.isTrue(successFlag,
                   'Was not successful trying subscribe.');
     Assert.isTrue(subscribedFlag,
+                  'Did not get subscribed trying to subscribe.');
+  },
+
+  testFiresUnsubscribedWithIQRedirect: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var successFlag = false, errorFlag = false, unsubscribedFlag = false;
+    this.Subscribable.registerHandler('onUnsubscribed', function () {
+      unsubscribedFlag = true;
+    });
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="error" id="test"><subscribe node="/" jid="mock@example.com"/><error type="modify"><redirect xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">xmpp:pubsub.example.com?;node=other-node</redirect></error></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="unsubscribed"/></iq>'));
+
+    this.Subscribable.subscribe('/', {
+      onSuccess: function (requestedURI, finalURI, packet) {
+        successFlag = true;
+      },
+
+      onError: function () {
+        errorFlag = true;
+      }
+    });
+
+    Assert.isFalse(errorFlag,
+                   'Got error trying to subscribe.');
+    Assert.isTrue(successFlag,
+                  'Was not successful trying subscribe.');
+    Assert.isTrue(unsubscribedFlag,
                   'Did not get subscribed trying to subscribe.');
   },
 
