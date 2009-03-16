@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+          "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>OXJS Test Client</title>
+
+    <style type="text/css" media="all">@import "style.css";</style>
+  </head>
+
+  <body>
+    <div id="page">
+      <h1>OXJS Test Client</h1>
+
+      <div id="err"></div>
+
+      <div id="logged_out_pane">
+        <h2>Dashboard Login</h2>
+
+        <form id="login" action="#">
+          <input type="hidden" name="server" id="server"
+                 value="dashboard.onsip.com"/>
+          <input type="hidden" name="http_base" id="http_base"
+                 value="/http-bind"/>
+
+          <table>
+            <tr>
+              <th><label for="username">SIP Address</label></th>
+              <td><input type="text" name="username" id="username"/></td>
+            </tr>
+            <tr>
+              <th><label for="password">Password</label></th>
+              <td><input type="password" name="password" id="password"/></td>
+            </tr>
+            <tr>
+              <th></th>
+              <td><input type="submit" value="Login"></td>
+            </tr>
+          </table>
+        </form>
+      </div> <!-- #logged_out_pane -->
+
+      <div id="logged_in_pane" style="display: none;">
+        <div>
+          <div>Your are logged in as: <em id="logged_in_as"></em></div>
+          <button id="logout">Logout</button>
+        </div>
+
+        <div id="message_pane">
+          <h2>XMPP Stanzas</h2>
+
+          <div id="message_pane_inner"></div>
+        </div>
+
+        <div id="auth_xmpp_onsip_com" class="service">
+          <h2>auth.xmpp.onsip.com</h2>
+
+          <div class="commands">
+            <h3><a href="http://wiki.junctionnetworks.com/docs/Auth_Component">Commands</a></h3>
+            <div class="command authorize-plain">
+              <h4>Authorize this JID for a SIP Address</h4>
+              <form id="authorize-plain" action="#">
+                <table>
+                  <tr>
+                    <td>SIP Address:</td>
+                    <td><input name="sip-address" type="text"/></td>
+                  </tr>
+                  <tr>
+                    <td>Password:</td>
+                    <td><input name="password" type="password"/></td>
+                  </tr>
+                  <tr>
+                    <td>JID*:</td>
+                    <td><input name="jid" type="text"/></td>
+                  </tr>
+                  <tr>
+                    <td><input type="submit" value="Submit"/></td>
+                  </tr>
+                </table>
+              </form>
+
+              <ul class="output"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="active-calls_xmpp_onsip_com" class="service">
+          <h2>active-calls.xmpp.onsip.com</h2>
+
+          <div class="commands">
+            <h3><a href="http://wiki.junctionnetworks.com/docs/Active-Calls_Component">Commands</a></h3>
+            <div class="command create">
+              <h4>Create a Call</h4>
+              <form id="create-call" action="#">
+                <table>
+                  <tr>
+                    <td>From:
+                    </td><td><input name="from" type="text"/></td>
+                  </tr>
+                  <tr>
+                    <td>To:</td>
+                    <td><input name="to" type="text"/></td>
+                  </tr>
+                  <tr>
+                    <td><input type="submit" value="Submit"/>
+                    </td>
+                  </tr>
+                </table>
+              </form>
+
+              <ul class="output create"></ul>
+            </div>
+          </div>
+
+          <div class="pubsub">
+            <h3><a href="http://wiki.junctionnetworks.com/docs/Active-Calls_Pubsub">Subscribe to Active Calls</a></h3>
+            <div>
+              Examples:
+              <ul class="example">
+                <li>/</li>
+                <li>/example.onsip.com</li>
+                <li>/me/enoch!example.onsip.com@dashboard.onsip.com</li>
+                <li>/me/enoch!example.onsip.com@dashboard.onsip.com/example.onsip.com</li>
+                <li>/example.onsip.com/enoch</li>
+              </ul>
+            </div>
+            <form id="subscribe-active-calls" action="#">
+              <table>
+                <tr>
+                  <td>Node:</td>
+                  <td><input type="text" name="node"/></td>
+                </tr>
+                <tr>
+                  <td><input type="submit" value="Submit"/></td>
+                </tr>
+              </table>
+            </form>
+
+            <h4>Active Call Subscriptions</h4>
+            <ul class="output subscriptions"></ul>
+
+            <h4>Active Call Events</h4>
+            <ul class="output events"></ul>
+          </div>
+
+        </div>
+
+      </div> <!-- #logged_in_pane -->
+
+    </div> <!-- #page -->
+
+    <!-- Load the OXJS library. -->
+    <script src="/static/src/ox.js"></script>
+
+    <!-- Load our demo application -->
+    <script src="/static/frameworks/jquery/jquery/dist/jquery.min.js"></script>
+    <script src="/static/frameworks/strophejs/strophe.js"></script>
+    <script src="glue.js"></script>
+  </body>
+</html>
