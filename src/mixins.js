@@ -253,6 +253,12 @@ OX.Mixins.Subscribable = function () {
         this._subscriptionHandlers.onPending(pendingURI);
       }
       break;
+    case 'none':
+      if (this._subscriptionHandlers.onUnsubscribed) {
+        var unsubscribedURI = subscriptionURI();
+        this._subscriptionHandlers.onUnsubscribed(unsubscribedURI);
+      }
+      break;
     case 'publish':
       if (this._subscriptionHandlers.onPublish) {
         var items = convertItems.call(this, packet.getNode());
@@ -441,7 +447,7 @@ OX.Mixins.Subscribable = function () {
      *
      * Only one handler can be registered for a given event at a time.
      *
-     * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
+     * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onUnsubscribed', 'onPublish' or 'onRetract'.
      * @param {Function} handler A function which accepts one argument, which is the packet response.
      *
      * @example
@@ -454,7 +460,7 @@ OX.Mixins.Subscribable = function () {
     /**
      * Unregisters an event handler.
      *
-     * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onPublish' or 'onRetract'.
+     * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onUnsubscribed', 'onPublish' or 'onRetract'.
      *
      * @example
      * service.unregisterHandler('onPublish', handlerFunction);
