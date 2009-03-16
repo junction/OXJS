@@ -68,6 +68,8 @@ DemoApp.OX = function() {
                                            this._handleActiveCallPending);
       this.con.ActiveCalls.registerHandler('onSubscribed',
                                            this._handleActiveCallSubscribe);
+      this.con.ActiveCalls.registerHandler('onUnsubscribed',
+                                           this._handleActiveCallUnsubscribe);
     },
 
     authenticate: function (formID) {
@@ -161,6 +163,12 @@ DemoApp.OX = function() {
 
     _handleActiveCallSubscribe: function (uri) {
       console.log('handling an asynchronous subscription message');
+      console.log(uri);
+      _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', uri.toString());
+    },
+
+    _handleActiveCallUnsubscribe: function (uri) {
+      console.log('handling an asynchronous unsubscription message');
       console.log(uri);
       _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', uri.toString());
     },
