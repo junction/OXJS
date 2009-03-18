@@ -51,7 +51,10 @@ DemoApp.OX = function() {
         },
 
         send: function (xml, cb, args) {
-          var node = (new DOMParser()).parseFromString(xml, 'text/xml').firstChild;
+          var node = document.createElement('wrapper');
+          node.innerHTML = xml;
+          node = node.firstChild;
+
           if (cb) {
             function wrapped(stanza) {
               var packetAdapter = {
@@ -81,7 +84,6 @@ DemoApp.OX = function() {
           }
 
           node.setAttribute('xmlns', 'jabber:client');
-          node.setAttribute('_realname', node.nodeName);
           return con.send(node);
         }
       });
