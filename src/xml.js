@@ -73,8 +73,9 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
     ret += (attrs.length > 0) ? ' ' + attrs.join(' ') : '';
     ret += ">";
 
-    if(this.children && this.children.length > 0) for(var el in this.children) {
-      ret += this.children[el].toString();
+    var children = this.children || [];
+    for (var i = 0, len = children.length; i < len; i++) {
+      ret += this.children[i].toString();
     }
 
     if(this.text) ret += this.text;
