@@ -15,7 +15,7 @@ src:	ox.js
 doc:	$(DOCDIR)/index.html
 
 ox.js:	Makefile $(SRC)
-	cat $(SRC) > $@
+	cat $(SRC) > ../$@
 
 $(DOCDIR)/index.html: Makefile $(SRC)
 	$(JAVA) -jar $(JSDOCDIR)/jsrun.jar $(JSDOCDIR)/app/run.js -a -p -t=$(TEMPLATE) -d=$(DOCDIR) $(SRC)
