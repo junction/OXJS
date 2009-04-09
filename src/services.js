@@ -192,7 +192,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
         attrs.fromTag = node.firstChild.nodeValue;
         break;
       case 'to-tag':
-        attrs.toTag = node.firstChild.nodeValue;
+        attrs.toTag = node.firstChild && node.firstChild.nodeValue;
         break;
       }
     }
