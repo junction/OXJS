@@ -49,6 +49,8 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @return {OX.Connection}
    */
   initConnection: function () {
+    if (!this.getJID() || this.getJID() == '') throw new OX.Error('missing JID');
+
     var serviceMap = {};
 
     for (var s in this.services) if (this.services.hasOwnProperty(s)) {

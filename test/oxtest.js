@@ -202,3 +202,13 @@ YAHOO.util.Assert.isGetItems = function (xml, jid, node) {
                doc.getPathValue('/iq/ps:pubsub/ps:items/@node'),
                'get items node is wrong');
 };
+
+YAHOO.util.Assert.throws = function(errorClass,cb) {
+  try {
+    cb();
+  } catch(e) {
+    this.isInstanceOf(errorClass,e,"Error raised was different from error expected");
+    return;
+  }
+  this.fail("Function failed to raise an error");
+};

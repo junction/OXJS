@@ -1,4 +1,4 @@
-SRC =	core.js base.js connection-adapter.js uri.js mixins.js	\
+SRC =	core.js error.js base.js connection-adapter.js uri.js mixins.js	\
 	item.js services.js connection.js xml.js
 
 DOCDIR = ../doc
