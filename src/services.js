@@ -177,7 +177,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
         attrs.uacAOR = node.firstChild.nodeValue;
         break;
       case 'uas-aor':
-        attrs.uasAOR = node.firstChild.nodeValue;
+        attrs.uasAOR = node.firstChild && node.firstChild.nodeValue;
         break;
       case 'call-id':
         attrs.callID = node.firstChild.nodeValue;

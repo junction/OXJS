@@ -95,6 +95,17 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                   'Active call item to tag is not null.');
   },
 
+  testItemFromElementWithEmptyUASAOR: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var element = OXTest.DOMParser.parse('<item id="301:NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU."><active-call xmlns="onsip:active-calls"><dialog-state>created</dialog-state><uac-aor>jill@example.com</uac-aor><uas-aor/><call-id>123</call-id><from-uri>sip:jill@example.com</from-uri><to-uri>sip:jack@example.com</to-uri><from-tag>999</from-tag><to-tag/></active-call></item>');
+    var item = this.ActiveCalls.itemFromElement(element.doc);
+    Assert.isObject(item,
+                    'ActiveCalls.itemFromElement did not return an object.');
+    Assert.isNull(item.uasAOR,
+                  'Active call item uasAOR is not null.');
+  },
+
   testCreateAPI: function() {
     var Assert = YAHOO.util.Assert;
     Assert.isFunction(this.ActiveCalls.create,
