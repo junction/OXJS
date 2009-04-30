@@ -1,5 +1,5 @@
-[submodule "test/rhinodom"]
-	path = test/rhinodom
+[submodule "frameworks/rhinodom"]
+	path = frameworks/rhinodom
 	url = git://repo.or.cz/rhinodom.git
 [submodule "frameworks/strophejs"]
 	path = frameworks/strophejs
