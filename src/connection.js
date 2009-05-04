@@ -27,7 +27,8 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
     Preferences: OX.Services.Preferences,
     RecentCalls: OX.Services.RecentCalls,
     UserAgents:  OX.Services.UserAgents,
-    Voicemail:   OX.Services.Voicemail
+    Voicemail:   OX.Services.Voicemail,
+    Rosters:   OX.Services.Rosters
   },
 
   /**

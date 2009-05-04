@@ -491,3 +491,48 @@ OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     label: 'xmpp:commands.recent-calls.xmpp.onsip.com?;node=label'
   }
 });
+
+/**
+ * Namespace for roster related services.
+ * @namespace
+ * @extends OX.Base
+ * @requires connection property inherited from an {@link OX.Connection}.
+ */
+OX.Services.Rosters = OX.Base.extend(/** @lends OX.Services.Rosters */{
+  /** */
+  commandURIs: {
+    /** URI for label Ad Hoc commnd. */
+    pushRosterGroups: 'xmpp:commands.rosters.xmpp.onsip.com?;node=push-roster-groups'
+  },
+
+  pushRosterGroups: function (jid) {
+    var iq    = OX.XMPP.IQ.extend(),
+        cmd   = OX.XMPP.Command.extend(),
+        xData = OX.XMPP.XDataForm.extend();
+
+    var callbacks = {};
+    if (arguments.length > 0 && arguments[arguments.length - 1])
+      callbacks = arguments[arguments.length - 1];
+
+    iq.to('commands.rosters.xmpp.onsip.com');
+    iq.type('set');
+    cmd.node('push-roster-groups');
+    xData.type('submit');
+    if (jid)
+      xData.addField('jid', jid);
+
+    iq.addChild(cmd.addChild(xData));
+
+    this.connection.send(iq.toString(), function (packet) {
+      if (!packet)
+        return;
+
+      if (packet.getType() === 'error' && callbacks.onError) {
+        callbacks.onError(packet);
+      } else if (callbacks.onSuccess) {
+        callbacks.onSuccess(packet);
+      }
+    }, []);
+  }
+
+});
