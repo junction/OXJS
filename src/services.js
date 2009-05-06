@@ -498,7 +498,7 @@ OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * @extends OX.Base
  * @requires connection property inherited from an {@link OX.Connection}.
  */
-OX.Services.Rosters = OX.Base.extend(/** @lends OX.Services.Rosters */{
+OX.Services.Rosters = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Rosters */{
   /** */
   commandURIs: {
     /** URI for label Ad Hoc commnd. */
