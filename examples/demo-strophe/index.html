@@ -25,11 +25,11 @@
           <table>
             <tr>
               <th><label for="username">SIP Address</label></th>
-              <td><input type="text" name="username" id="username"/></td>
+              <td><input type="text" name="username" id="username" value="enoch@example.onsip.com"/></td>
             </tr>
             <tr>
               <th><label for="password">Password</label></th>
-              <td><input type="password" name="password" id="password"/></td>
+              <td><input type="password" name="password" id="password" value="example"/></td>
             </tr>
             <tr>
               <th></th>
@@ -62,11 +62,11 @@
                 <table>
                   <tr>
                     <td>SIP Address:</td>
-                    <td><input name="sip-address" type="text"/></td>
+                    <td><input name="sip-address" type="text" value="enoch@example.onsip.com"/></td>
                   </tr>
                   <tr>
                     <td>Password:</td>
-                    <td><input name="password" type="password"/></td>
+                    <td><input name="password" type="password" value="example"/></td>
                   </tr>
                   <tr>
                     <td>JID*:</td>
@@ -140,6 +140,44 @@
 
             <h4>Active Call Events</h4>
             <ul class="output events"></ul>
+          </div>
+
+        </div>
+
+        <div id="rosters_xmpp_onsip_com" class="service">
+          <h2>rosters.xmpp.onsip.com</h2>
+
+          <div class="commands">
+            <h3><a href="http://wiki.junctionnetworks.com/docs/Rosters_Component">Commands</a></h3>
+            <div class="command create">
+              <h4>Push Roster Groups</h4>
+              <form id="push-roster-groups" action="#">
+                <table>
+                  <tr>
+                    <td><input type="submit" value="Submit"/>
+                    </td>
+                  </tr>
+                </table>
+              </form>
+
+              <ul class="xmpp_roster"></ul>
+            </div>
+           <div class="command create">
+              <h4>Request Roster from Ejabberd</h4>
+              <form id="request-roster" action="#">
+                <table>
+                  <tr>
+                    <td><input type="submit" value="Submit"/>
+                    </td>
+                  </tr>
+                </table>
+              </form>
+            </div>
+          </div>
+
+          <div class="pubsub">
+            <h4>Ejabberd Current Roster</h4>
+            <ul class="current_roster"></ul>
           </div>
 
         </div>

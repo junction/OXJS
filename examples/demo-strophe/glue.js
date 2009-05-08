@@ -202,6 +202,237 @@ DemoApp.OX = function() {
     _handleActiveCallPending: function (uri) {
       console.log('handling a pending response');
       console.log(uri);
+    },
+
+    pushRosterGroups: function (formID) {
+      var jid = null;
+      this.con.Rosters.pushRosterGroups(jid, {
+        onSuccess: function (packet) {
+          console.log('successful roster push');
+        },
+
+        onError: function (packet) {
+          console.log('ERROR: roster push failed.');
+        }
+      });
+
+      return false;
+    },
+
+    requestRoster: function (formID) {
+      var iq    = OX.XMPP.IQ.extend(),
+          query = OX.XMPP.Stanza.extend();
+
+      var callbacks = {
+        onSuccess: function (packet) {
+          console.log('successful roster request');
+        },
+
+        onError: function (packet) {
+          console.log('ERROR: roster request failed.');
+        }
+      };
+
+      iq.type('get');
+      query.name = 'query';
+      query.attr('xmlns', 'jabber:iq:roster');
+      iq.addChild(query);
+
+      DemoApp.OX.con.send(iq.toString(), function (packet) {
+        if (!packet)
+          return;
+
+        if (packet.getType() === 'error' && callbacks.onError) {
+          callbacks.onError(packet);
+        } else if (callbacks.onSuccess) {
+          callbacks.onSuccess(packet);
+        }
+      }, []);
+
+      return false;
+    },
+
+    addRosterItem: function (formID) {
+      var name   = _getFormValue(formID, 'name'),
+          jid    = _getFormValue(formID, 'jid'),
+          groups = [ _getFormValue(formID, 'group') ],
+          iq     = OX.XMPP.IQ.extend(),
+          query  = OX.XMPP.Stanza.extend(),
+          item   = OX.XMPP.Stanza.extend();
+
+      var callbacks = {
+        onSuccess: function (packet) {
+          console.log('Succesfully added roster item.');
+        },
+
+        onError: function (packet) {
+          console.log('ERROR: roster add failed.');
+        }
+      };
+
+      iq.type('set');
+      query.name = 'query';
+      query.attr('xmlns', 'jabber:iq:roster');
+      item.name = 'item';
+      item.attr('jid', jid);
+      item.attr('name', name);
+      
+      for (var i = 0;  i < groups.length; i++) {
+        groupStanza = OX.XMPP.Stanza.extend();
+        groupStanza.name = 'group';
+        groupStanza.text = groups[i];
+        item.addChild(groupStanza);
+      }
+      iq.addChild(query.addChild(item));
+
+      DemoApp.OX.con.send(iq.toString(), function (packet) {
+        if (!packet)
+          return;
+
+        if (packet.getType() === 'error' && callbacks.onError) {
+          callbacks.onError(packet);
+        } else if (callbacks.onSuccess) {
+          callbacks.onSuccess(packet);
+        }
+      }, []);
+
+      return false;
+    },
+
+    deleteRosterItem: function (formID) {
+      var jid   = _getFormValue(formID, 'jid'),
+          iq    = OX.XMPP.IQ.extend(),
+          query = OX.XMPP.Stanza.extend(),
+          item  = OX.XMPP.Stanza.extend();
+
+      var callbacks = {
+        onSuccess: function (packet) {
+          console.log('Succesfully deleted roster item.');
+        },
+
+        onError: function (packet) {
+          console.log('ERROR: roster delete failed.');
+        }
+      };
+
+      iq.type('set');
+      query.name = 'query';
+      query.attr('xmlns', 'jabber:iq:roster');
+      item.name = 'item';
+      item.attr('jid', jid);
+      item.attr('subscription', 'remove');
+      
+      iq.addChild(query.addChild(item));
+      
+      DemoApp.OX.con.send(iq.toString(), function (packet) {
+        if (!packet)
+          return;
+
+        if (packet.getType() === 'error' && callbacks.onError) {
+          callbacks.onError(packet);
+        } else if (callbacks.onSuccess) {
+          callbacks.onSuccess(packet);
+        }
+      }, []);
+
+      return false;
+    },
+
+    _handleRostersIq: function (packet) {
+     var items = packet.getElementsByTagName('x')[0].getElementsByTagName('item');
+     for (var i=0; i < items.length; i++) {            
+       var name         = items[i].attributes["name"].value,
+           jid          = items[i].attributes["jid"].value,
+           group        = items[i].getElementsByTagName('group')[0].firstChild.nodeValue,
+           uniqueFormId = 'add-roster-item-' + jid.replace(/@/, '').replace(/\./g, ''),
+           action       = items[i].attributes["action"].value;
+
+       if (action == 'add') {
+         _addOutput('#rosters_xmpp_onsip_com .xmpp_roster', name +
+                    '<form id="' + uniqueFormId + '" action="#">' +
+                    '<input type="hidden" name="name" id="name" value="' + name + '"/>' +
+                    '<input type="hidden" name="jid" id="jid" value="' + jid + '"/>' +
+                    '<input type="hidden" name="group" id="group" value="' + group + '"/>' +
+                    '<input type="submit" value="Add Item"/></form>');
+         $('#' + uniqueFormId).bind('submit', function (e) {
+                 e.preventDefault();
+                 DemoApp.OX.addRosterItem(uniqueFormId);
+          });
+       } else if (action == 'modify') {
+         _addOutput('#rosters_xmpp_onsip_com .xmpp_roster', name +
+                    '<form id="' + uniqueFormId + '" action="#">' +
+                    '<input type="hidden" name="name" id="name" value="' + name + '"/>' +
+                    '<input type="hidden" name="jid" id="jid" value="' + jid + '"/>' +
+                    '<input type="hidden" name="group" id="group" value="' + group + '"/>' +
+                    '<input type="submit" value="Modify Item"/></form>');
+         $('#' + uniqueFormId).bind('submit', function (e) {
+                 e.preventDefault();
+                 DemoApp.OX.addRosterItem(uniqueFormId);
+         });
+       } else if (action == 'delete') {
+         _addOutput('#rosters_xmpp_onsip_com .xmpp_roster', name +
+                    '<form id="' + uniqueFormId + '" action="#">' +
+                    '<input type="hidden" name="name" id="name" value="' + name + '"/>' +
+                    '<input type="hidden" name="jid" id="jid" value="' + jid + '"/>' +
+                    '<input type="hidden" name="group" id="group" value="' + group + '"/>' +
+                    '<input type="submit" value="Delete Item"/></form>');
+         $('#' + uniqueFormId).bind('submit', function (e) {
+                 e.preventDefault();
+                 DemoApp.OX.deleteRosterItem(uniqueFormId);
+         });
+       }
+     }
+
+      var id   = packet.attributes["id"].value; 
+      var from = packet.attributes["to"].value; 
+      var to   = packet.attributes["from"].value;
+      var iq    = OX.XMPP.IQ.extend();
+      iq.from(from);
+      iq.to(to);
+      iq.type('result'); 
+      iq.attr('id', id);
+      DemoApp.OX.con.send(iq.toString());
+
+      return true;
+    },
+
+    _handleEjabberdIq: function (packet) {
+      if (packet.getElementsByTagName('query')[0]) {
+        var items = packet.getElementsByTagName('query')[0].getElementsByTagName('item');
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].attributes["subscription"].value != 'remove') {
+            var item  = items[i],
+                name_str   = item.attributes["name"].value,
+                jid_str    = item.attributes["jid"].value,
+                groups_str = '',
+                groups     = item.getElementsByTagName('group');
+            if (groups) {
+              for (var j = 0; j < groups.length; j++) {
+                if (groups[j].firstChild) {
+                  if (groups_str != '') groups_str += ", ";
+                  groups_str += groups[j].firstChild.nodeValue;
+                } else {
+                  groups_str = "n/a";
+                }
+              }
+            }
+            _addOutput('#rosters_xmpp_onsip_com .current_roster', 
+                       name_str + ' :: ' + jid_str + ' :: ' + groups_str);
+          }
+        }
+      }
+
+      var id   = packet.attributes["id"].value; 
+      var from = packet.attributes["to"].value; 
+      var to   = packet.attributes["from"].value; 
+      var iq    = OX.XMPP.IQ.extend();
+      iq.from(from);
+      iq.to(to);
+      iq.type('result'); 
+      iq.attr('id', id);
+      DemoApp.OX.con.send(iq.toString());
+
+      return true;
     }
 
   };
@@ -271,6 +502,10 @@ DemoApp.Strophe = function() {
       con = new Strophe.Connection('/http-bind/');
       con.rawInput  = function (data) { logMessage(data, false); };
       con.rawOutput = function (data) { logMessage(data, true);  };
+
+      con.addHandler(DemoApp.OX._handleRostersIq, 'http://jabber.org/protocol/rosterx', 'iq', 'set', null, null);
+      con.addHandler(DemoApp.OX._handleEjabberdIq, 'jabber:iq:roster', 'iq', 'set', null, null);
+      con.addHandler(DemoApp.OX._handleEjabberdIq, 'jabber:client', 'iq', 'result', null, null);
     }
   };
 }();
@@ -302,6 +537,16 @@ $(document).ready(function () {
     e.preventDefault();
     DemoApp.OX.subscribeActiveCalls('subscribe-active-calls');
   });
+
+  $('#push-roster-groups').bind('submit', function (e) {
+    e.preventDefault();
+    DemoApp.OX.pushRosterGroups('push-roster-groups');
+  });
+
+  $('#request-roster').bind('submit', function (e) {
+    e.preventDefault();
+    DemoApp.OX.requestRoster('request-roster');
+  });
 });
 
 var onerror = function (e) {
@@ -309,6 +554,5 @@ var onerror = function (e) {
 
   $('#err').html('');
   $('#logged_out_pane').show();
-
   return false;
 };
