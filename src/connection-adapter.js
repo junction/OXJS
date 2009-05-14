@@ -32,7 +32,7 @@
  */
 OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
   /** The JID of this connection. */
-  jid: null,
+  jid: function () {},
 
   /**
    * Send an XML string to the underlying connection.

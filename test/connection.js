@@ -16,7 +16,7 @@ OXTest.Connection = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert,
      expectedError = new Error();
 
-    var badAdapter = OXTest.ConnectionMock.extend({jid: undefined}).init(),
+    var badAdapter = OXTest.ConnectionMock.extend({jid: function () { return undefined } }).init(),
       badOx = OX.Connection.extend({connection: badAdapter});
 
     Assert.throws(OX.Error, function() { badOx.initConnection(); });

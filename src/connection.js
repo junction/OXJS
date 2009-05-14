@@ -100,7 +100,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @see OX.ConnectionAdapter#jid
    */
   getJID: function () {
-    return this.connection.jid;
+    return this.connection.jid();
   },
 
   /**
