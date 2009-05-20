@@ -290,7 +290,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var successFlag = false, errorFlag = false;
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="error" id="test"><subscribe node="/" jid="mock@example.com"/><error type="modify"><redirect xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">xmpp:pubsub.example.com?;node=other-node</redirect></error></iq>'));
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><subscription node="other-node" jid="mock@example.com" subscription="subscribed"/></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));
     this.Subscribable.subscribe('/', {
       onSuccess: function (requestedURI, finalURI, packet) {
         successFlag = true;
@@ -371,7 +371,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       pendingFlag = true;
     });
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="error" id="test"><subscribe node="/" jid="mock@example.com"/><error type="modify"><redirect xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">xmpp:pubsub.example.com?;node=other-node</redirect></error></iq>'));
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="pending"/></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="pending"/></pubsub></iq>'));
 
     this.Subscribable.subscribe('/', {
       onSuccess: function (requestedURI, finalURI, packet) {
@@ -399,7 +399,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       subscribedFlag = true;
     });
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="error" id="test"><subscribe node="/" jid="mock@example.com"/><error type="modify"><redirect xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">xmpp:pubsub.example.com?;node=other-node</redirect></error></iq>'));
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="subscribed"/></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));
 
     this.Subscribable.subscribe('/', {
       onSuccess: function (requestedURI, finalURI, packet) {
@@ -427,7 +427,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       unsubscribedFlag = true;
     });
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="error" id="test"><subscribe node="/" jid="mock@example.com"/><error type="modify"><redirect xmlns="urn:ietf:params:xml:ns:xmpp-stanzas">xmpp:pubsub.example.com?;node=other-node</redirect></error></iq>'));
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="unsubscribed"/></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="other-node" jid="mock@example.com" subscription="none"/></pubsub></iq>'));
 
     this.Subscribable.subscribe('/', {
       onSuccess: function (requestedURI, finalURI, packet) {
@@ -444,7 +444,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.isTrue(successFlag,
                   'Was not successful trying subscribe.');
     Assert.isTrue(unsubscribedFlag,
-                  'Did not get subscribed trying to subscribe.');
+                  'Did not get unsubscribed trying to subscribe.');
   },
 
   testPublishHandler: function () {
