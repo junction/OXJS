@@ -18,7 +18,7 @@ DemoApp.OX = function() {
       var adapter = OX.ConnectionAdapter.extend({
         _callbacks: [],
 
-        jid: con.jid,
+        jid: function () { return con.jid; },
 
         registerHandler: function (event, handler) {
           function wrapped(stanza) {
