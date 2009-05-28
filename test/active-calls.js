@@ -1,6 +1,74 @@
 OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   name: 'ActiveCalls Tests',
 
+  eventXml: {
+    createdEvent: '<message from="pubsub.active-calls.xmpp.onsip.com" to="foo!example.onsip.com@dashboard.onsip.com" >'
+                  + '  <event xmlns="http://jabber.org/protocol/pubsub#event">'
+                  + '    <items node="/example.onsip.com/foo" >'
+                  + '      <item id="b5879e23d6a92cc11f01a29e466f7bd2" >'
+                  + '        <active-call xmlns="onsip:active-calls">'
+                  + '          <dialog-state>created</dialog-state>'
+                  + '          <to-aor/>'
+                  + '          <call-id>NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU.</call-id>'
+                  + '          <from-uri>sip:foo@example.onsip.com</from-uri>'
+                  + '          <to-uri>sip:other@example.onsip.com</to-uri>'
+                  + '          <from-tag>419cce6a</from-tag>'
+                  + '          <to-tag/>'
+                  + '          <branch/>'
+                  + '        </active-call>'
+                  + '      </item>'
+                  + '    </items>'
+                  + '  </event>'
+                  + '  <headers xmlns="http://jabber.org/protocol/shim">'
+                  + '    <header name="Collection" >/me/foo!example.onsip.com@dashboard.onsip.com</header>'
+                  + '  </headers>'
+                  + '</message>',
+
+    requestedEvent: '<message from="pubsub.active-calls.xmpp.onsip.com" to="foo!example.onsip.com@dashboard.onsip.com" >'
+                    + '  <event xmlns="http://jabber.org/protocol/pubsub#event">'
+                    + '    <items node="/example.onsip.com/foo" >'
+                    + '      <item id="6859babae582000ff963b29394ddb4b5" >'
+                    + '        <active-call xmlns="onsip:active-calls">'
+                    + '          <dialog-state>requested</dialog-state>'
+                    + '          <to-aor>foo@example.onsip.com</to-aor>'
+                    + '          <call-id>ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.</call-id>'
+                    + '          <from-uri>sip:other@example.onsip.com</from-uri>'
+                    + '          <to-uri>sip:foo@example.onsip.com</to-uri>'
+                    + '          <from-tag>53498145</from-tag>'
+                    + '          <to-tag/>'
+                    + '          <branch>z9hG4bK7bb6.4c45a015.0</branch>'
+                    + '        </active-call>'
+                    + '      </item>'
+                    + '    </items>'
+                    + '  </event>'
+                    + '  <headers xmlns="http://jabber.org/protocol/shim">'
+                    + '    <header name="Collection" >/me/foo!example.onsip.com@dashboard.onsip.com</header>'
+                    + '  </headers>'
+                    + '</message>',
+
+    confirmedEvent: '<message from="pubsub.active-calls.xmpp.onsip.com" to="foo!example.onsip.com@dashboard.onsip.com" >'
+                    + '  <event xmlns="http://jabber.org/protocol/pubsub#event">'
+                    + '    <items node="/example.onsip.com/foo" >'
+                    + '      <item id="b5879e23d6a92cc11f01a29e466f7bd2" >'
+                    + '        <active-call xmlns="onsip:active-calls">'
+                    + '          <dialog-state>confirmed</dialog-state>'
+                    + '          <to-aor>foo@example.onsip.com</to-aor>'
+                    + '          <call-id>ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.</call-id>'
+                    + '          <from-uri>sip:other@example.onsip.com</from-uri>'
+                    + '          <to-uri>sip:foo@example.onsip.com</to-uri>'
+                    + '          <from-tag>53498145</from-tag>'
+                    + '          <to-tag>as11173b9d</to-tag>'
+                    + '          <branch>z9hG4bK7bb6.4c45a015.0</branch>'
+                    + '        </active-call>'
+                    + '      </item>'
+                    + '    </items>'
+                    + '  </event>'
+                    + '  <headers xmlns="http://jabber.org/protocol/shim">'
+                    + '    <header name="Collection" >/me/foo!example.onsip.com@dashboard.onsip.com</header>'
+                    + '  </headers>'
+                    + '</message>'
+  },
+
   setUp: function () {
     this.conn = OXTest.ConnectionMock.extend().init();
     this.ox = OX.Connection.extend({connection: this.conn});
@@ -52,58 +120,95 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    'ActiveCalls.commandURIs.hangup is wrong');
   },
 
-  testItemFromElement: function () {
+/*
+ * <active-call xmlns="onsip:active-calls">
+ *   <dialog-state>created</dialog-state>
+ *   <to-aor/>
+ *   <call-id>NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU.</call-id>
+ *   <from-uri>sip:foo@example.onsip.com</from-uri>
+ *   <to-uri>sip:other@example.onsip.com</to-uri>
+ *   <from-tag>419cce6a</from-tag>
+ *   <to-tag/>
+ *   <branch/>
+ * </active-call>
+ */
+  testCreatedEvent: function() {
     var Assert = YAHOO.util.Assert;
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.createdEvent);
 
-    Assert.isFunction(this.ActiveCalls.itemFromElement,
-                      'ActiveCalls does not respond to itemFromElement.');
-    Assert.isUndefined(this.ActiveCalls.itemFromElement(),
-                       'AcitveCalls.itemFromElement parsed bad element.');
-
-    var element = OXTest.DOMParser.parse('<item id="301:NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU."><active-call xmlns="onsip:active-calls"><dialog-state>created</dialog-state><uac-aor>jill@example.com</uac-aor><uas-aor>jack@example.com</uas-aor><call-id>123</call-id><from-uri>sip:jill@example.com</from-uri><to-uri>sip:jack@example.com</to-uri><from-tag>999</from-tag><to-tag>666</to-tag></active-call></item>');
     var item = this.ActiveCalls.itemFromElement(element.doc);
     Assert.isObject(item,
                     'ActiveCalls.itemFromElement did not return an object.');
-    Assert.areSame(this.ox, item.connection,
-                   'Active calls item connection is wrong.');
-    Assert.areSame('created', item.dialogState,
-                   'Active call item dialog state is wrong.');
-    Assert.areSame('jill@example.com', item.uacAOR,
-                   'Active call item uac aor is wrong.');
-    Assert.areSame('jack@example.com', item.uasAOR,
-                   'Active call item uas aor is wrong.');
-    Assert.areSame('123', item.callID,
-                   'Active call item call id is wrong.');
-    Assert.areSame('sip:jill@example.com', item.fromURI,
-                   'Active call item from URI is wrong.');
-    Assert.areSame('sip:jack@example.com', item.toURI,
-                   'Active call item to URI is wrong.');
-    Assert.areSame('999', item.fromTag,
-                   'Active call item from tag is wrong.');
-    Assert.areSame('666', item.toTag,
-                   'Active call item to tag is wrong.');
+
+    Assert.areSame('created', item.dialogState, 'item.dialogState is incorrect');
+    Assert.isNull(item.toAOR, 'item.toAOR is incorrect');
+    Assert.areSame('NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU.', item.callID, 'item.callID is incorrect');
+    Assert.areSame('sip:foo@example.onsip.com', item.fromURI, 'item.fromURI is incorrect');
+    Assert.areSame('sip:other@example.onsip.com', item.toURI, 'item.toURI is incorrect');
+    Assert.areSame('419cce6a', item.fromTag, 'item.fromTag is incorrect');
+    Assert.isNull(item.toTag, 'item.toTag is incorrect');
+    Assert.isNull(item.branch, 'item.branch is incorrect');
   },
 
-  testItemFromElementWithEmptyToTag: function () {
+  /*
+   * <active-call xmlns="onsip:active-calls">
+   *   <dialog-state>requested</dialog-state>
+   *   <to-aor>foo@example.onsip.com</to-aor>
+   *   <call-id>ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.</call-id>
+   *   <from-uri>sip:other@example.onsip.com</from-uri>
+   *   <to-uri>sip:foo@example.onsip.com</to-uri>
+   *   <from-tag>53498145</from-tag>
+   *   <to-tag/>
+   *   <branch>z9hG4bK7bb6.4c45a015.0</branch>
+   * </active-call>
+   */
+  testRequestedEvent: function() {
     var Assert = YAHOO.util.Assert;
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.requestedEvent);
 
-    var element = OXTest.DOMParser.parse('<item id="301:NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU."><active-call xmlns="onsip:active-calls"><dialog-state>created</dialog-state><uac-aor>jill@example.com</uac-aor><uas-aor>jack@example.com</uas-aor><call-id>123</call-id><from-uri>sip:jill@example.com</from-uri><to-uri>sip:jack@example.com</to-uri><from-tag>999</from-tag><to-tag/></active-call></item>');
     var item = this.ActiveCalls.itemFromElement(element.doc);
     Assert.isObject(item,
                     'ActiveCalls.itemFromElement did not return an object.');
-    Assert.isNull(item.toTag,
-                  'Active call item to tag is not null.');
+
+    Assert.areSame('requested', item.dialogState, 'item.dialogState is incorrect');
+    Assert.areSame('foo@example.onsip.com', item.toAOR, 'item.toAOR is incorrect');
+    Assert.areSame('ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.', item.callID, 'item.callID is incorrect');
+    Assert.areSame('sip:other@example.onsip.com', item.fromURI, 'item.fromURI is incorrect');
+    Assert.areSame('sip:foo@example.onsip.com', item.toURI, 'item.toURI is incorrect');
+    Assert.areSame('53498145', item.fromTag, 'item.fromTag is incorrect');
+    Assert.isNull(item.toTag, 'item.toTag is incorrect');
+    Assert.areSame('z9hG4bK7bb6.4c45a015.0', item.branch, 'item.branch is incorrect');
   },
 
-  testItemFromElementWithEmptyUASAOR: function () {
-    var Assert = YAHOO.util.Assert;
 
-    var element = OXTest.DOMParser.parse('<item id="301:NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU."><active-call xmlns="onsip:active-calls"><dialog-state>created</dialog-state><uac-aor>jill@example.com</uac-aor><uas-aor/><call-id>123</call-id><from-uri>sip:jill@example.com</from-uri><to-uri>sip:jack@example.com</to-uri><from-tag>999</from-tag><to-tag/></active-call></item>');
+  /*
+   * <active-call xmlns="onsip:active-calls">
+   *   <dialog-state>confirmed</dialog-state>
+   *   <to-aor>foo@example.onsip.com</to-aor>
+   *   <call-id>ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.</call-id>
+   *   <from-uri>sip:other@example.onsip.com</from-uri>
+   *   <to-uri>sip:foo@example.onsip.com</to-uri>
+   *   <from-tag>53498145</from-tag>
+   *   <to-tag>as11173b9d</to-tag>
+   *   <branch>z9hG4bK7bb6.4c45a015.0</branch>
+   * </active-call>
+   */
+  testConfirmedEvent: function() {
+    var Assert = YAHOO.util.Assert;
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.confirmedEvent);
+
     var item = this.ActiveCalls.itemFromElement(element.doc);
     Assert.isObject(item,
                     'ActiveCalls.itemFromElement did not return an object.');
-    Assert.isNull(item.uasAOR,
-                  'Active call item uasAOR is not null.');
+
+    Assert.areSame('confirmed', item.dialogState, 'item.dialogState is incorrect');
+    Assert.areSame('foo@example.onsip.com', item.toAOR, 'item.toAOR is incorrect');
+    Assert.areSame('ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.', item.callID, 'item.callID is incorrect');
+    Assert.areSame('sip:other@example.onsip.com', item.fromURI, 'item.fromURI is incorrect');
+    Assert.areSame('sip:foo@example.onsip.com', item.toURI, 'item.toURI is incorrect');
+    Assert.areSame('53498145', item.fromTag, 'item.fromTag is incorrect');
+    Assert.areSame('as11173b9d', item.toTag, 'item.toTag is incorrect');
+    Assert.areSame('z9hG4bK7bb6.4c45a015.0', item.branch, 'item.branch is incorrect');
   },
 
   testCreateAPI: function() {
@@ -204,18 +309,11 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                           'ActiveCalls.Item.toURI is undefined');
   },
 
-  testUACAOR: function () {
+  testToAOR: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isNotUndefined(this.ActiveCalls.Item.uacAOR,
-                          'ActiveCalls.Item.uacAOR is undefined');
-  },
-
-  testUASAOR: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isNotUndefined(this.ActiveCalls.Item.uasAOR,
-                          'ActiveCalls.Item.uasAOR is undefined');
+    Assert.isNotUndefined(this.ActiveCalls.Item.toAOR,
+                          'ActiveCalls.Item.toAOR is undefined');
   },
 
   testFromTag: function () {
@@ -230,7 +328,15 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isNotUndefined(this.ActiveCalls.Item.toTag,
                           'ActiveCalls.Item.toTag is undefined');
+  },
+
+  testBranch: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.ActiveCalls.Item.branch,
+                          'ActiveCalls.Item.branch is undefined');
   }
+
 });
 
 YAHOO.tool.TestRunner.add(OXTest.ActiveCalls);

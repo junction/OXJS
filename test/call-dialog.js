@@ -25,9 +25,10 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
 
     Assert.isFunction(OX.Mixins.CallDialog.transfer,
                       'CallDialog.transfer is not a function.');
-    this.CallDialog.transfer('alice@example.com');
+    this.CallDialog.transfer('sip:alice@example.com', 'callee');
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
-                     'transfer', {'to-address': 'alice@example.com',
+                     'transfer', {'target-uri': 'sip:alice@example.com',
+                                  'endpoint':   'callee',
                                   'call-id':    'call-id',
                                   'to-tag':     'to-tag',
                                   'from-tag':   'from-tag'});
@@ -39,7 +40,7 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test"/>'));
 
     var successFlag = false, errorFlag = false;
-    this.CallDialog.transfer('alice@example.com', {
+    this.CallDialog.transfer('sip:alice@example.com', 'callee', {
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
@@ -53,7 +54,7 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test" type="error"><error type="cancel"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>'));
 
     var successFlag = false, errorFlag = false;
-    this.CallDialog.transfer('alice@example.com', {
+    this.CallDialog.transfer('sip:alice@example.com', 'callee', {
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });

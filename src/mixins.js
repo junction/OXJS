@@ -33,13 +33,15 @@ OX.Mixins.CallDialog = function () {
     /**
      * Transfer a call to a sip address.
      *
-     * @param {String} to To whom to transfer the active call.
+     * @param {String} targetURI To what SIP URI to transfer the active call.
+     * @param {String} endpoint Either 'caller' or 'callee'
      * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
+     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#transfer
      * @example
-     * call.transfer('lisa@example.com');
+     * call.transfer('sip:lisa@example.com', 'callee');
      */
-    transfer: function (to, callbacks) {
+    transfer: function (targetURI, endpoint, callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
           xData = OX.XMPP.XDataForm.extend();
@@ -53,7 +55,8 @@ OX.Mixins.CallDialog = function () {
       xData.addField('call-id',    this.callID);
       xData.addField('from-tag',   this.fromTag);
       xData.addField('to-tag',     this.toTag);
-      xData.addField('to-address', to);
+      xData.addField('target-uri', targetURI);
+      xData.addField('endpoint',   endpoint);
 
       iq.addChild(cmd.addChild(xData));
 
@@ -74,6 +77,7 @@ OX.Mixins.CallDialog = function () {
      *
      * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
+     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#terminate
      * @example
      * call.hangup();
      */
@@ -195,6 +199,14 @@ OX.Mixins.Subscribable = function () {
   }
 
   function convertItems(document) {
+    function itemURI(itemID) {
+      var from  = document.getAttribute('from'),
+          items = document.firstChild.firstChild,
+          node  = items.getAttribute('node');
+
+      return OX.URI.fromObject({path: from,
+                                query: ';node=' + node + ';item=' + itemID});
+    }
     /*
      * TODO: Without XPath we're taking some schema risks
      * here. Really we only want `/iq/pubsub/items/item'
@@ -208,10 +220,13 @@ OX.Mixins.Subscribable = function () {
     // Grab the first `items' node found.
     items = items[0];
     if (items && items.childNodes) {
-      var children = items.childNodes;
+      var children = items.childNodes,
+          item;
       for (var i = 0, len = children.length; i < len; i++) {
         if (children[i].tagName && children[i].tagName === 'item') {
-          rc.push(this.itemFromElement(children[i]));
+          item = this.itemFromElement(children[i]);
+          item.uri = itemURI(children[i].getAttribute('id'));
+          rc.push(item);
         }
       }
     }

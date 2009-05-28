@@ -119,17 +119,18 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     /** The URI of the call terminator. */
     toURI: null,
 
-    /** The Address of Record for the User Agent Client. */
-    uacAOR: null,
-
     /** The Address of Record for the User Agent Server. */
-    uasAOR: null,
+    toAOR: null,
 
     /** The tag for the originating leg of the call. */
     fromTag: null,
 
     /** The tag for the terminating leg of the call. */
-    toTag: null
+    toTag: null,
+
+    /** The branch tag for this pre-dialog event. */
+    branch: null
+
   }),
 
   /**
@@ -173,14 +174,11 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
       case 'dialog-state':
         attrs.dialogState = node.firstChild.nodeValue;
         break;
-      case 'uac-aor':
-        attrs.uacAOR = node.firstChild.nodeValue;
-        break;
-      case 'uas-aor':
-        attrs.uasAOR = node.firstChild && node.firstChild.nodeValue;
-        break;
       case 'call-id':
         attrs.callID = node.firstChild.nodeValue;
+        break;
+      case 'to-aor':
+        attrs.toAOR = node.firstChild && node.firstChild.nodeValue;
         break;
       case 'from-uri':
         attrs.fromURI = node.firstChild.nodeValue;
@@ -194,6 +192,10 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
       case 'to-tag':
         attrs.toTag = node.firstChild && node.firstChild.nodeValue;
         break;
+      case 'branch':
+        attrs.branch = node.firstChild && node.firstChild.nodeValue;
+        break;
+
       }
     }
 
@@ -507,11 +509,11 @@ OX.Services.Rosters = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Servi
 
   /**
    * Push a roster group from the Junction Networks XMPP API Rosters Component.
-   * The first time this is called, a user will receive a series of roster add requests for 
-   * every user in his organization. The next time he requests roster information he will only 
-   * receive deltas; that is, add requests of any new users since his last request, 
-   * modify requests for any user's who have changed contact information, and 
-   * delete requests for any users who may have been deleted. 
+   * The first time this is called, a user will receive a series of roster add requests for
+   * every user in his organization. The next time he requests roster information he will only
+   * receive deltas; that is, add requests of any new users since his last request,
+   * modify requests for any user's who have changed contact information, and
+   * delete requests for any users who may have been deleted.
    *
    * @param {String} [jid] The full JID to push roster groups to; if not provided, the JID in the IQ 'from' attribute will be assumed.
    *
