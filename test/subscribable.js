@@ -20,7 +20,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   },
 
   itemFromElement: function (element) {
-    return 'item';
+    return OX.Item.extend({name: 'item'});
   },
 
   tearDown: function () {
@@ -452,13 +452,26 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo>bar</foo></item><item id="item2"><foo>baz</foo></item></items></event></message>');
 
-    var publishCount = 0;
+    var publishCount = 0,
+        items = [];
     this.Subscribable.registerHandler('onPublish', function (item) {
       publishCount++;
-      Assert.areSame('item', item, 'Item is not coerced for publish handler.');
+      Assert.areSame('item', item.name, 'Item is not coerced for publish handler.');
+      items.push(item);
     });
 
     this.conn.fireEvent('message', packet);
+
+    Assert.isObject(items[0].uri, "Item1 URI is not an OX.URI object");
+    Assert.isObject(items[1].uri, "Item2 URI is not an OX.URI object");
+
+    Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item1',
+                   items[0].uri.toString(),
+                   'Item1 URI has an incorrect value');
+    Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item2',
+                   items[1].uri.toString(),
+                   'Item2 URI has an incorrect value');
+
     Assert.areSame(2, publishCount, 'Wrong number of items when publishing.');
   },
 
@@ -490,9 +503,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.areSame(2, items.length,
                        'Wrong number of items passed to success handler.');
-        Assert.areSame('item', items[0],
+
+        Assert.areSame('item', items[0].name,
                        'Item was not translated in success handler.');
-        Assert.areSame('item', items[1],
+        Assert.areSame('item', items[1].name,
                        'Item was not translated in success handler.');
       },
 

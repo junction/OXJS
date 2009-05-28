@@ -195,6 +195,14 @@ OX.Mixins.Subscribable = function () {
   }
 
   function convertItems(document) {
+    function itemURI(itemID) {
+      var from  = document.getAttribute('from'),
+          items = document.firstChild.firstChild,
+          node  = items.getAttribute('node');
+
+      return OX.URI.fromObject({path: from,
+                                query: ';node=' + node + ';item=' + itemID});
+    }
     /*
      * TODO: Without XPath we're taking some schema risks
      * here. Really we only want `/iq/pubsub/items/item'
@@ -208,10 +216,13 @@ OX.Mixins.Subscribable = function () {
     // Grab the first `items' node found.
     items = items[0];
     if (items && items.childNodes) {
-      var children = items.childNodes;
+      var children = items.childNodes,
+          item;
       for (var i = 0, len = children.length; i < len; i++) {
         if (children[i].tagName && children[i].tagName === 'item') {
-          rc.push(this.itemFromElement(children[i]));
+          item = this.itemFromElement(children[i]);
+          item.uri = itemURI(children[i].getAttribute('id'));
+          rc.push(item);
         }
       }
     }
