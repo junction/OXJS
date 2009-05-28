@@ -33,13 +33,15 @@ OX.Mixins.CallDialog = function () {
     /**
      * Transfer a call to a sip address.
      *
-     * @param {String} to To whom to transfer the active call.
+     * @param {String} targetURI To what SIP URI to transfer the active call.
+     * @param {String} endpoint Either 'caller' or 'callee'
      * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
+     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#transfer
      * @example
-     * call.transfer('lisa@example.com');
+     * call.transfer('sip:lisa@example.com', 'callee');
      */
-    transfer: function (to, callbacks) {
+    transfer: function (targetURI, endpoint, callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
           xData = OX.XMPP.XDataForm.extend();
@@ -53,7 +55,8 @@ OX.Mixins.CallDialog = function () {
       xData.addField('call-id',    this.callID);
       xData.addField('from-tag',   this.fromTag);
       xData.addField('to-tag',     this.toTag);
-      xData.addField('to-address', to);
+      xData.addField('target-uri', targetURI);
+      xData.addField('endpoint',   endpoint);
 
       iq.addChild(cmd.addChild(xData));
 
@@ -74,6 +77,7 @@ OX.Mixins.CallDialog = function () {
      *
      * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
+     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#terminate
      * @example
      * call.hangup();
      */
