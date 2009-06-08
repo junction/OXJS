@@ -58,6 +58,15 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Was not successful trying to subscribe.');
   },
 
+  testSubscribesWithFullJID: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.jid = function () { return 'mock@example.com/test'; };
+    this.Subscribable.subscribe('/');
+    Assert.isSubscribe(this.conn._data, 'pubsub@example.com', '/',
+                       'mock@example.com/test');
+  },
+
   testSubscribeError: function () {
     var Assert = YAHOO.util.Assert;
 
