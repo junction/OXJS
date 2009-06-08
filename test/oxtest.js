@@ -155,7 +155,7 @@ YAHOO.util.Assert.isCommand = function (xml, jid, node, fields) {
   }
 };
 
-YAHOO.util.Assert.isSubscribe = function (xml, jid, node, ourJID) {
+YAHOO.util.Assert.isSubscribe = function (xml, jid, node, ourJID, options) {
   var doc = OXTest.DOMParser.parse(xml);
 
   this.areSame('set',
@@ -170,6 +170,23 @@ YAHOO.util.Assert.isSubscribe = function (xml, jid, node, ourJID) {
   this.areSame(ourJID,
                doc.getPathValue('/iq/ps:pubsub/ps:subscribe/@jid'),
                'subscribe jid is wrong');
+
+  if (options) {
+    this.areSame('submit',
+                 doc.getPathValue('/iq/ps:pubsub/ps:options/x:x/@type'),
+                 'options xform type is wrong.');
+
+    this.areSame('http://jabber.org/protocol/pubsub#subscribe_options',
+                 doc.getPathValue('/iq/ps:pubsub/ps:options/x:x/x:field[@var="FORM_TYPE"]/x:value/text()'),
+                 'options xform FORM_TYPE is wrong.');
+
+    for (var o in options) if (options.hasOwnProperty(o)) {
+      var path = '/iq/ps:pubsub/ps:options/x:x/x:field[@var="pubsub#' + o + '"]/x:value/text()';
+
+      this.areSame(options[o], doc.getPathValue(path),
+                   'Option value for ' + o + ' is wrong.');
+    }
+  }
 };
 
 YAHOO.util.Assert.isUnsubscribe = function (xml, jid, node, ourJID) {
