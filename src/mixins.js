@@ -381,7 +381,7 @@ OX.Mixins.Subscribable = function () {
   }
 
   var optionTransforms = {
-    expires: function (direction, value) {
+    expire: function (direction, value) {
       switch (direction) {
       case 'fromString':
         return 'oops';
