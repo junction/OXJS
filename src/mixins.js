@@ -298,7 +298,8 @@ OX.Mixins.Subscribable = function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
-  function subscriptionHandler(packet, node, callbacks, origNode, redirects) {
+  function subscriptionHandler(packet, node, options, callbacks,
+                               origNode, redirects) {
     callbacks = callbacks || {};
     redirects = redirects || 0;
 
@@ -316,7 +317,8 @@ OX.Mixins.Subscribable = function () {
             path    = uri.path,
             newNode = uri.queryParam('node');
         if (path && newNode) {
-          this.subscribe(newNode, callbacks, origNode, redirects + 1);
+          doSubscribe.call(this, newNode, options, callbacks,
+                           origNode, redirects + 1);
         }
       } else if (callbacks.onError) {
         callbacks.onError(reqURI, finalURI, packet);
@@ -331,6 +333,24 @@ OX.Mixins.Subscribable = function () {
           subscription = pubSub.firstChild;
       if (subscription && subscription.tagName === 'subscription') {
         fireEvent.call(this, packetType(subscription), packet);
+      }
+    }
+  }
+
+  function unsubscriptionHandler(packet, node, callbacks) {
+    var uri = getURI().extend({query: ';node=' + node});
+    callbacks = callbacks || {};
+
+    if (!packet)
+      return;
+
+    if (packet.getType() === 'error') {
+      if (callbacks.onError) {
+        callbacks.onError(uri, packet.getNode());
+      }
+    } else {
+      if (callbacks.onSuccess) {
+        callbacks.onSuccess(uri, packet.getNode());
       }
     }
   }
@@ -352,20 +372,35 @@ OX.Mixins.Subscribable = function () {
     }
   }
 
-  return /** @lends OX.Mixins.Subscribable# */{
-    /**
-     * Subscribe to a nade.
-     *
-     * @param {String} node The node ID to subscribe to.
-     * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'.
-     *
-     * @example
-     * service.subscribe('/', {
-     *   onSuccess: function (requestedURI, finalURI) {},
-     *   onError:   function (requestedURI, finalURI) {}
-     * });
-     */
-    subscribe: function (node, callbacks) {
+  function zeroPad(spaces, value) {
+    var rc = (value || '').toString();
+    for (var i = spaces - rc.length; i > 0; i--) {
+      rc = '0' + rc;
+    }
+    return rc;
+  }
+
+  var optionTransforms = {
+    expires: function (direction, value) {
+      switch (direction) {
+      case 'fromString':
+        return 'oops';
+      case 'toString':
+        var d  = zeroPad(2, value.getUTCDate()),
+            m  = zeroPad(2, value.getUTCMonth() + 1),
+            y  = zeroPad(4, value.getUTCFullYear()),
+            hh = zeroPad(2, value.getUTCHours()),
+            mm = zeroPad(2, value.getUTCMinutes()),
+            ss = zeroPad(2, value.getUTCSeconds()),
+            ms = zeroPad(4, value.getUTCMilliseconds());
+        return y + '-' + m + '-' + d + 'T' + hh + ':' + mm + ':' + ss + '.' + ms + '000Z';
+      default:
+        return undefined;
+      }
+    }
+  };
+
+  function doSubscribe(node, options, callbacks, origNode, redirectCount) {
       var iq        = OX.XMPP.IQ.extend(),
           pubsub    = OX.XML.Element.extend({name:  'pubsub',
                                              xmlns: 'http://jabber.org/protocol/pubsub'}),
@@ -375,16 +410,58 @@ OX.Mixins.Subscribable = function () {
       iq.type('set');
       subscribe.attr('node', node);
       subscribe.attr('jid', this.connection.getJID());
-      iq.addChild(pubsub.addChild(subscribe));
+      pubsub.addChild(subscribe);
+      if (options) {
+        var xData = OX.XMPP.XDataForm.create({type: 'submit'}),
+            opts  = OX.XML.Element.extend({name: 'options'}).create({}, xData);
+
+        xData.addField('FORM_TYPE', 'http://jabber.org/protocol/pubsub#subscribe_options');
+
+        pubsub.addChild(opts);
+        for (var o in options) if (options.hasOwnProperty(o)) {
+          var trVal = options[o];
+          if (optionTransforms[o]) {
+            trVal = optionTransforms[o]('toString', trVal);
+          }
+          xData.addField('pubsub#' + o, trVal);
+        }
+      }
+      iq.addChild(pubsub);
 
       var that = this;
       var cb = function () { subscriptionHandler.apply(that, arguments); };
 
-      // arguments[2] is the original node, if available.
-      // arguments[3] is the redirect count, if available.
       this.connection.send(iq.toString(), cb,
-                           [node, callbacks,
-                            arguments[2] || node, arguments[3]]);
+                           [node, options, callbacks, origNode, redirectCount]);
+  }
+
+  return /** @lends OX.Mixins.Subscribable# */{
+    /**
+     * Subscribe to a nade.
+     *
+     * @param {String} node The node ID to subscribe to.
+     * @param {Object} [options] Subscription options.
+     * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'.
+     *
+     * @example
+     * service.subscribe('/', {
+     *   onSuccess: function (requestedURI, finalURI) {},
+     *   onError:   function (requestedURI, finalURI) {}
+     * });
+     *
+     * var options = {expires: new Date()};
+     * service.subscribe('/', options, {
+     *   onSuccess: function (requestedURI, finalURI) {},
+     *   onError:   function (requestedURI, finalURI) {}
+     * });
+     */
+    subscribe: function (node, options, callbacks) {
+      if (arguments.length == 2) {
+        callbacks = options;
+        options   = undefined;
+      }
+
+      doSubscribe.call(this, node, options, callbacks, node, 0);
     },
 
     /**
@@ -412,7 +489,7 @@ OX.Mixins.Subscribable = function () {
       iq.addChild(pubsub.addChild(unsubscribe));
 
       var that = this;
-      var cb = function () { subscriptionHandler.apply(that, arguments); };
+      var cb = function () { unsubscriptionHandler.apply(that, arguments); };
       this.connection.send(iq.toString(), cb, [node, callbacks]);
     },
 
