@@ -71,7 +71,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, errorFlag = false,
-        options = {expires:            new Date(2009, 5, 8, 1, 20, 10, 708),
+        options = {expire:             new Date(2009, 5, 8, 1, 20, 10, 708),
                    subscription_depth: 'all',
                    subscription_type:  'items'};
     this.Subscribable.subscribe('/', options, {
@@ -86,7 +86,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     Assert.isSubscribe(this.conn._data, 'pubsub@example.com', '/',
                        'mock@example.com',
-                       {expires:            '2009-06-08T05:20:10.0708000Z',
+                       {expire:             '2009-06-08T05:20:10.0708000Z',
                         subscription_depth: 'all',
                         subscription_type:  'items'});
   },
