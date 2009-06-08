@@ -8,7 +8,7 @@ OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
 
   _responses: [],
 
-  jid: function () { return 'mock@example.com' },
+  jid: function () { return 'mock@example.com'; },
 
   init: function () {
     this._responses = [];
