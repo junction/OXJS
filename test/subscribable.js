@@ -168,6 +168,26 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Did not get error trying to unsubscribe.');
   },
 
+  testRegisterHandler: function() {
+    var Assert = YAHOO.util.Assert;
+
+    var that = this;
+    var itemFromElement = function () {
+      return that.itemFromElement.apply(that, arguments);
+    };
+
+    var subscribableService2 = OX.Base.extend(OX.Mixins.Subscribable, {
+      connection:     this.ox,
+      pubSubURI:      'xmpp:pubsub2@example.com',
+      itemFromElement: itemFromElement
+    });
+    subscribableService2.registerSubscriptionHandlers();
+
+    Assert.areNotSame(subscribableService2._subscriptionHandlers,
+                      this.Subscribable._subscriptionHandlers,
+                     'subscribableService2 has identical _subscriptionHandlers');
+  },
+
   testFiresPendingWithEvent: function () {
     var Assert = YAHOO.util.Assert;
 

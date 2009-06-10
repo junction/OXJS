@@ -436,6 +436,11 @@ OX.Mixins.Subscribable = function () {
   }
 
   return /** @lends OX.Mixins.Subscribable# */{
+    init: function() {
+      var tpl = OX.Mixins.Subscribable._subscriptionHandlers;
+      this._subscriptionHandlers = OX.Base.extend(tpl);
+    },
+
     /**
      * Subscribe to a nade.
      *

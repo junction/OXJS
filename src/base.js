@@ -22,6 +22,10 @@ OX.Base = {
     var rc = new F();
     rc.mixin.apply(rc, arguments);
 
+    if (rc.init && rc.init.constructor === Function) {
+      rc.init.call(rc);
+    }
+
     return rc;
   },
 
