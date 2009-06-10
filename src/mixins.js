@@ -177,13 +177,6 @@ OX.Mixins.CallLabeler = function () {
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
 OX.Mixins.Subscribable = function () {
-  function getURI() {
-    if (arguments.callee._cached === undefined) {
-      arguments.callee._cached = OX.URI.parse(this.pubSubURI);
-    }
-    return arguments.callee._cached;
-  };
-
   function packetType(element) {
     switch (element.tagName) {
     case 'subscription':
@@ -306,8 +299,8 @@ OX.Mixins.Subscribable = function () {
     if (!packet)
       return;
 
-    var finalURI = getURI().extend({query: ';node=' + node}),
-        reqURI   = getURI().extend({query: ';node=' + (origNode || node)});
+    var finalURI = this.getURI().extend({query: ';node=' + node}),
+        reqURI   = this.getURI().extend({query: ';node=' + (origNode || node)});
     if (packet.getType() === 'error') {
       var error = packet.getNode().getElementsByTagName('error')[0];
       if (redirects < 5 && error && error.firstChild &&
@@ -338,7 +331,7 @@ OX.Mixins.Subscribable = function () {
   }
 
   function unsubscriptionHandler(packet, node, callbacks) {
-    var uri = getURI().extend({query: ';node=' + node});
+    var uri = this.getURI().extend({query: ';node=' + node});
     callbacks = callbacks || {};
 
     if (!packet)
@@ -406,7 +399,7 @@ OX.Mixins.Subscribable = function () {
                                              xmlns: 'http://jabber.org/protocol/pubsub'}),
           subscribe = OX.XML.Element.extend({name: 'subscribe'});
 
-      iq.to(getURI.call(this).path);
+      iq.to(this.getURI.call(this).path);
       iq.type('set');
       subscribe.attr('node', node);
       subscribe.attr('jid', this.connection.getJID());
@@ -439,6 +432,14 @@ OX.Mixins.Subscribable = function () {
     init: function() {
       var tpl = OX.Mixins.Subscribable._subscriptionHandlers;
       this._subscriptionHandlers = OX.Base.extend(tpl);
+    },
+
+    _cachedURI: null,
+    getURI: function () {
+      if (this._cachedURI === null) {
+        this._cachedURI = OX.URI.parse(this.pubSubURI);
+      }
+      return this._cachedURI;
     },
 
     /**
@@ -487,7 +488,7 @@ OX.Mixins.Subscribable = function () {
                                                xmlns: 'http://jabber.org/protocol/pubsub'}),
           unsubscribe = OX.XML.Element.extend({name: 'unsubscribe'});
 
-      iq.to(getURI.call(this).path);
+      iq.to(this.getURI.call(this).path);
       iq.type('set');
       unsubscribe.attr('node', node);
       unsubscribe.attr('jid',  this.connection.getJID());
@@ -516,7 +517,7 @@ OX.Mixins.Subscribable = function () {
                                           xmlns: 'http://jabber.org/protocol/pubsub'}),
           items  = OX.XML.Element.extend({name: 'items'});
 
-      iq.to(getURI.call(this).path);
+      iq.to(this.getURI.call(this).path);
       iq.type('get');
       items.attr('node', node);
       iq.addChild(pubsub.addChild(items));
@@ -533,7 +534,7 @@ OX.Mixins.Subscribable = function () {
      * service.registerSubscriptionHandlers();
      */
     registerSubscriptionHandlers: function () {
-      var uri = getURI.call(this);
+      var uri = this.getURI.call(this);
       var that = this;
       var handler = function () { jidHandler.apply(that, arguments); };
       this.connection.registerJIDHandler(uri.path, handler);

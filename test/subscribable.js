@@ -168,7 +168,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Did not get error trying to unsubscribe.');
   },
 
-  testRegisterHandler: function() {
+  testMultipleServicesSubscriptionHandlers: function() {
     var Assert = YAHOO.util.Assert;
 
     var that = this;
@@ -186,6 +186,25 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.areNotSame(subscribableService2._subscriptionHandlers,
                       this.Subscribable._subscriptionHandlers,
                      'subscribableService2 has identical _subscriptionHandlers');
+  },
+
+  testMultipleServicesRegisterHandler: function() {
+    var Assert = YAHOO.util.Assert;
+
+    var that = this;
+    var itemFromElement = function () {
+      return that.itemFromElement.apply(that, arguments);
+    };
+
+    var subscribableService2 = OX.Base.extend(OX.Mixins.Subscribable, {
+      connection:     this.ox,
+      pubSubURI:      'xmpp:pubsub2@example.com',
+      itemFromElement: itemFromElement
+    });
+    subscribableService2.registerSubscriptionHandlers();
+
+    Assert.isObject(this.ox.jidHandlers['pubsub@example.com'], 'this.Subscribable is not registered');
+    Assert.isObject(this.ox.jidHandlers['pubsub2@example.com'], 'subscribableService2 is not registered');
   },
 
   testFiresPendingWithEvent: function () {
