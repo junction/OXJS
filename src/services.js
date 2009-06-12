@@ -291,23 +291,25 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
     var children = userAgentNode[0].childNodes;
 
     for (var i = 0, len = children.length; i < len; i++) {
-      var node = children[i];
+      var node = children[i],
+          value;
 
       if (!node.nodeName)
         continue;
 
+      value = (node.firstChild && node.firstChild.nodeValue) || undefined;
       switch (node.nodeName.toLowerCase()) {
       case 'contact':
-        attrs.contact = node.firstChild.nodeValue;
+        attrs.contact = value;
         break;
       case 'received':
-        attrs.received = node.firstChild.nodeValue;
+        attrs.received = value;
         break;
       case 'device':
-        attrs.device = node.firstChild.nodeValue;
+        attrs.device = value;
         break;
       case 'expires':
-        attrs.expires = node.firstChild.nodeValue;
+        attrs.expires = value;
         break;
       }
     }
