@@ -50,6 +50,17 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     Assert.areSame('2009-03-02T15:58:23Z', item.expires, 'Expiry is wrong.');
   },
 
+  testItemFromElementMissingElements: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var element = OXTest.DOMParser.parse('<item id="sip:jill@example.com:5060"><user-agent xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received/><device/><expires/></user-agent></item>');
+    var item = this.UserAgents.itemFromElement(element.doc);
+    Assert.isObject(item, 'UserAgents.itemFromElement did not return an object.');
+    Assert.isUndefined(item.received, 'Missing received should be undefined');
+    Assert.isUndefined(item.device,   'Missing device should be undefined');
+    Assert.isUndefined(item.expires,  'Missing expires should be undefined');
+  },
+
   testContact: function () {
     var Assert = YAHOO.util.Assert;
 
