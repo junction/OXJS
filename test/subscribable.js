@@ -628,14 +628,16 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Was not pending trying to subscribe.');
   },
 
-  testFiresSubscribedWithIQ: function () {
+  testFiresSubscribedWithIQNoReturnedNode: function () {
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, subscribedFlag = false;
-    this.Subscribable.registerHandler('onSubscribed', function () {
+    this.Subscribable.registerHandler('onSubscribed', function (uri) {
       subscribedFlag = true;
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
+                     'uri is not actual requested uri.');
     });
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription node="/" jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));
     this.Subscribable.subscribe('/', {
       onSuccess: function (requestedURI, finalURI, packet) {
         successFlag = true;
