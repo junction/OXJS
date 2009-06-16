@@ -318,7 +318,6 @@ OX.Mixins.Subscribable = function () {
       }
     } else {
       if (callbacks.onSuccess) {
-        origNode = origNode || node;
         callbacks.onSuccess(reqURI, finalURI, packet);
       }
 
