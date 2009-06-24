@@ -52,7 +52,26 @@ OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
 });
 
 OXTest.DOMParser = OX.Base.extend({
-  parser: new DOMParser(),
+//  parser: new DOMParser(),
+
+  parser: function () {
+    console.log("In parser");
+    var parser;
+    try
+    {
+      // Internet Explorer does not use the DOMParser
+      parser = new ActiveXObject("Microsoft.XMLDOM");
+      parser.async = "false";
+      parser.setProperty("SelectionLanguage","XPath");
+      parser.setProperty("SelectionNamespaces",
+                         "xmlns:cmd='http://jabber.org/protocol/commands' xmlns:x='jabber:x:data' xmlns:ps='http://jabber.org/protocol/pubsub'");
+    }
+    catch(e)
+    {
+      parser = new DOMParser();
+    }
+    return parser;
+  },
 
   prefixMap: {
     cmd: 'http://jabber.org/protocol/commands',
@@ -65,23 +84,72 @@ OXTest.DOMParser = OX.Base.extend({
   },
 
   parse: function (xml) {
+    var doc,
+        parser = OXTest.DOMParser.parser();
+    try
+    {
+      // IE
+      doc = parser.loadXML(xml);
+      console.log("Using IE");
+    }
+    catch(e)
+    {
+      // Firefox and Safari
+      doc = parser.parseFromString(xml, 'text/xml');
+      console.log("Using Firefox and Safari");
+    }
+
     return OX.Base.extend({
-      doc: OXTest.DOMParser.parser.parseFromString(xml, 'text/xml'),
+      doc: doc,
 
       getPath: function (path) {
-        return this.doc.evaluate(path, this.doc, OXTest.DOMParser.nsResolver,
-                                 XPathResult.ANY_TYPE, null).iterateNext();
+        var result;
+        try {
+          // Internet Explorer does not use XPathResult
+          console.log("In getPath(), path is: " + path);
+          result = parser.selectSingleNode(path);
+        }
+        catch(e)
+        {
+          console.log('Exception caught, using FF or Safari');
+          result = this.doc.evaluate(path, this.doc, OXTest.DOMParser.nsResolver,
+                                     XPathResult.ANY_TYPE, null).iterateNext();
+        }
+        return result;
       },
 
       getPathValue: function (path) {
         var rc = this.getPath(path);
+
         if (rc) {
-          if (rc.data) {
-            return rc.data;
-          } else if (rc.value) {
-            return rc.value;
+          if (window.ActiveXObject) {
+            return rc.nodeValue;
+              /*
+            if (rc.length > 1) {
+              console.log("isActiveX getPathValue() returning data");
+              return rc[0].childNodes[0];
+            } else if (rc.length == 1) {
+              if (rc[0].childNodes.length > 0) {
+                console.log("isActiveX getPathValue() returning rc[0].childNodes[0].nodeValue: " + rc[0].childNodes[0].nodeValue);
+                return rc[0].childNodes[0].nodeValue;
+              } else {
+                console.log("isActiveX getPathValue() returning rc[0].nodeValue: " + rc[0].nodeValue);
+                return rc[0].nodeValue;
+              }
+            } else {
+              console.log("isActiveX getPathValue() returning undefined");
+              return undefined;
+            }
+               */
           } else {
-            return rc;
+            console.log("rc is %o", rc);
+            if (rc.data) {
+              return rc.data;
+            } else if (rc.value) {
+              return rc.value;
+            } else {
+              return rc;
+            }
           }
         } else {
           return undefined;
@@ -103,7 +171,12 @@ OXTest.Packet = OX.Base.extend({
     var from = doc.getPathValue('//@from'),
         to   = doc.getPathValue('//@to'),
         type = doc.getPathValue('//@type');
-    return OXTest.Packet.extend({from: from, to: to, type: type, doc: doc.doc});
+
+    if (window.ActiveXObject) {
+      return OXTest.Packet.extend({from: from, to: to, type: type, doc: doc});
+    } else {
+      return OXTest.Packet.extend({from: from, to: to, type: type, doc: doc.doc});
+    }
   },
 
   getFrom: function () {
@@ -119,6 +192,7 @@ OXTest.Packet = OX.Base.extend({
   },
 
   getNode: function () {
+    var docTest = this.doc;
     return this.doc.firstChild;
   }
 });

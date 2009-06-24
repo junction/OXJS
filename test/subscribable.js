@@ -39,9 +39,9 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       requestedURI.toString(),
+                       requestedURI.convertToString(),
                        'requestedURI is not actual requested uri.');
-        Assert.areSame(requestedURI.toString(), finalURI.toString(),
+        Assert.areSame(requestedURI.convertToString(), finalURI.convertToString(),
                        'requested and final uri differ when successful.');
       },
 
@@ -105,9 +105,9 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         errorFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       requestedURI.toString(),
+                       requestedURI.convertToString(),
                        'requestedURI is not actual requested uri.');
-        Assert.areSame(requestedURI.toString(), finalURI.toString(),
+        Assert.areSame(requestedURI.convertToString(), finalURI.convertToString(),
                        'requested and final uri differ on error.');
       }
     });
@@ -128,7 +128,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       uri.toString(), 'uri is wrong.');
+                       uri.convertToString(), 'uri is wrong.');
       },
 
       onError: function () {
@@ -158,7 +158,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         errorFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       uri.toString(), 'uri is wrong.');
+                       uri.convertToString(), 'uri is wrong.');
       }
     });
 
@@ -215,7 +215,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var pendingFlag = false;
     this.Subscribable.registerHandler('onPending', function (uri) {
       pendingFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
                      'Requested URI for pending is wrong.');
     });
     this.Subscribable.subscribe('/');
@@ -233,7 +233,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var subscribedFlag = false;
     this.Subscribable.registerHandler('onSubscribed', function (uri) {
       subscribedFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
                      'Requested URI for subscribed is wrong.');
     });
     this.Subscribable.subscribe('/');
@@ -251,7 +251,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var unsubscribedFlag = false;
     this.Subscribable.registerHandler('onUnsubscribed', function (uri) {
       unsubscribedFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
                      'Requested URI for subscribed is wrong.');
     });
     this.Subscribable.subscribe('/');
@@ -368,10 +368,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       requestedURI.toString(),
+                       requestedURI.convertToString(),
                        'requestedURI is not actual requested uri.');
         Assert.areSame('xmpp:pubsub@example.com?;node=other-node',
-                       finalURI.toString(),
+                       finalURI.convertToString(),
                        'finalURI is not actual final uri.');
       },
 
@@ -538,10 +538,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.isObject(items[1].uri, "Item2 URI is not an OX.URI object");
 
     Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item1',
-                   items[0].uri.toString(),
+                   items[0].uri.convertToString(),
                    'Item1 URI has an incorrect value');
     Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item2',
-                   items[1].uri.toString(),
+                   items[1].uri.convertToString(),
                    'Item2 URI has an incorrect value');
 
     Assert.areSame(2, publishCount, 'Wrong number of items when publishing.');
@@ -555,7 +555,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       retractFlag = true;
       Assert.isObject(uri, 'URI in retract handler is not an object.');
       Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item',
-                     uri.toString(),
+                     uri.convertToString(),
                      'Retract item URI is wrong.');
     });
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><retract id="item"/></items></event></message>');

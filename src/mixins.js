@@ -60,7 +60,7 @@ OX.Mixins.CallDialog = function () {
 
       iq.addChild(cmd.addChild(xData));
 
-      this.connection.send(iq.toString(), function (packet) {
+      this.connection.send(iq.convertToString(), function (packet) {
         if (!packet)
           return;
 
@@ -99,7 +99,7 @@ OX.Mixins.CallDialog = function () {
 
       iq.addChild(cmd.addChild(xData));
 
-      this.connection.send(iq.toString(), function (packet) {
+      this.connection.send(iq.convertToString(), function (packet) {
         if (!packet)
           return;
 
@@ -154,7 +154,7 @@ OX.Mixins.CallLabeler = function () {
 
       iq.addChild(cmd.addChild(xData));
 
-      this.connection.send(iq.toString(), function (packet) {
+      this.connection.send(iq.convertToString(), function (packet) {
         if (!packet)
           return;
 
@@ -423,7 +423,7 @@ OX.Mixins.Subscribable = function () {
       var that = this;
       var cb = function () { subscriptionHandler.apply(that, arguments); };
 
-      this.connection.send(iq.toString(), cb,
+      this.connection.send(iq.convertToString(), cb,
                            [node, options, callbacks, origNode, redirectCount]);
   }
 
@@ -495,7 +495,7 @@ OX.Mixins.Subscribable = function () {
 
       var that = this;
       var cb = function () { unsubscriptionHandler.apply(that, arguments); };
-      this.connection.send(iq.toString(), cb, [node, callbacks]);
+      this.connection.send(iq.convertToString(), cb, [node, callbacks]);
     },
 
     /**
@@ -523,7 +523,7 @@ OX.Mixins.Subscribable = function () {
 
       var that = this;
       var cb = function () { getItemsHandler.apply(that, arguments); };
-      this.connection.send(iq.toString(), cb, [callbacks]);
+      this.connection.send(iq.convertToString(), cb, [callbacks]);
     },
 
     /**

@@ -60,7 +60,7 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
 
     iq.addChild(cmd.addChild(xData));
 
-    this.connection.send(iq.toString(), function (packet) {
+    this.connection.send(iq.convertToString(), function (packet) {
       if (!packet)
         return;
 
@@ -232,7 +232,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
 
       cb = cb || {};
 
-      this.connection.send(iq.toString(), function(packet) {
+      this.connection.send(iq.convertToString(), function(packet) {
         if(!packet) return;
 
         if(packet.getType() === 'error' && cb.onError && cb.onError.constructor == Function) {
@@ -543,7 +543,7 @@ OX.Services.Rosters = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Servi
 
     iq.addChild(cmd.addChild(xData));
 
-    this.connection.send(iq.toString(), function (packet) {
+    this.connection.send(iq.convertToString(), function (packet) {
       if (!packet)
         return;
 
