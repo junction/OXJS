@@ -22,9 +22,16 @@ OX.Mixins.CallDialog = function () {
     return arguments.callee._cached;
   }
 
-  function getHangupURI () {
+  function getTerminateURI () {
     if (arguments.callee._cached === undefined) {
-      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.hangup);
+      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.terminate);
+    }
+    return arguments.callee._cached;
+  }
+
+  function getCancelURI () {
+    if (arguments.callee._cached === undefined) {
+      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.cancel);
     }
     return arguments.callee._cached;
   }

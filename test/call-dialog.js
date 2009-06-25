@@ -62,25 +62,25 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     Assert.isTrue(errorFlag, 'Did not get error transferring a call.');
   },
 
-  testHangup: function () {
+  testTerminate: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(OX.Mixins.CallDialog.hangup,
-                      'CallDialog.hangup is not a function.');
-    this.CallDialog.hangup();
+    Assert.isFunction(OX.Mixins.CallDialog.terminate,
+                      'CallDialog.terminate is not a function.');
+    this.CallDialog.terminate();
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
                      'terminate', {'call-id':  'call-id',
                                    'to-tag':   'to-tag',
                                    'from-tag': 'from-tag'});
   },
 
-  testHangupSuccess: function () {
+  testTerminateSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test"/>'));
 
     var successFlag = false, errorFlag = false;
-    this.CallDialog.hangup({
+    this.CallDialog.terminate({
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
@@ -88,19 +88,59 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
     Assert.isTrue(successFlag, 'Was not successful hanging up a call.');
   },
 
-  testHangupError: function () {
+  testTerminateError: function () {
     var Assert = YAHOO.util.Assert;
 
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test" type="error"><error type="cancel"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>'));
 
     var successFlag = false, errorFlag = false;
-    this.CallDialog.hangup({
+    this.CallDialog.terminate({
+      onSuccess: function () { successFlag = true; },
+      onError:   function () { errorFlag   = true; }
+    });
+    Assert.isFalse(successFlag, 'Was successful hanging up a call.');
+    Assert.isTrue(errorFlag, 'Did not get error hanging up a call.');
+  },
+
+  testCancel: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(OX.Mixins.CallDialog.cancel,
+                      'CallDialog.cancel is not a function.');
+    this.CallDialog.cancel();
+    Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
+                     'cancel', {'call-id':  'call-id',
+                                'from-tag': 'from-tag'});
+  },
+
+  testCancelSuccess: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test"/>'));
+
+    var successFlag = false, errorFlag = false;
+    this.CallDialog.cancel({
+      onSuccess: function () { successFlag = true; },
+      onError:   function () { errorFlag   = true; }
+    });
+    Assert.isFalse(errorFlag, 'Got error hanging up a call.');
+    Assert.isTrue(successFlag, 'Was not successful hanging up a call.');
+  },
+
+  testCancelError: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" to="mock@example.com" id="test" type="error"><error type="cancel"><bad-request xmlns="urn:ietf:params:xml:ns:xmpp-stanzas"/></error></iq>'));
+
+    var successFlag = false, errorFlag = false;
+    this.CallDialog.cancel({
       onSuccess: function () { successFlag = true; },
       onError:   function () { errorFlag   = true; }
     });
     Assert.isFalse(successFlag, 'Was successful hanging up a call.');
     Assert.isTrue(errorFlag, 'Did not get error hanging up a call.');
   }
+
 });
 
 YAHOO.tool.TestRunner.add(OXTest.CallDialog);

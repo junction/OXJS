@@ -116,8 +116,11 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    this.ActiveCalls.commandURIs.create,
                    'ActiveCalls.commandURIs.create is wrong');
     Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate',
-                   this.ActiveCalls.commandURIs.hangup,
-                   'ActiveCalls.commandURIs.hangup is wrong');
+                   this.ActiveCalls.commandURIs.terminate,
+                   'ActiveCalls.commandURIs.terminate is wrong');
+    Assert.areSame('xmpp:commands.active-calls.xmpp.onsip.com?;node=cancel',
+                   this.ActiveCalls.commandURIs.cancel,
+                   'ActiveCalls.commandURIs.cancel is wrong');
   },
 
 /*
@@ -148,6 +151,10 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.areSame('419cce6a', item.fromTag, 'item.fromTag is incorrect');
     Assert.isNull(item.toTag, 'item.toTag is incorrect');
     Assert.isNull(item.branch, 'item.branch is incorrect');
+
+    Assert.isTrue(item.isCreated(), 'item is not created');
+    Assert.isFalse(item.isConfirmed(), 'item is confirmed');
+    Assert.isFalse(item.isRequested(), 'item is requested');
   },
 
   /*
@@ -178,6 +185,10 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.areSame('53498145', item.fromTag, 'item.fromTag is incorrect');
     Assert.isNull(item.toTag, 'item.toTag is incorrect');
     Assert.areSame('z9hG4bK7bb6.4c45a015.0', item.branch, 'item.branch is incorrect');
+
+    Assert.isTrue(item.isRequested(), 'item is not requested');
+    Assert.isFalse(item.isCreated(), 'item is created');
+    Assert.isFalse(item.isConfirmed(), 'item is confirmed');
   },
 
 
@@ -209,6 +220,10 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.areSame('53498145', item.fromTag, 'item.fromTag is incorrect');
     Assert.areSame('as11173b9d', item.toTag, 'item.toTag is incorrect');
     Assert.areSame('z9hG4bK7bb6.4c45a015.0', item.branch, 'item.branch is incorrect');
+
+    Assert.isTrue(item.isConfirmed(), 'item is not confirmed');
+    Assert.isFalse(item.isCreated(), 'item is created');
+    Assert.isFalse(item.isRequested(), 'item is requested');
   },
 
   testCreateAPI: function() {
@@ -265,6 +280,20 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.ActiveCalls.Item.hangup,
                       'ActiveCalls.Item.hangup is not a function');
+  },
+
+  testTerminate: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.terminate,
+                      'ActiveCalls.Item.terminate is not a function');
+  },
+
+  testCancel: function () {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.ActiveCalls.Item.cancel,
+                      'ActiveCalls.Item.cancel is not a function');
   },
 
   testTransfer: function () {
