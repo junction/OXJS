@@ -80,19 +80,19 @@ OX.Mixins.CallDialog = function () {
     },
 
     /**
-     * Hangup this call.
+     * Terminate this call.
      *
      * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
      *
      * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#terminate
      * @example
-     * call.hangup();
+     * call.terminate();
      */
-    hangup: function (callbacks) {
+    terminate: function (callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
           xData = OX.XMPP.XDataForm.extend(),
-          uri   = getHangupURI();
+          uri   = getTerminateURI();
 
       callbacks = callbacks || {};
 
@@ -103,6 +103,44 @@ OX.Mixins.CallDialog = function () {
       xData.addField('call-id',  this.callID);
       xData.addField('from-tag', this.fromTag);
       xData.addField('to-tag',   this.toTag);
+
+      iq.addChild(cmd.addChild(xData));
+
+      this.connection.send(iq.convertToString(), function (packet) {
+        if (!packet)
+          return;
+
+        if (packet.getType() === 'error' && callbacks.onError) {
+          callbacks.onError(packet);
+        } else if (callbacks.onSuccess) {
+          callbacks.onSuccess();
+        }
+      }, []);
+    },
+
+    /**
+     * Cancel this call.
+     *
+     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+     *
+     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#cancel
+     * @example
+     * call.cancel();
+     */
+    cancel: function (callbacks) {
+      var iq    = OX.XMPP.IQ.extend(),
+          cmd   = OX.XMPP.Command.extend(),
+          xData = OX.XMPP.XDataForm.extend(),
+          uri   = getCancelURI();
+
+      callbacks = callbacks || {};
+
+      iq.to(uri.path);
+      iq.type('set');
+      cmd.node(uri.queryParam('node'));
+      xData.type('submit');
+      xData.addField('call-id',  this.callID);
+      xData.addField('from-tag', this.fromTag);
 
       iq.addChild(cmd.addChild(xData));
 

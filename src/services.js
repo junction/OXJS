@@ -94,8 +94,11 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     /** URI for transfer Ad Hoc commnd. */
     transfer: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=transfer',
 
-    /** URI for hangup Ad Hoc commnd. */
-    hangup: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate'
+    /** URI for terminate Ad Hoc commnd. */
+    terminate: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate',
+
+    /** URI for cancel Ad Hoc commnd. */
+    cancel: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=cancel'
   },
 
   /**
@@ -129,7 +132,29 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     toTag: null,
 
     /** The branch tag for this pre-dialog event. */
-    branch: null
+    branch: null,
+
+    isCreated: function() {
+      return this.dialogState == 'created';
+    },
+
+    isRequested: function() {
+      return this.dialogState == 'requested';
+    },
+
+    isConfirmed: function() {
+      return this.dialogState == 'confirmed';
+    },
+
+    /**
+     * The XMPP-API requires one of two commands to be called to end
+     * a call based on whether or not the call has been answered (confirmed).
+     * This is a convenience funtion to make the correct API call based
+     * upon the dialog state of the current this object.
+     */
+    hangup: function() {
+      return this.isConfirmed() ? this.terminate() : this.cancel();
+    }
 
   }),
 
