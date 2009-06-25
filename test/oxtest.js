@@ -192,7 +192,6 @@ OXTest.Packet = OX.Base.extend({
   },
 
   getNode: function () {
-    var docTest = this.doc;
     return this.doc.firstChild;
   }
 });
