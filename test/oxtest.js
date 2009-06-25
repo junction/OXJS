@@ -55,7 +55,7 @@ OXTest.DOMParser = OX.Base.extend({
 //  parser: new DOMParser(),
 
   parser: function () {
-    console.log("In parser");
+    OX.log("In parser");
     var parser;
     try
     {
@@ -90,13 +90,13 @@ OXTest.DOMParser = OX.Base.extend({
     {
       // IE
       doc = parser.loadXML(xml);
-      console.log("Using IE");
+      OX.log("Using IE");
     }
     catch(e)
     {
       // Firefox and Safari
       doc = parser.parseFromString(xml, 'text/xml');
-      console.log("Using Firefox and Safari");
+      OX.log("Using Firefox and Safari");
     }
 
     return OX.Base.extend({
@@ -106,12 +106,12 @@ OXTest.DOMParser = OX.Base.extend({
         var result;
         try {
           // Internet Explorer does not use XPathResult
-          console.log("In getPath(), path is: " + path);
+          OX.log("In getPath(), path is: " + path);
           result = parser.selectSingleNode(path);
         }
         catch(e)
         {
-          console.log('Exception caught, using FF or Safari');
+          OX.log('Exception caught, using FF or Safari');
           result = this.doc.evaluate(path, this.doc, OXTest.DOMParser.nsResolver,
                                      XPathResult.ANY_TYPE, null).iterateNext();
         }
@@ -126,23 +126,23 @@ OXTest.DOMParser = OX.Base.extend({
             return rc.nodeValue;
               /*
             if (rc.length > 1) {
-              console.log("isActiveX getPathValue() returning data");
+              OX.log("isActiveX getPathValue() returning data");
               return rc[0].childNodes[0];
             } else if (rc.length == 1) {
               if (rc[0].childNodes.length > 0) {
-                console.log("isActiveX getPathValue() returning rc[0].childNodes[0].nodeValue: " + rc[0].childNodes[0].nodeValue);
+                OX.log("isActiveX getPathValue() returning rc[0].childNodes[0].nodeValue: " + rc[0].childNodes[0].nodeValue);
                 return rc[0].childNodes[0].nodeValue;
               } else {
-                console.log("isActiveX getPathValue() returning rc[0].nodeValue: " + rc[0].nodeValue);
+                OX.log("isActiveX getPathValue() returning rc[0].nodeValue: " + rc[0].nodeValue);
                 return rc[0].nodeValue;
               }
             } else {
-              console.log("isActiveX getPathValue() returning undefined");
+              OX.log("isActiveX getPathValue() returning undefined");
               return undefined;
             }
                */
           } else {
-            console.log("rc is %o", rc);
+            OX.log("rc is %o", rc);
             if (rc.data) {
               return rc.data;
             } else if (rc.value) {

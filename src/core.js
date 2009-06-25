@@ -1,4 +1,21 @@
 /**
  * @namespace
  */
-var OX = {};
+var OX = {
+  debug: function() {
+    return window.console && window.console.debug && window.console.debug.apply(window.console, arguments);
+  },
+
+  log: function() {
+    return window.console && window.console.log && window.console.log.apply(window.console, arguments);
+  },
+
+  warn: function() {
+    return window.console && window.console.warn && window.console.warn.apply(window.console, arguments);
+  },
+
+  error: function() {
+    return window.console && window.console.error && window.console.error.apply(window.console, arguments);
+  }
+
+};
