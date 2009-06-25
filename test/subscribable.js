@@ -122,7 +122,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     var successFlag = false, errorFlag = false;
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"/></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"></iq>'));
     this.Subscribable.unsubscribe('/', {
       onSuccess: function (uri, packet) {
         successFlag = true;

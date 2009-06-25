@@ -306,8 +306,14 @@ OX.Mixins.Subscribable = function () {
       if (redirects < 5 && error && error.firstChild &&
           (error.firstChild.tagName === 'redirect' ||
            error.firstChild.tagName === 'gone')) {
-        var uri     = OX.URI.parse(error.firstChild.textContent),
-            path    = uri.path,
+        var uri;
+        if (window.ActiveXObject) {
+          // Browser is IE
+          uri = OX.URI.parse(error.firstChild.text);
+        } else {
+          uri = OX.URI.parse(error.firstChild.textContent);
+        }
+        var path    = uri.path,
             newNode = uri.queryParam('node');
         if (path && newNode) {
           doSubscribe.call(this, newNode, options, callbacks,

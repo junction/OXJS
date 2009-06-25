@@ -52,10 +52,7 @@ OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
 });
 
 OXTest.DOMParser = OX.Base.extend({
-//  parser: new DOMParser(),
-
   parser: function () {
-    OX.log("In parser");
     var parser;
     try
     {
@@ -68,6 +65,7 @@ OXTest.DOMParser = OX.Base.extend({
     }
     catch(e)
     {
+      // Using FF or Safari
       parser = new DOMParser();
     }
     return parser;
@@ -89,14 +87,13 @@ OXTest.DOMParser = OX.Base.extend({
     try
     {
       // IE
-      doc = parser.loadXML(xml);
-      OX.log("Using IE");
+      parser.loadXML(xml);
+      doc = parser;
     }
     catch(e)
     {
       // Firefox and Safari
       doc = parser.parseFromString(xml, 'text/xml');
-      OX.log("Using Firefox and Safari");
     }
 
     return OX.Base.extend({
@@ -105,13 +102,12 @@ OXTest.DOMParser = OX.Base.extend({
       getPath: function (path) {
         var result;
         try {
-          // Internet Explorer does not use XPathResult
-          OX.log("In getPath(), path is: " + path);
+          // Using Internet Explorer
           result = parser.selectSingleNode(path);
         }
         catch(e)
         {
-          OX.log('Exception caught, using FF or Safari');
+          // Using FF or Safari
           result = this.doc.evaluate(path, this.doc, OXTest.DOMParser.nsResolver,
                                      XPathResult.ANY_TYPE, null).iterateNext();
         }
@@ -123,26 +119,10 @@ OXTest.DOMParser = OX.Base.extend({
 
         if (rc) {
           if (window.ActiveXObject) {
+            // Internet Explorer
             return rc.nodeValue;
-              /*
-            if (rc.length > 1) {
-              OX.log("isActiveX getPathValue() returning data");
-              return rc[0].childNodes[0];
-            } else if (rc.length == 1) {
-              if (rc[0].childNodes.length > 0) {
-                OX.log("isActiveX getPathValue() returning rc[0].childNodes[0].nodeValue: " + rc[0].childNodes[0].nodeValue);
-                return rc[0].childNodes[0].nodeValue;
-              } else {
-                OX.log("isActiveX getPathValue() returning rc[0].nodeValue: " + rc[0].nodeValue);
-                return rc[0].nodeValue;
-              }
-            } else {
-              OX.log("isActiveX getPathValue() returning undefined");
-              return undefined;
-            }
-               */
           } else {
-            OX.log("rc is %o", rc);
+            // FF or Safari
             if (rc.data) {
               return rc.data;
             } else if (rc.value) {
@@ -160,23 +140,20 @@ OXTest.DOMParser = OX.Base.extend({
 });
 
 OXTest.Packet = OX.Base.extend({
-  from:  null,
-  to:    null,
-  type:  null,
-  doc:   null,
+  from:    null,
+  to:      null,
+  type:    null,
+  doc:     null,
+  parser:  null,
 
   extendWithXML: function (xml) {
-    var doc = OXTest.DOMParser.parse(xml);
+    var parser_obj = OXTest.DOMParser.parse(xml);
 
-    var from = doc.getPathValue('//@from'),
-        to   = doc.getPathValue('//@to'),
-        type = doc.getPathValue('//@type');
+    var from = parser_obj.getPathValue('//@from'),
+        to   = parser_obj.getPathValue('//@to'),
+        type = parser_obj.getPathValue('//@type');
 
-    if (window.ActiveXObject) {
-      return OXTest.Packet.extend({from: from, to: to, type: type, doc: doc});
-    } else {
-      return OXTest.Packet.extend({from: from, to: to, type: type, doc: doc.doc});
-    }
+    return OXTest.Packet.extend({from: from, to: to, type: type, doc: parser_obj.doc});
   },
 
   getFrom: function () {
