@@ -189,6 +189,75 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.isFalse(errorFlag, 'onError handler was called');
   },
 
+  testConfigureNode: function() {
+    var Assert = YAHOO.util.Assert;
+
+    var successFlag = false, errorFlag = false;
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+                          "<iq type='result'"
+                          + "    from='pubsub@example.com'"
+                          + "    to='mock@example.com'"
+                          + "    id='options2'/>"));
+
+    var sub = { node: '/', jid: 'mock@example.com', subid: 'abc-123', subscription: 'subscribed' },
+        options = { expire: new Date(3009, 0, 1, 12, 0, 0), subscription_depth: 'all', subscription_type: 'items' },
+        callbacks = {
+          onSuccess: function(packet) {
+            successFlag = true;
+            Assert.isObject(packet, 'packet is not an object');
+          },
+          onError: function(packet) {
+            errorFlag = true;
+          }
+        };
+
+    this.Subscribable.configureNode(sub, options, callbacks);
+
+    Assert.isConfigure(this.conn._data, 'pubsub@example.com', '/', 'mock@example.com', 'abc-123', options);
+
+    Assert.isTrue(successFlag, 'sucess handler was not called');
+    Assert.isFalse(errorFlag, 'error handler was called');
+  },
+
+  testConfigureNodeError: function() {
+    var Assert = YAHOO.util.Assert;
+
+    var successFlag = false, errorFlag = false;
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+                          "<iq type='error'"
+                          + "    from='pubsub@example.com'"
+                          + "    to='mock@example.com'"
+                          + "    id='unsub1'>"
+                          + "  <pubsub xmlns='http://jabber.org/protocol/pubsub'>"
+                          + "     <unsubscribe"
+                          + "         node='princely_musings'"
+                          + "         subid='abc-123'"
+                          + "         jid='mock@example.com'/>"
+                          + "  </pubsub>"
+                          + "  <error type='modify'>"
+                          + "    <not-acceptable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>"
+                          + "    <invalid-subid xmlns='http://jabber.org/protocol/pubsub#errors'/>"
+                          + "  </error>"
+                          + "</iq>"));
+
+    var sub = { node: '/', jid: 'mock@example.com', subid: 'abc-123', subscription: 'subscribed' },
+        options = { expire: new Date(3009, 0, 1, 12, 0, 0), subscription_depth: 'all', subscription_type: 'items' },
+        callbacks = {
+          onSuccess: function(packet) {
+            successFlag = true;
+          },
+          onError: function(packet) {
+            errorFlag = true;
+            Assert.isObject(packet, 'packet is not an object');
+          }
+        };
+
+    this.Subscribable.configureNode(sub, options, callbacks);
+
+    Assert.isFalse(successFlag, 'sucess handler was called');
+    Assert.isTrue(errorFlag, 'error handler was not called');
+  },
+
   testSubscribe: function () {
     var Assert = YAHOO.util.Assert;
 

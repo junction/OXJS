@@ -374,6 +374,19 @@ OX.Mixins.Subscribable = function () {
     }
   }
 
+  function configureNodeHandler(packet, subscription, options, callbacks) {
+    if (!packet) return;
+
+    if (packet.getType() === 'error') {
+      // TODO: handle redirects
+      if (callbacks.onError) {
+        callbacks.onError(packet);
+      }
+    } else if (packet.getType() === 'result' && callbacks.onSuccess) {
+      callbacks.onSuccess(packet);
+    }
+  }
+
   function subscriptionHandler(packet, node, options, callbacks,
                                origNode, redirects) {
     callbacks = callbacks || {};
@@ -481,6 +494,47 @@ OX.Mixins.Subscribable = function () {
     }
   };
 
+  function objectToOptionsForm(options) {
+    var xData = OX.XMPP.XDataForm.create({type: 'submit'}),
+        opts  = OX.XML.Element.extend({name: 'options'}).create({}, xData);
+
+    xData.addField('FORM_TYPE', 'http://jabber.org/protocol/pubsub#subscribe_options');
+
+    for (var o in options) if (options.hasOwnProperty(o)) {
+      var trVal = options[o];
+      if (optionTransforms[o]) {
+        trVal = optionTransforms[o]('toString', trVal);
+      }
+      xData.addField('pubsub#' + o, trVal);
+    }
+
+    return opts;
+  }
+
+  function doConfigureNode(subscription, options, callbacks) {
+    var iq = OX.XMPP.IQ.extend(),
+        pubsub = OX.XMPP.PubSub.extend();
+
+    iq.to(this.getURI().path);
+    iq.type('set');
+    iq.addChild(pubsub);
+
+    options = options || {};
+    options.subid = subscription.subid;
+
+    var opts = objectToOptionsForm.call(this, options);
+    opts.attr('node', subscription.node);
+    opts.attr('jid', subscription.jid);
+
+    pubsub.addChild(opts);
+
+    var that = this,
+        wrappedCb = function() { configureNodeHandler.apply(that, arguments); },
+        wrappedArgs = [subscription, options, callbacks];
+
+    this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
+  }
+
   function doSubscribe(node, options, callbacks, origNode, redirectCount) {
       var iq        = OX.XMPP.IQ.extend(),
           pubsub    = OX.XML.Element.extend({name:  'pubsub',
@@ -493,19 +547,8 @@ OX.Mixins.Subscribable = function () {
       subscribe.attr('jid', this.connection.getJID());
       pubsub.addChild(subscribe);
       if (options) {
-        var xData = OX.XMPP.XDataForm.create({type: 'submit'}),
-            opts  = OX.XML.Element.extend({name: 'options'}).create({}, xData);
-
-        xData.addField('FORM_TYPE', 'http://jabber.org/protocol/pubsub#subscribe_options');
-
+        var opts = objectToOptionsForm.call(this, options);
         pubsub.addChild(opts);
-        for (var o in options) if (options.hasOwnProperty(o)) {
-          var trVal = options[o];
-          if (optionTransforms[o]) {
-            trVal = optionTransforms[o]('toString', trVal);
-          }
-          xData.addField('pubsub#' + o, trVal);
-        }
       }
       iq.addChild(pubsub);
 
@@ -581,6 +624,10 @@ OX.Mixins.Subscribable = function () {
       }
 
       doGetSubcriptions.call(this, node, callbacks, node, 0);
+    },
+
+    configureNode: function(subscription, options, callbacks) {
+      doConfigureNode.apply(this, arguments);
     },
 
     /**

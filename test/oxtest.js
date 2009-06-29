@@ -205,6 +205,21 @@ YAHOO.util.Assert.isCommand = function (xml, jid, node, fields) {
   }
 };
 
+YAHOO.util.Assert.isConfigure = function (xml, to, node, subscriberJID, subid, options) {
+  var doc = OXTest.DOMParser.parse(xml);
+
+  this.areSame('set', doc.getPathValue('/iq/@type'), 'configure iq type is not set');
+  this.areSame(to, doc.getPathValue('/iq/@to'), 'configure iq to is incorrect');
+
+  this.areSame(node, doc.getPathValue('/iq/ps:pubsub/ps:options/@node'), 'node is incorrect');
+  this.areSame(subscriberJID, doc.getPathValue('/iq/ps:pubsub/ps:options/@jid'), 'subscriber jid is incorrect');
+
+  var path = '/iq/ps:pubsub/ps:options/x:x/x:field[@var="pubsub#subid"]/x:value/text()';
+  this.areSame(subid, doc.getPathValue(path),
+               'Option value for subid is wrong.');
+
+};
+
 YAHOO.util.Assert.isSubscribe = function (xml, jid, node, ourJID, options) {
   var doc = OXTest.DOMParser.parse(xml);
 
