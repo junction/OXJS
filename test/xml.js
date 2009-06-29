@@ -127,6 +127,14 @@ OXTest.XML = new YAHOO.tool.TestCase({
                     "xpath not equal to iq.from()");
   },
 
+  testPubSubStructure: function() {
+    var Assert = YAHOO.util.Assert;
+    var p = OX.XMPP.PubSub.extend();
+
+    Assert.areEqual("pubsub", p.name, 'pubsub element name is incorrect');
+    Assert.areEqual("http://jabber.org/protocol/pubsub", p.xmlns, 'pubsub namespace is incorrect');
+  },
+
   testCommandAPI: function() {
     var Assert = YAHOO.util.Assert;
     Assert.isFunction(OX.XMPP.Command.node);

@@ -151,6 +151,17 @@ OX.XMPP.IQ = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.IQ# */{
 });
 
 /**
+ * XMPP PubSub Element
+ *
+ * @extends OX.XML.Element
+ * @class
+ */
+OX.XMPP.PubSub = OX.XML.Element.extend(/** @lends OX.XMPP.PubSub# */{
+  name: 'pubsub',
+  xmlns: 'http://jabber.org/protocol/pubsub'
+});
+
+/**
  * XMPP Message stanza.
  *
  * @extends OX.XMPP.Stanza
