@@ -29,6 +29,166 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     delete this.Subscribable;
   },
 
+  testGetSubscriptions: function() {
+    var Assert = YAHOO.util.Assert,
+        ObjAssert = YAHOO.util.ObjectAssert;
+
+    var successFlag = false, errorFlag = false;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+                            "<iq type='result'"
+                            + "    from='pubsub@example.com'"
+                            + "    to='mock@example.com'"
+                            + "    id='subscriptions1'>"
+                            + "  <pubsub xmlns='http://jabber.org/protocol/pubsub'>"
+                            + "    <subscriptions>"
+                            + "      <subscription node='node1' jid='mock@example.com' subscription='subscribed'/>"
+                            + "      <subscription node='node2' jid='mock@example.com' subscription='subscribed' subid='abc-123'/>"
+                            + "      <subscription node='node5' jid='mock@example.com' subscription='unconfigured'/>"
+                            + "      <subscription node='node6' jid='mock@example.com' subscription='pending'/>"
+                            + "    </subscriptions>"
+                            + "  </pubsub>"
+                            + "</iq>"));
+
+    this.Subscribable.getSubscriptions({
+      onSuccess: function (requestedURI, finalURI, subscriptions, packet) {
+        successFlag = true;
+
+        Assert.areEqual('xmpp:pubsub@example.com', requestedURI.convertToString(), 'requestedURI is wrong');
+        Assert.areEqual("xmpp:pubsub@example.com", finalURI.convertToString(), "finalURI is wrong");
+
+        Assert.isArray(subscriptions, 'subscriptions is not an array');
+        Assert.areEqual(4, subscriptions.length, 'subscriptions.length is wrong');
+
+        ObjAssert.propertiesAreEqual({node: 'node1', jid: 'mock@example.com', subscription: 'subscribed', subid: null},
+                                     subscriptions[0],
+                                     'subscription[0] is incorrect');
+        ObjAssert.propertiesAreEqual({node: 'node2', jid: 'mock@example.com', subscription: 'subscribed', subid: 'abc-123'},
+                                     subscriptions[1],
+                                     'subscription[1] is incorrect');
+        ObjAssert.propertiesAreEqual({node: 'node5', jid: 'mock@example.com', subscription: 'unconfigured', subid: null},
+                                     subscriptions[2],
+                                     'subscription[2] is incorrect');
+        ObjAssert.propertiesAreEqual({node: 'node6', jid: 'mock@example.com', subscription: 'pending', subid: null},
+                                     subscriptions[3],
+                                     'subscription[3] is incorrect');
+
+        Assert.isObject(packet, 'packet in success handler is not an object');
+      },
+      onError: function(requestedURI, finalURI, packet) {
+        errorFlag = true;
+      }
+    });
+
+    Assert.isTrue(successFlag, 'onSuccess handler was not called');
+    Assert.isFalse(errorFlag, 'onError handler was called');
+  },
+
+  testGetSubscriptionsWithNoSubscriptions: function() {
+    var Assert = YAHOO.util.Assert;
+    var successFlag = false, errorFlag = false;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+                          "<iq type='result'"
+                          + "    from='pubsub@example.com'"
+                          + "    to='mock@example.com'"
+                          + "    id='subscriptions1'>"
+                          + "  <pubsub xmlns='http://jabber.org/protocol/pubsub'>"
+                          + "    <subscriptions/>"
+                          + "  </pubsub>"
+                          + "</iq>"));
+
+    this.Subscribable.getSubscriptions({
+      onSuccess: function (requestedURI, finalURI, subscriptions, packet) {
+        successFlag = true;
+
+        Assert.isArray(subscriptions, 'subscriptions is not an array');
+        Assert.areEqual(0, subscriptions.length, 'subscriptions length is not zero');
+      },
+      onError: function(requestedURI, finalURI, packet) {
+        errorFlag = true;
+      }
+    });
+
+    Assert.isTrue(successFlag, 'onSuccess handler was not called');
+    Assert.isFalse(errorFlag, 'onError handler was called');
+  },
+
+  testGetSubscriptionsError: function() {
+    var Assert = YAHOO.util.Assert;
+    var successFlag = false, errorFlag = false;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+                            "<iq type='error'"
+                            + "    from='pubsub@example.com'"
+                            + "    to='mock@example.com'"
+                            + "    id='subscriptions1'>"
+                            + "  <pubsub xmlns='http://jabber.org/protocol/pubsub'>"
+                            + "    <subscriptions/>"
+                            + "  </pubsub>"
+                            + "  <error type='cancel'>"
+                            + "    <feature-not-implemented xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>"
+                            + "    <unsupported xmlns='http://jabber.org/protocol/pubsub#errors'"
+                            + "                 feature='retrieve-subscriptions'/>"
+                            + "  </error>"
+                            + "</iq>"));
+
+    this.Subscribable.getSubscriptions({
+      onSuccess: function (requestedURI, finalURI, subscriptions, packet) {
+        successFlag = true;
+      },
+      onError: function(requestedURI, finalURI, packet) {
+        errorFlag = true;
+
+        Assert.areEqual("xmpp:pubsub@example.com", requestedURI.convertToString(), "requestedURI is wrong");
+        Assert.areEqual("xmpp:pubsub@example.com", finalURI.convertToString(), "finalURI is wrong");
+        Assert.isObject(packet, "packet is not an object");
+      }
+    });
+
+    Assert.isFalse(successFlag, 'onSuccess handler was called');
+    Assert.isTrue(errorFlag, 'onError handler was not called');
+  },
+
+  testGetSubscriptionsPerNode: function() {
+    var Assert = YAHOO.util.Assert;
+    var successFlag = false, errorFlag = false;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+                          "<iq type='result'"
+                          + "    from='pubsub@example.com'"
+                          + "    to='mock@example.com'"
+                          + "    id='subscriptions1'>"
+                          + "  <pubsub xmlns='http://jabber.org/protocol/pubsub'>"
+                          + "    <subscriptions node='princely_musings'>"
+                          + "      <subscription jid='mock@example.com' subscription='subscribed' subid='123-abc'/>"
+                          + "      <subscription jid='mock@example.com' subscription='subscribed' subid='004-yyy'/>"
+                          + "    </subscriptions>"
+                          + "  </pubsub>"
+                          + "</iq>"));
+
+    this.Subscribable.getSubscriptions('princely_musings', {
+      onSuccess: function (requestedURI, finalURI, subscriptions, packet) {
+        successFlag = true;
+
+        Assert.isArray(subscriptions, 'subscriptions is not an array');
+        Assert.areEqual(2, subscriptions.length, 'subscriptions length is not two');
+        Assert.areEqual('xmpp:pubsub@example.com?;node=princely_musings',
+                        requestedURI.convertToString(),
+                        'requestedURI is incorrect');
+        Assert.areEqual('xmpp:pubsub@example.com?;node=princely_musings',
+                        finalURI.convertToString(),
+                       'finalURI is incorrect');
+      },
+      onError: function(requestedURI, finalURI, packet) {
+        errorFlag = true;
+      }
+    });
+
+    Assert.isTrue(successFlag, 'onSuccess handler was not called');
+    Assert.isFalse(errorFlag, 'onError handler was called');
+  },
+
   testSubscribe: function () {
     var Assert = YAHOO.util.Assert;
 

@@ -336,6 +336,44 @@ OX.Mixins.Subscribable = function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
+  function getSubscriptionsHandler(packet, node, callbacks, origNode, redirectCount) {
+    callbacks = callbacks || {};
+    redirectCount = redirectCount || 0;
+    origNode = origNode || node;
+
+    if (!packet) return;
+
+    var finalURI = this.getURI(),
+        reqURI   = this.getURI();
+
+    if (node) {
+      finalURI = finalURI.extend({query: ';node=' + node});
+    }
+
+    if (origNode) {
+      reqURI   = reqURI.extend({query: ';node=' + origNode});
+    }
+
+    if (packet.getType() == 'error' && callbacks.onError) {
+      // TODO: handle getSubscriptions redirects
+      callbacks.onError(reqURI, finalURI, packet);
+    } else if (packet.getType() == 'result' && callbacks.onSuccess) {
+      var subscriptions = [],
+          subElements = packet.getNode().getElementsByTagName('subscription');
+
+      for (var i=0; i<subElements.length; i++) {
+        subscriptions.push({
+          node: subElements[i].getAttribute('node'),
+          jid: subElements[i].getAttribute('jid'),
+          subscription: subElements[i].getAttribute('subscription'),
+          subid: subElements[i].getAttribute('subid')
+        });
+      }
+
+      callbacks.onSuccess(reqURI, finalURI, subscriptions, packet);
+    }
+  }
+
   function subscriptionHandler(packet, node, options, callbacks,
                                origNode, redirects) {
     callbacks = callbacks || {};
@@ -478,6 +516,26 @@ OX.Mixins.Subscribable = function () {
                            [node, options, callbacks, origNode, redirectCount]);
   }
 
+  function doGetSubcriptions(node, callbacks, origNode, redirectCount) {
+    var iq = OX.XMPP.IQ.extend(),
+        pub = OX.XMPP.PubSub.extend(),
+        sub = OX.XML.Element.extend({name: 'subscriptions'});
+
+    iq.to(this.getURI().path);
+    iq.type('get');
+
+    if (node) sub.attr('node', node);
+
+    pub.addChild(sub);
+    iq.addChild(pub);
+
+    var that = this,
+        wrappedCb = function() { getSubscriptionsHandler.apply(that, arguments); },
+        wrappedArgs = [node, callbacks, origNode, redirectCount];
+
+    this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
+  }
+
   return /** @lends OX.Mixins.Subscribable# */{
     init: function() {
       var tpl = OX.Mixins.Subscribable._subscriptionHandlers;
@@ -490,6 +548,39 @@ OX.Mixins.Subscribable = function () {
         this._cachedURI = OX.URI.parse(this.pubSubURI);
       }
       return this._cachedURI;
+    },
+
+    /**
+     * Get subscriptions on a node.
+     *
+     * Passing an initial <tt>node</tt> parameter retrieves subscriptions on the requested
+     * node.  Otherwise a single parameter of <tt>callbacks</tt> requests all subscriptions
+     * at all nodes of the pubsub service.
+     *
+     * @see <a href="http://xmpp.org/extensions/xep-0060.html#entity-subscriptions">XEP: 0060 - Entity Subscriptions</a>
+     *
+     * @param {String} [node] The node to request subscriptions on
+     * @param {Object} callbacks an object supplying functions for 'onSuccess' and 'onError'
+     *
+     * @example
+     * service.getSubscriptions('/', {
+     *   onSuccess: function(requestedURI, finalURI, subscriptions, packet) {},
+     *   onError: function(requestedURI, finalURI, packet)
+     * })
+     *
+     * @example
+     * service.getSubscriptions({
+     *   onSuccess: function(requestedURI, finalURI, subscriptions, packet) {},
+     *   onError: function(requestedURI, finalURI, packet)
+     * })
+     */
+    getSubscriptions: function(node, callbacks) {
+      if (arguments.length == 1) {
+        callbacks = node;
+        node = undefined;
+      }
+
+      doGetSubcriptions.call(this, node, callbacks, node, 0);
     },
 
     /**
