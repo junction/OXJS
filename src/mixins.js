@@ -15,6 +15,8 @@ OX.Mixins = {};
  * @requires toTag property on receiving object.
  */
 OX.Mixins.CallDialog = function () {
+
+  /**#nocode+*/
   function getTransferURI () {
     if (arguments.callee._cached === undefined) {
       arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.transfer);
@@ -35,6 +37,7 @@ OX.Mixins.CallDialog = function () {
     }
     return arguments.callee._cached;
   }
+  /**#nocode-*/
 
   return /** @lends OX.Mixins.CallDialog# */{
     /**
@@ -166,12 +169,15 @@ OX.Mixins.CallDialog = function () {
  * @requires callID property on receiving object.
  */
 OX.Mixins.CallLabeler = function () {
+
+  /**#nocode+*/
   function getLabelURI () {
     if (arguments.callee._cached === undefined) {
       arguments.callee._cached = OX.URI.parse(OX.Services.RecentCalls.commandURIs.label);
     }
     return arguments.callee._cached;
   }
+  /**#nocode-*/
 
   return /** @lends OX.Mixins.CallLabeler# */{
     /**
@@ -222,6 +228,8 @@ OX.Mixins.CallLabeler = function () {
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
 OX.Mixins.Subscribable = function () {
+
+  /**#nocode+*/
   function packetType(element) {
     switch (element.tagName) {
     case 'subscription':
@@ -520,16 +528,16 @@ OX.Mixins.Subscribable = function () {
     iq.addChild(pubsub);
 
     options = options || {};
-    options.subid = subscription.subid;
 
     var opts = objectToOptionsForm.call(this, options);
     opts.attr('node', subscription.node);
     opts.attr('jid', subscription.jid);
+    opts.attr('subid', subscription.subid);
 
     pubsub.addChild(opts);
 
-    var that = this,
-        wrappedCb = function() { configureNodeHandler.apply(that, arguments); },
+    var that = this;
+    var wrappedCb = function() { configureNodeHandler.apply(that, arguments); },
         wrappedArgs = [subscription, options, callbacks];
 
     this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
@@ -572,12 +580,13 @@ OX.Mixins.Subscribable = function () {
     pub.addChild(sub);
     iq.addChild(pub);
 
-    var that = this,
-        wrappedCb = function() { getSubscriptionsHandler.apply(that, arguments); },
+    var that = this;
+    var wrappedCb = function() { getSubscriptionsHandler.apply(that, arguments); },
         wrappedArgs = [node, callbacks, origNode, redirectCount];
 
     this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
   }
+  /**#nocode-*/
 
   return /** @lends OX.Mixins.Subscribable# */{
     init: function() {

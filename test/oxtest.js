@@ -214,7 +214,7 @@ YAHOO.util.Assert.isConfigure = function (xml, to, node, subscriberJID, subid, o
   this.areSame(node, doc.getPathValue('/iq/ps:pubsub/ps:options/@node'), 'node is incorrect');
   this.areSame(subscriberJID, doc.getPathValue('/iq/ps:pubsub/ps:options/@jid'), 'subscriber jid is incorrect');
 
-  var path = '/iq/ps:pubsub/ps:options/x:x/x:field[@var="pubsub#subid"]/x:value/text()';
+  var path = '/iq/ps:pubsub/ps:options/@subid';
   this.areSame(subid, doc.getPathValue(path),
                'Option value for subid is wrong.');
 
