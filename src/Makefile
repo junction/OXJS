@@ -4,7 +4,7 @@ SRC =	core.js error.js base.js connection-adapter.js uri.js mixins.js	\
 DOCDIR = ../doc
 
 JSDOCDIR = ../frameworks/jsdoc-toolkit
-TEMPLATE = $(JSDOCDIR)/templates/jsdoc
+TEMPLATE = $(JSDOCDIR)/templates/ox
 
 JAVA =	java
 
