@@ -245,10 +245,9 @@ OX.Mixins.Subscribable = function () {
   }
 
   function convertItems(document) {
-    function itemURI(itemID) {
+    function itemURI(itemID, node) {
       var from  = document.getAttribute('from'),
-          items = document.firstChild.firstChild,
-          node  = items.getAttribute('node');
+          items = document.firstChild.firstChild;
 
       return OX.URI.fromObject({path: from,
                                 query: ';node=' + node + ';item=' + itemID});
@@ -264,15 +263,19 @@ OX.Mixins.Subscribable = function () {
         items = document.getElementsByTagName('items') || [];
 
     // Grab the first `items' node found.
-    items = items[0];
-    if (items && items.childNodes) {
-      var children = items.childNodes,
-          item;
-      for (var i = 0, len = children.length; i < len; i++) {
-        if (children[i].tagName && children[i].tagName === 'item') {
-          item = this.itemFromElement(children[i]);
-          item.uri = itemURI(children[i].getAttribute('id'));
-          rc.push(item);
+    for (var i = 0, len = items.length; i < len; i++) {
+      if (items[i] && items[i].childNodes) {
+        var children = items[i].childNodes,
+            node     = items[i].getAttribute('node'),
+            item;
+
+        for (var ii = 0, ilen = children.length; ii < ilen; ii++) {
+          if (children[ii].tagName && children[ii].tagName === 'item') {
+            item = this.itemFromElement(children[ii]);
+            item.uri = itemURI(children[ii].getAttribute('id'),
+                               node);
+            rc.push(item);
+          }
         }
       }
     }
