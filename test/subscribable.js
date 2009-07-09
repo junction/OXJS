@@ -950,7 +950,36 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.isGetItems(this.conn._data, 'pubsub@example.com', '/');
     Assert.isFalse(successFlag, 'Was successful trying to fetch items.');
     Assert.isTrue(errorFlag, 'Did not error trying to fetch items.');
-  }
+  },
+
+  testGetCollectionItems: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="node1"><item id="item1"><foo>bar</foo></item><item id="item2"><foo>baz</foo></item></items><items node="node2"><item id="node2-item1"><foo>baz</foo></item><item id="node2-item2"><bar>baz</bar></item></items></pubsub></iq>');
+    this.conn.addResponse(packet);
+
+    var successFlag = false, errorFlag = false;
+    this.Subscribable.getItems('/', {
+      onSuccess: function (items) {
+        successFlag = true;
+        Assert.areSame(4, items.length);
+        Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item1',
+                       items[0].uri.toString());
+        Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item2',
+                       items[1].uri.toString());
+        Assert.areSame('xmpp:pubsub@example.com?;node=node2;item=node2-item1',
+                       items[2].uri.toString());
+        Assert.areSame('xmpp:pubsub@example.com?;node=node2;item=node2-item2',
+                       items[3].uri.toString());
+      },
+
+      onError: function (error) {
+        errorFlag = true;
+      }
+    });
+    Assert.isFalse(errorFlag, 'Got error trying to fetch items.');
+    Assert.isTrue(successFlag, 'Did not get success trying to fetch items.');
+  },
 });
 
 YAHOO.tool.TestRunner.add(OXTest.Subscribable);
