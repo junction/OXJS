@@ -344,7 +344,7 @@ OX.Mixins.Subscribable = function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
-  function getSubscriptionsHandler(packet, node, callbacks, origNode, redirectCount) {
+  function getSubscriptionsHandler(packet, node, callbacks, origNode, redirectCount, strict) {
     callbacks = callbacks || {};
     redirectCount = redirectCount || 0;
     origNode = origNode || node;
@@ -368,8 +368,9 @@ OX.Mixins.Subscribable = function () {
     } else if (packet.getType() == 'result' && callbacks.onSuccess) {
       var subscriptions = [],
           subElements = packet.getNode().getElementsByTagName('subscription');
-
       for (var i=0; i<subElements.length; i++) {
+        if (strict && this.connection.getJID() !== subElements[i].getAttribute('jid'))  continue;
+
         subscriptions.push({
           node: subElements[i].getAttribute('node'),
           jid: subElements[i].getAttribute('jid'),
@@ -567,7 +568,7 @@ OX.Mixins.Subscribable = function () {
                            [node, options, callbacks, origNode, redirectCount]);
   }
 
-  function doGetSubcriptions(node, callbacks, origNode, redirectCount) {
+  function doGetSubcriptions(node, callbacks, origNode, redirectCount, strict) {
     var iq = OX.XMPP.IQ.extend(),
         pub = OX.XMPP.PubSub.extend(),
         sub = OX.XML.Element.extend({name: 'subscriptions'});
@@ -582,7 +583,7 @@ OX.Mixins.Subscribable = function () {
 
     var that = this;
     var wrappedCb = function() { getSubscriptionsHandler.apply(that, arguments); },
-        wrappedArgs = [node, callbacks, origNode, redirectCount];
+        wrappedArgs = [node, callbacks, origNode, redirectCount, strict];
 
     this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
   }
@@ -611,8 +612,10 @@ OX.Mixins.Subscribable = function () {
      *
      * @see <a href="http://xmpp.org/extensions/xep-0060.html#entity-subscriptions">XEP: 0060 - Entity Subscriptions</a>
      *
-     * @param {String} [node] The node to request subscriptions on
+     * @param {String} [node] The node name to request subscriptions on. Omitting the node name implies all nodes
      * @param {Object} callbacks an object supplying functions for 'onSuccess' and 'onError'
+     * @param {Bool} [strictJIDMatch] Only apply callbacks to subscriptions that match the exact JID as the current connection.
+     * This will NOT match a bare JID to a full JID.
      *
      * @example
      * service.getSubscriptions('/', {
@@ -626,13 +629,19 @@ OX.Mixins.Subscribable = function () {
      *   onError: function(requestedURI, finalURI, packet)
      * })
      */
-    getSubscriptions: function(node, callbacks) {
+    getSubscriptions: function(node, callbacks, strictJIDMatch) {
       if (arguments.length == 1) {
-        callbacks = node;
+        callbacks = arguments[0];
+        node = undefined;
+        strictJIDMatch = undefined;
+      } else if (arguments.length == 2 &&
+                 (arguments[0].hasOwnProperty('onSucess') || arguments[0].hasOwnProperty('onError'))) {
+        callbacks = arguments[0];
+        strictJIDMatch = arguments[1];
         node = undefined;
       }
 
-      doGetSubcriptions.call(this, node, callbacks, node, 0);
+      doGetSubcriptions.call(this, node, callbacks, node, 0, strictJIDMatch);
     },
 
     configureNode: function(subscription, options, callbacks) {

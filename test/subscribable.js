@@ -189,6 +189,112 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.isFalse(errorFlag, 'onError handler was called');
   },
 
+  testGetSubscriptionsWithoutStrictJIDCheck: function() {
+    /** start this test setup **/
+    var resourceConn = OXTest.ConnectionMock.extend({jid: function() { return 'mock@example.com/brooklyn'; }}).init();
+        resourceOx = OX.Connection.extend({connection: resourceConn});
+
+    resourceOx.initConnection();
+    var itemFromElement = function () {
+      return that.itemFromElement.apply(that, arguments);
+    };
+
+    var resourceSubscribable = OX.Base.extend(OX.Mixins.Subscribable, {
+      connection:     resourceOx,
+      pubSubURI:      'xmpp:pubsub@example.com',
+      itemFromElement: itemFromElement
+    });
+    resourceSubscribable.registerSubscriptionHandlers();
+    /** end this test setup **/
+
+    var Assert = YAHOO.util.Assert;
+    var successFlag = false, errorFlag = false;
+
+    resourceConn.addResponse(OXTest.Packet.extendWithXML(
+                             "<iq type='result'"
+                             + "    from='pubsub@example.com'"
+                             + "    to='mock@example.com/brooklyn'"
+                             + "    id='subscriptions1'>"
+                             + "  <pubsub xmlns='http://jabber.org/protocol/pubsub'>"
+                             + "    <subscriptions node='princely_musings'>"
+                             + "      <subscription jid='mock@example.com' subscription='subscribed' subid='bare-123'/>"
+                             + "      <subscription jid='mock@example.com/brooklyn' subscription='subscribed' subid='123-abc'/>"
+                             + "      <subscription jid='mock@example.com/manhattan' subscription='subscribed' subid='004-yyy'/>"
+                             + "    </subscriptions>"
+                             + "  </pubsub>"
+                             + "</iq>"));
+
+    resourceSubscribable.getSubscriptions('princely_musings', {
+      onSuccess: function (requestedURI, finalURI, subscriptions, packet) {
+        successFlag = true;
+
+        Assert.isArray(subscriptions, 'subscriptions is not an array');
+        Assert.areEqual(3, subscriptions.length, 'subscriptions length should be three');
+      },
+      onError: function(requestedURI, finalURI, packet) {
+        errorFlag = true;
+      }
+    });
+
+    Assert.isTrue(successFlag, 'onSuccess handler was not called');
+    Assert.isFalse(errorFlag, 'onError handler was called');
+  },
+
+  testGetSubscriptionsWithStrictJIDCheck: function() {
+    /** start this test setup **/
+    var resourceConn = OXTest.ConnectionMock.extend({jid: function() { return 'mock@example.com/brooklyn'; }}).init();
+        resourceOx = OX.Connection.extend({connection: resourceConn});
+
+    resourceOx.initConnection();
+    var itemFromElement = function () {
+      return that.itemFromElement.apply(that, arguments);
+    };
+
+    var resourceSubscribable = OX.Base.extend(OX.Mixins.Subscribable, {
+      connection:     resourceOx,
+      pubSubURI:      'xmpp:pubsub@example.com',
+      itemFromElement: itemFromElement
+    });
+    resourceSubscribable.registerSubscriptionHandlers();
+    /** end this test setup **/
+
+    var Assert = YAHOO.util.Assert;
+    var successFlag = false, errorFlag = false;
+
+    resourceConn.addResponse(OXTest.Packet.extendWithXML(
+                             "<iq type='result'"
+                             + "    from='pubsub@example.com'"
+                             + "    to='mock@example.com/brooklyn'"
+                             + "    id='subscriptions1'>"
+                             + "  <pubsub xmlns='http://jabber.org/protocol/pubsub'>"
+                             + "    <subscriptions node='princely_musings'>"
+                             + "      <subscription jid='mock@example.com' subscription='subscribed' subid='bare-123'/>"
+                             + "      <subscription jid='mock@example.com/brooklyn' subscription='subscribed' subid='123-abc'/>"
+                             + "      <subscription jid='mock@example.com/manhattan' subscription='subscribed' subid='004-yyy'/>"
+                             + "    </subscriptions>"
+                             + "  </pubsub>"
+                             + "</iq>"));
+
+    resourceSubscribable.getSubscriptions('princely_musings', {
+      onSuccess: function (requestedURI, finalURI, subscriptions, packet) {
+        successFlag = true;
+
+        Assert.isArray(subscriptions, 'subscriptions is not an array');
+        Assert.areEqual(1, subscriptions.length, 'subscriptions length should be one');
+
+        Assert.areEqual('mock@example.com/brooklyn', subscriptions[0].jid, 'strict match subscription has incorrect JID');
+        Assert.areEqual('123-abc', subscriptions[0].subid, 'strict match subscription has incorrect subid');
+        Assert.areEqual('subscribed', subscriptions[0].subscription, 'strict match subscription has incorrect subscription');
+      },
+      onError: function(requestedURI, finalURI, packet) {
+        errorFlag = true;
+      }
+    }, true);
+
+    Assert.isTrue(successFlag, 'onSuccess handler was not called');
+    Assert.isFalse(errorFlag, 'onError handler was called');
+  },
+
   testConfigureNode: function() {
     var Assert = YAHOO.util.Assert;
 
