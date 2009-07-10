@@ -16,6 +16,18 @@ var OX = {
 
   error: function() {
     return window.console && window.console.error && window.console.error.apply(window.console, arguments);
+  },
+
+  group: function() {
+    if (window.console && window.console.group) {
+      window.console.group.apply(window.console, arguments);
+    } else {
+      OX.log.apply(OX, arguments);
+    }
+  },
+
+  groupEnd: function() {
+    if (window.console && window.console.groupEnd) window.console.groupEnd();
   }
 
 };
