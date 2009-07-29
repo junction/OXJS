@@ -389,6 +389,9 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
       case 'created':
         rc.created = node.firstChild.nodeValue;
         break;
+      case 'sipfrom':
+        rc.sipfrom = node.firstChild.nodeValue;
+        break;
       case 'duration':
         rc.duration = parseInt(node.firstChild.nodeValue);
         break;
