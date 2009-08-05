@@ -376,7 +376,7 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
     for (var i = 0, len = children.length; i < len; i++) {
       var node = children[i];
 
-      if (!node.nodeName)
+      if (!node.nodeName || !node.firstChild)
         continue;
 
       switch (node.nodeName.toLowerCase()) {
