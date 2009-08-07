@@ -40,14 +40,22 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
    *   onError:   function (error) {}
    * });
    */
-  authorizePlain: function (address, password, jid) {
+  authorizePlain: function (address, password, jid, auth_for_all) {
     var iq    = OX.XMPP.IQ.extend(),
         cmd   = OX.XMPP.Command.extend(),
         xData = OX.XMPP.XDataForm.extend();
 
     var callbacks = {};
-    if (arguments.length > 0 && arguments[arguments.length - 1])
+    if (arguments.length > 0 &&
+        arguments[arguments.length - 1] &&
+        (arguments[arguments.length - 1].onSucess || arguments[arguments.length - 1].onError)) {
       callbacks = arguments[arguments.length - 1];
+
+      if (auth_for_all == callbacks) auth_for_all = null;
+      if (jid == callbacks) jid = null;
+      if (password == callbacks) password = null;
+      if (address == callbacks) address = null;
+    }
 
     iq.to('commands.auth.xmpp.onsip.com');
     iq.type('set');
@@ -55,6 +63,7 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
     xData.type('submit');
     xData.addField('sip-address', address);
     xData.addField('password', password);
+    xData.addField('auth-for-all', auth_for_all ? 'true' : 'false');
     if (jid)
       xData.addField('jid', jid);
 

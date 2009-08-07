@@ -43,36 +43,101 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   testAuthPlainWithoutJID: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.Auth.authorizePlain('enoch@sip-example.com', 'example');
+    this.Auth.authorizePlain('odysseus@sip-example.com', 'password');
 
     Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
                      'authorize-plain',
-                     {'sip-address': 'enoch@sip-example.com',
-                      'password':    'example',
-                      'jid':         undefined});
+                     {'sip-address': 'odysseus@sip-example.com',
+                      'password':    'password',
+                      'jid':         undefined,
+                      'auth-for-all': 'false'});
   },
 
   testAuthPlainWithJID: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.Auth.authorizePlain('enoch@sip-example.com', 'example',
-                             'enoch@jid-example.com');
+    this.Auth.authorizePlain('odysseus@sip-example.com', 'password',
+                             'odysseus@jid-example.com');
 
     Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
                      'authorize-plain',
-                     {'sip-address': 'enoch@sip-example.com',
-                      'password':    'example',
-                      'jid':         'enoch@jid-example.com'});
+                     {'sip-address': 'odysseus@sip-example.com',
+                      'password':    'password',
+                      'jid':         'odysseus@jid-example.com',
+                      'auth-for-all': 'false'});
   },
+
+  testAuthPlainWithAuthenticateForAll: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.Auth.authorizePlain('odysseus@sip-example.com',
+                             'password',
+                             'odysseus@jid-example.com',
+                             true);
+
+    Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
+                     'authorize-plain',
+                     {'sip-address': 'odysseus@sip-example.com',
+                      'password':    'password',
+                      'jid':         'odysseus@jid-example.com',
+                      'auth-for-all': 'true'});
+  },
+
+  testAuthPlainCallbacks: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.Auth.authorizePlain('odysseus@sip-example.com', 'password', {
+      onSuccess: function() {},
+      onError: function() {}
+    });
+
+    Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
+                     'authorize-plain',
+                     {'sip-address': 'odysseus@sip-example.com',
+                      'password':    'password',
+                      'jid':         undefined,
+                      'auth-for-all': 'false'});
+  },
+
 
   testAuthPlainSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" to="mock@example.com" id="test" type="result"><command xmlns="http://jabber.org/protocol/commands" status="completed" node="authorize-plain" sessionid="session-id"><note type="info">JID \'alice@example.com\' has been authorized to access resources for SIP Address \'alice@example.com\'</note><x xmlns="jabber:x:data" type="result"><field type="fixed" var="expires"><value>2009-02-19T21:08:38Z</value></field></x></command></iq>'));
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" to="mock@example.com" id="test" type="result"><command xmlns="http://jabber.org/protocol/commands" status="completed" node="authorize-plain" sessionid="session-id"><note type="info">JID \'alice@example.com\' has been authorized to access resources for SIP Address \'alice@example.com\'</note><x xmlns="jabber:x:data" type="result"><field type="fixed" var="expires"><value>2009-02-19T21:08:38Z</value></field>'
+                                                      + '<field type="fixed" var="sip" >'
+                                                      + '<value>alice@example.com</value>'
+                                                      + '</field></x></command></iq>'));
 
     var successFlag = false, errorFlag = false;
     this.Auth.authorizePlain('alice@example.com', 'password', {
-      onSuccess: function () { successFlag = true; },
+      onSuccess: function (packet) {
+        successFlag = true;
+        Assert.isObject(packet, 'Packet should be an object');
+      },
+      onError:   function () { errorFlag   = true; }
+    });
+
+    Assert.isFalse(errorFlag, 'Got error trying to auth plain.');
+    Assert.isTrue(successFlag, 'Was not successful trying to auth plain.');
+  },
+
+  testAuthPlainSuccessWithMultipleAuthorizations: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" to="mock@example.com" id="test" type="result"><command xmlns="http://jabber.org/protocol/commands" status="completed" node="authorize-plain" sessionid="session-id"><note type="info">JID \'alice@example.com\' has been authorized to access resources for SIP Address \'alice@example.com\'</note><x xmlns="jabber:x:data" type="result"><field type="fixed" var="expires"><value>2009-02-19T21:08:38Z</value></field>'
+                                                      + '<field type="fixed" var="sip" >'
+                                                      + '<value>alice@example.com</value>'
+                                                      + '</field>'
+                                                      + '<field type="fixed" var="sip" >'
+                                                      + '<value>alice.other@example.com</value>'
+                                                      + '</field></x></command></iq>'));
+
+    var isObject = false, successFlag = false, errorFlag = false;
+    this.Auth.authorizePlain('alice@example.com', 'password', null, true, {
+      onSuccess: function (packet) {
+        successFlag = true;
+        Assert.isObject(packet, 'Packet should be an object');
+      },
       onError:   function () { errorFlag   = true; }
     });
 
