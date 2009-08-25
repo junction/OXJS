@@ -964,13 +964,13 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.areSame(4, items.length);
         Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item1',
-                       items[0].uri.toString());
+                       items[0].uri.convertToString());
         Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item2',
-                       items[1].uri.toString());
+                       items[1].uri.convertToString());
         Assert.areSame('xmpp:pubsub@example.com?;node=node2;item=node2-item1',
-                       items[2].uri.toString());
+                       items[2].uri.convertToString());
         Assert.areSame('xmpp:pubsub@example.com?;node=node2;item=node2-item2',
-                       items[3].uri.toString());
+                       items[3].uri.convertToString());
       },
 
       onError: function (error) {
