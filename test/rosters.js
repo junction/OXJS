@@ -23,16 +23,6 @@ OXTest.Rosters = new YAHOO.tool.TestCase({
     Assert.areSame(this.ox, this.ox.Rosters.connection);
   },
 
-  testCommandURIs: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isObject(this.Rosters.commandURIs,
-                    'Rosters.commandURIs is not an object.');
-    Assert.areSame('xmpp:commands.rosters.xmpp.onsip.com?;node=push-roster-groups',
-                   this.Rosters.commandURIs.pushRosterGroups,
-                   'Rosters.commandURIs.pushRosterGroups is wrong');
-  },
-
   testPushRosterGroups: function () {
     var Assert = YAHOO.util.Assert;
 

@@ -15,30 +15,6 @@ OX.Mixins = {};
  * @requires toTag property on receiving object.
  */
 OX.Mixins.CallDialog = function () {
-
-  /**#nocode+*/
-  function getTransferURI () {
-    if (arguments.callee._cached === undefined) {
-      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.transfer);
-    }
-    return arguments.callee._cached;
-  }
-
-  function getTerminateURI () {
-    if (arguments.callee._cached === undefined) {
-      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.terminate);
-    }
-    return arguments.callee._cached;
-  }
-
-  function getCancelURI () {
-    if (arguments.callee._cached === undefined) {
-      arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.cancel);
-    }
-    return arguments.callee._cached;
-  }
-  /**#nocode-*/
-
   return /** @lends OX.Mixins.CallDialog# */{
     /**
      * Transfer a call to a sip address.
@@ -54,13 +30,14 @@ OX.Mixins.CallDialog = function () {
     transfer: function (targetURI, endpoint, callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
-          xData = OX.XMPP.XDataForm.extend();
+          xData = OX.XMPP.XDataForm.extend(),
+          uri   = OX.Settings.URIs.command.transferCall;
 
       callbacks = callbacks || {};
 
-      iq.to(getTransferURI().path);
+      iq.to(uri.path);
       iq.type('set');
-      cmd.node(getTransferURI().queryParam('node'));
+      cmd.node(uri.queryParam('node'));
       xData.type('submit');
       xData.addField('call-id',    this.callID);
       xData.addField('from-tag',   this.fromTag);
@@ -95,7 +72,7 @@ OX.Mixins.CallDialog = function () {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
           xData = OX.XMPP.XDataForm.extend(),
-          uri   = getTerminateURI();
+          uri   = OX.Settings.URIs.command.terminateCall;
 
       callbacks = callbacks || {};
 
@@ -134,7 +111,7 @@ OX.Mixins.CallDialog = function () {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
           xData = OX.XMPP.XDataForm.extend(),
-          uri   = getCancelURI();
+          uri   = OX.Settings.URIs.command.cancelCall;
 
       callbacks = callbacks || {};
 
@@ -169,16 +146,6 @@ OX.Mixins.CallDialog = function () {
  * @requires callID property on receiving object.
  */
 OX.Mixins.CallLabeler = function () {
-
-  /**#nocode+*/
-  function getLabelURI () {
-    if (arguments.callee._cached === undefined) {
-      arguments.callee._cached = OX.URI.parse(OX.Services.RecentCalls.commandURIs.label);
-    }
-    return arguments.callee._cached;
-  }
-  /**#nocode-*/
-
   return /** @lends OX.Mixins.CallLabeler# */{
     /**
      * Label a call with a short string.
@@ -192,13 +159,14 @@ OX.Mixins.CallLabeler = function () {
     label: function (label, callbacks) {
       var iq    = OX.XMPP.IQ.extend(),
           cmd   = OX.XMPP.Command.extend(),
-          xData = OX.XMPP.XDataForm.extend();
+          xData = OX.XMPP.XDataForm.extend(),
+          uri   = OX.Settings.URIs.command.labelCall;
 
       callbacks = callbacks || {};
 
-      iq.to(getLabelURI().path);
+      iq.to(uri.path);
       iq.type('set');
-      cmd.node('label');
+      cmd.node(uri.queryParam('node'));
       xData.type('submit');
       xData.addField('call-id', this.callID);
       xData.addField('label',   label);
@@ -228,7 +196,6 @@ OX.Mixins.CallLabeler = function () {
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
 OX.Mixins.Subscribable = function () {
-
   /**#nocode+*/
   function packetType(element) {
     switch (element.tagName) {
@@ -347,15 +314,18 @@ OX.Mixins.Subscribable = function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
-  function getSubscriptionsHandler(packet, node, callbacks, origNode, redirectCount, strict) {
-    callbacks = callbacks || {};
+  function getSubscriptionsHandler(packet, node, callbacks, origNode,
+                                   redirectCount, strict) {
+    callbacks     = callbacks     || {};
     redirectCount = redirectCount || 0;
-    origNode = origNode || node;
+    origNode      = origNode      || node;
 
-    if (!packet) return;
+    if (!packet)
+      return;
 
-    var finalURI = this.getURI(),
-        reqURI   = this.getURI();
+    window.foo = this;
+    var finalURI = this.pubSubURI,
+        reqURI   = this.pubSubURI;
 
     if (node) {
       finalURI = finalURI.extend({query: ';node=' + node});
@@ -407,8 +377,8 @@ OX.Mixins.Subscribable = function () {
     if (!packet)
       return;
 
-    var finalURI = this.getURI().extend({query: ';node=' + node}),
-        reqURI   = this.getURI().extend({query: ';node=' + (origNode || node)});
+    var finalURI = this.pubSubURI.extend({query: ';node=' + node}),
+        reqURI   = this.pubSubURI.extend({query: ';node=' + (origNode || node)});
     if (packet.getType() === 'error') {
       var error = packet.getNode().getElementsByTagName('error')[0];
       if (redirects < 5 && error && error.firstChild &&
@@ -444,7 +414,7 @@ OX.Mixins.Subscribable = function () {
   }
 
   function unsubscriptionHandler(packet, node, callbacks) {
-    var uri = this.getURI().extend({query: ';node=' + node});
+    var uri = this.pubSubURI.extend({query: ';node=' + node});
     callbacks = callbacks || {};
 
     if (!packet)
@@ -527,7 +497,7 @@ OX.Mixins.Subscribable = function () {
     var iq = OX.XMPP.IQ.extend(),
         pubsub = OX.XMPP.PubSub.extend();
 
-    iq.to(this.getURI().path);
+    iq.to(this.pubSubURI.path);
     iq.type('set');
     iq.addChild(pubsub);
 
@@ -553,7 +523,7 @@ OX.Mixins.Subscribable = function () {
                                              xmlns: 'http://jabber.org/protocol/pubsub'}),
           subscribe = OX.XML.Element.extend({name: 'subscribe'});
 
-      iq.to(this.getURI.call(this).path);
+      iq.to(this.pubSubURI.path);
       iq.type('set');
       subscribe.attr('node', node);
       subscribe.attr('jid', this.connection.getJID());
@@ -576,7 +546,7 @@ OX.Mixins.Subscribable = function () {
         pub = OX.XMPP.PubSub.extend(),
         sub = OX.XML.Element.extend({name: 'subscriptions'});
 
-    iq.to(this.getURI().path);
+    iq.to(this.pubSubURI.path);
     iq.type('get');
 
     if (node) sub.attr('node', node);
@@ -596,14 +566,6 @@ OX.Mixins.Subscribable = function () {
     init: function() {
       var tpl = OX.Mixins.Subscribable._subscriptionHandlers;
       this._subscriptionHandlers = OX.Base.extend(tpl);
-    },
-
-    _cachedURI: null,
-    getURI: function () {
-      if (this._cachedURI === null) {
-        this._cachedURI = OX.URI.parse(this.pubSubURI);
-      }
-      return this._cachedURI;
     },
 
     /**
@@ -697,7 +659,7 @@ OX.Mixins.Subscribable = function () {
                                                xmlns: 'http://jabber.org/protocol/pubsub'}),
           unsubscribe = OX.XML.Element.extend({name: 'unsubscribe'});
 
-      iq.to(this.getURI.call(this).path);
+      iq.to(this.pubSubURI.path);
       iq.type('set');
       unsubscribe.attr('node', node);
       unsubscribe.attr('jid',  this.connection.getJID());
@@ -726,7 +688,7 @@ OX.Mixins.Subscribable = function () {
                                           xmlns: 'http://jabber.org/protocol/pubsub'}),
           items  = OX.XML.Element.extend({name: 'items'});
 
-      iq.to(this.getURI.call(this).path);
+      iq.to(this.pubSubURI.path);
       iq.type('get');
       items.attr('node', node);
       iq.addChild(pubsub.addChild(items));
@@ -743,7 +705,7 @@ OX.Mixins.Subscribable = function () {
      * service.registerSubscriptionHandlers();
      */
     registerSubscriptionHandlers: function () {
-      var uri = this.getURI.call(this);
+      var uri = this.pubSubURI;
       var that = this;
       var handler = function () { jidHandler.apply(that, arguments); };
       this.connection.registerJIDHandler(uri.path, handler);

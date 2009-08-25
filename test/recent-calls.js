@@ -44,16 +44,6 @@ OXTest.RecentCalls = new YAHOO.tool.TestCase({
                    'RecentCalls.pubSub URI is wrong.');
   },
 
-  testCommandURIs: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isObject(this.RecentCalls.commandURIs,
-                    'RecentCalls.commandURIs is not an object.');
-    Assert.areSame('xmpp:commands.recent-calls.xmpp.onsip.com?;node=label',
-                   this.RecentCalls.commandURIs.label,
-                   'RecentCalls.commandURIs.transfer is wrong');
-  },
-
   testItemFromElement: function () {
     var Assert = YAHOO.util.Assert;
 

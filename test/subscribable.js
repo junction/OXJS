@@ -12,8 +12,8 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     };
 
     this.Subscribable = OX.Base.extend(OX.Mixins.Subscribable, {
-      connection:     this.ox,
-      pubSubURI:      'xmpp:pubsub@example.com',
+      connection:      this.ox,
+      pubSubURI:       OX.URI.parse('xmpp:pubsub@example.com'),
       itemFromElement: itemFromElement
     });
     this.Subscribable.registerSubscriptionHandlers();
@@ -201,7 +201,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var resourceSubscribable = OX.Base.extend(OX.Mixins.Subscribable, {
       connection:     resourceOx,
-      pubSubURI:      'xmpp:pubsub@example.com',
+      pubSubURI:      OX.URI.parse('xmpp:pubsub@example.com'),
       itemFromElement: itemFromElement
     });
     resourceSubscribable.registerSubscriptionHandlers();
@@ -252,7 +252,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var resourceSubscribable = OX.Base.extend(OX.Mixins.Subscribable, {
       connection:     resourceOx,
-      pubSubURI:      'xmpp:pubsub@example.com',
+      pubSubURI:      OX.URI.parse('xmpp:pubsub@example.com'),
       itemFromElement: itemFromElement
     });
     resourceSubscribable.registerSubscriptionHandlers();
@@ -513,7 +513,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var subscribableService2 = OX.Base.extend(OX.Mixins.Subscribable, {
       connection:     this.ox,
-      pubSubURI:      'xmpp:pubsub2@example.com',
+      pubSubURI:      OX.URI.parse('xmpp:pubsub2@example.com'),
       itemFromElement: itemFromElement
     });
     subscribableService2.registerSubscriptionHandlers();
@@ -533,7 +533,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var subscribableService2 = OX.Base.extend(OX.Mixins.Subscribable, {
       connection:     this.ox,
-      pubSubURI:      'xmpp:pubsub2@example.com',
+      pubSubURI:      OX.URI.parse('xmpp:pubsub2@example.com'),
       itemFromElement: itemFromElement
     });
     subscribableService2.registerSubscriptionHandlers();

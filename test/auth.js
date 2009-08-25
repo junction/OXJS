@@ -23,16 +23,6 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     Assert.areSame(this.ox, this.ox.Auth.connection);
   },
 
-  testCommandURIs: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isObject(this.Auth.commandURIs,
-                    'Auth.commandURIs is not an object.');
-    Assert.areSame('xmpp:commands.auth.xmpp.onsip.com?;node=authorize-plain',
-                   this.Auth.commandURIs.authorizePlain,
-                   'Auth.commandURIs.transfer is wrong');
-  },
-
   testAuthPlain: function () {
     var Assert = YAHOO.util.Assert;
 

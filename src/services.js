@@ -18,12 +18,6 @@ OX.Services = {};
  * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
-  /** */
-  commandURIs: {
-    /** URI for authorize-plain Ad Hoc commnd. */
-    authorizePlain: 'xmpp:commands.auth.xmpp.onsip.com?;node=authorize-plain'
-  },
-
   /**
    * Authorize a JID for a SIP address, authorized via a password. This
    * password is sent in clear text to the XMPP API, so your connection
@@ -40,10 +34,11 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
    *   onError:   function (error) {}
    * });
    */
-  authorizePlain: function (address, password, jid, auth_for_all) {
+  authorizePlain: function (address, password, jid, authForAll) {
     var iq    = OX.XMPP.IQ.extend(),
         cmd   = OX.XMPP.Command.extend(),
-        xData = OX.XMPP.XDataForm.extend();
+        xData = OX.XMPP.XDataForm.extend(),
+        uri   = OX.Settings.URIs.command.authorizePlain;
 
     var callbacks = {};
     if (arguments.length > 0 &&
@@ -51,19 +46,19 @@ OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
         (arguments[arguments.length - 1].onSucess || arguments[arguments.length - 1].onError)) {
       callbacks = arguments[arguments.length - 1];
 
-      if (auth_for_all == callbacks) auth_for_all = null;
-      if (jid == callbacks) jid = null;
-      if (password == callbacks) password = null;
-      if (address == callbacks) address = null;
+      if (authForAll == callbacks) authForAll = null;
+      if (jid == callbacks)        jid = null;
+      if (password == callbacks)   password = null;
+      if (address == callbacks)    address = null;
     }
 
-    iq.to('commands.auth.xmpp.onsip.com');
+    iq.to(uri.path);
     iq.type('set');
-    cmd.node('authorize-plain');
+    cmd.node(uri.queryParam('node'));
     xData.type('submit');
     xData.addField('sip-address', address);
     xData.addField('password', password);
-    xData.addField('auth-for-all', auth_for_all ? 'true' : 'false');
+    xData.addField('auth-for-all', authForAll ? 'true' : 'false');
     if (jid)
       xData.addField('jid', jid);
 
@@ -93,22 +88,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
   /**
    * URI for this PubSub service.
    */
-  pubSubURI: 'xmpp:pubsub.active-calls.xmpp.onsip.com',
-
-  /** */
-  commandURIs: {
-    /** URI for create Ad Hoc commnd. */
-    create: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=create',
-
-    /** URI for transfer Ad Hoc commnd. */
-    transfer: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=transfer',
-
-    /** URI for terminate Ad Hoc commnd. */
-    terminate: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=terminate',
-
-    /** URI for cancel Ad Hoc commnd. */
-    cancel: 'xmpp:commands.active-calls.xmpp.onsip.com?;node=cancel'
-  },
+  pubSubURI: OX.Settings.URIs.pubSub.activeCalls,
 
   /**
    * Active Call Item.
@@ -244,40 +224,29 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    * @param {String} from the SIP address to originate the call from
    * @param {Object} [cb] An object supplying callback functions for 'onSuccess', and 'onError'.
    */
-  create: function() {
-    /**
-     * @private
-     */
-    var getCreateURI = function() {
-      if (arguments.callee._cached === undefined) {
-        arguments.callee._cached = OX.URI.parse(OX.Services.ActiveCalls.commandURIs.create);
-      }
-      return arguments.callee._cached;
-    };
+  create: function (to, from, cb) {
+    var uri   = OX.Settings.URIs.command.createCall,
+        xData = OX.XMPP.XDataForm.create({type: 'submit'}),
+        cmd   = OX.XMPP.Command.create({node: uri.queryParam('node')}, xData),
+        iq    = OX.XMPP.IQ.create({to: uri.path, type: 'set'}, cmd);
 
-    return function (to, from, cb) {
-      var uri   = getCreateURI(),
-          xData = OX.XMPP.XDataForm.create({type: 'submit'}),
-          cmd   = OX.XMPP.Command.create({node: uri.queryParam('node')}, xData),
-          iq    = OX.XMPP.IQ.create({to: uri.path, type: 'set'}, cmd);
+    xData.addField('to', to);
+    xData.addField('from', from);
 
-      xData.addField('to', to);
-      xData.addField('from', from);
+    cb = cb || {};
 
-      cb = cb || {};
+    this.connection.send(iq.convertToString(), function(packet) {
+      if(!packet)
+        return;
 
-      this.connection.send(iq.convertToString(), function(packet) {
-        if(!packet) return;
-
-        if(packet.getType() === 'error' && cb.onError && cb.onError.constructor == Function) {
+      if (packet.getType() === 'error'
+          && cb.onError && cb.onError.constructor == Function) {
           cb.onError(packet);
-        } else if(cb.onSuccess && cb.onSuccess.constructor == Function) {
-          cb.onSuccess(packet);
-        }
-      }, []);
-
-    };
-  }()
+      } else if (cb.onSuccess && cb.onSuccess.constructor == Function) {
+        cb.onSuccess(packet);
+      }
+    }, []);
+  }
 });
 
 /**
@@ -291,7 +260,7 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
   /**
    * URI for this PubSub service.
    */
-  pubSubURI: 'xmpp:pubsub.user-agents.xmpp.onsip.com',
+  pubSubURI: OX.Settings.URIs.pubSub.userAgents,
 
   /**
    * User Agent Item.
@@ -442,7 +411,7 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
     /**
      * URI for this PubSub service.
      */
-    pubSubURI: 'xmpp:pubsub.voicemail.xmpp.onsip.com',
+    pubSubURI: OX.Settings.URIs.pubSub.voicemail,
 
     /**
      * Voicemail Item.
@@ -525,13 +494,7 @@ OX.Services.Preferences = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * @extends OX.Mixins.Subscribable
  * @requires connection property inherited from an {@link OX.Connection}.
  */
-OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.RecentCalls */{
-  /** */
-  commandURIs: {
-    /** URI for label Ad Hoc commnd. */
-    label: 'xmpp:commands.recent-calls.xmpp.onsip.com?;node=label'
-  }
-});
+OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.RecentCalls */{});
 
 /**
  * Namespace for roster related services.
@@ -540,12 +503,6 @@ OX.Services.RecentCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
  * @requires connection property inherited from an {@link OX.Connection}.
  */
 OX.Services.Rosters = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Services.Rosters */{
-  /** */
-  commandURIs: {
-    /** URI for label Ad Hoc commnd. */
-    pushRosterGroups: 'xmpp:commands.rosters.xmpp.onsip.com?;node=push-roster-groups'
-  },
-
   /**
    * Push a roster group from the Junction Networks XMPP API Rosters Component.
    * The first time this is called, a user will receive a series of roster add requests for
@@ -565,15 +522,16 @@ OX.Services.Rosters = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Servi
   pushRosterGroups: function (jid) {
     var iq    = OX.XMPP.IQ.extend(),
         cmd   = OX.XMPP.Command.extend(),
-        xData = OX.XMPP.XDataForm.extend();
+        xData = OX.XMPP.XDataForm.extend(),
+        uri   = OX.Settings.URIs.command.pushRosterGroups;
 
     var callbacks = {};
     if (arguments.length > 0 && arguments[arguments.length - 1])
       callbacks = arguments[arguments.length - 1];
 
-    iq.to('commands.rosters.xmpp.onsip.com');
+    iq.to(uri.path);
     iq.type('set');
-    cmd.node('push-roster-groups');
+    cmd.node(uri.queryParam('node'));
     xData.type('submit');
     if (jid)
       xData.addField('jid', jid);
