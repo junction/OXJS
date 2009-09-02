@@ -123,6 +123,13 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     /** The branch tag for this pre-dialog event. */
     branch: null,
 
+    /** The tag inserted into the referred-by field */
+    referredBy: null,
+
+    isFromCallSetup: function() {
+      return !!this.callSetupID;
+    },
+
     isCreated: function() {
       return this.dialogState == 'created';
     },
@@ -209,7 +216,9 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
       case 'branch':
         attrs.branch = node.firstChild && node.firstChild.nodeValue;
         break;
-
+      case 'call-setup-id':
+        attrs.callSetupID = node.firstChild && node.firstChild.nodeValue;
+        break;
       }
     }
 

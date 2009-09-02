@@ -15,6 +15,30 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                   + '          <from-tag>419cce6a</from-tag>'
                   + '          <to-tag/>'
                   + '          <branch/>'
+                  + '          <call-setup-id/>'
+                  + '        </active-call>'
+                  + '      </item>'
+                  + '    </items>'
+                  + '  </event>'
+                  + '  <headers xmlns="http://jabber.org/protocol/shim">'
+                  + '    <header name="Collection" >/me/foo!example.onsip.com@dashboard.onsip.com</header>'
+                  + '  </headers>'
+                  + '</message>',
+
+    createdWithReferEvent: '<message from="pubsub.active-calls.xmpp.onsip.com" to="foo!example.onsip.com@dashboard.onsip.com" >'
+                  + '  <event xmlns="http://jabber.org/protocol/pubsub#event">'
+                  + '    <items node="/example.onsip.com/foo" >'
+                  + '      <item id="b5879e23d6a92cc11f01a29e466f7bd2" >'
+                  + '        <active-call xmlns="onsip:active-calls">'
+                  + '          <dialog-state>created</dialog-state>'
+                  + '          <to-aor/>'
+                  + '          <call-id>NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU.</call-id>'
+                  + '          <from-uri>sip:foo@example.onsip.com</from-uri>'
+                  + '          <to-uri>sip:other@example.onsip.com</to-uri>'
+                  + '          <from-tag>419cce6a</from-tag>'
+                  + '          <to-tag/>'
+                  + '          <branch/>'
+                  + '          <call-setup-id>4eea2554</call-setup-id>'
                   + '        </active-call>'
                   + '      </item>'
                   + '    </items>'
@@ -37,6 +61,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                     + '          <from-tag>53498145</from-tag>'
                     + '          <to-tag/>'
                     + '          <branch>z9hG4bK7bb6.4c45a015.0</branch>'
+                    + '          <call-setup-id/>'
                     + '        </active-call>'
                     + '      </item>'
                     + '    </items>'
@@ -59,6 +84,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                     + '          <from-tag>53498145</from-tag>'
                     + '          <to-tag>as11173b9d</to-tag>'
                     + '          <branch>z9hG4bK7bb6.4c45a015.0</branch>'
+                    + '          <call-setup-id/>'
                     + '        </active-call>'
                     + '      </item>'
                     + '    </items>'
@@ -104,18 +130,6 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                    'ActiveCalls.pubSubURI is wrong.');
   },
 
-/*
- * <active-call xmlns="onsip:active-calls">
- *   <dialog-state>created</dialog-state>
- *   <to-aor/>
- *   <call-id>NjEwOWU2ZTE5YzUwNjI0MjQ1ZGYwZjE0ZWVkNTA2NDU.</call-id>
- *   <from-uri>sip:foo@example.onsip.com</from-uri>
- *   <to-uri>sip:other@example.onsip.com</to-uri>
- *   <from-tag>419cce6a</from-tag>
- *   <to-tag/>
- *   <branch/>
- * </active-call>
- */
   testCreatedEvent: function() {
     var Assert = YAHOO.util.Assert;
     var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.createdEvent);
@@ -130,26 +144,27 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.areSame('sip:foo@example.onsip.com', item.fromURI, 'item.fromURI is incorrect');
     Assert.areSame('sip:other@example.onsip.com', item.toURI, 'item.toURI is incorrect');
     Assert.areSame('419cce6a', item.fromTag, 'item.fromTag is incorrect');
+    Assert.isNull(item.callSetupID, 'item.callSetupID is incorrect');
     Assert.isNull(item.toTag, 'item.toTag is incorrect');
     Assert.isNull(item.branch, 'item.branch is incorrect');
+
+    Assert.isFalse(item.isFromCallSetup(), 'item should not be a call setup leg');
 
     Assert.isTrue(item.isCreated(), 'item is not created');
     Assert.isFalse(item.isConfirmed(), 'item is confirmed');
     Assert.isFalse(item.isRequested(), 'item is requested');
   },
 
-  /*
-   * <active-call xmlns="onsip:active-calls">
-   *   <dialog-state>requested</dialog-state>
-   *   <to-aor>foo@example.onsip.com</to-aor>
-   *   <call-id>ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.</call-id>
-   *   <from-uri>sip:other@example.onsip.com</from-uri>
-   *   <to-uri>sip:foo@example.onsip.com</to-uri>
-   *   <from-tag>53498145</from-tag>
-   *   <to-tag/>
-   *   <branch>z9hG4bK7bb6.4c45a015.0</branch>
-   * </active-call>
-   */
+  testCreatedWithReferEvent: function() {
+    var Assert = YAHOO.util.Assert;
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.createdWithReferEvent);
+
+    var item = this.ActiveCalls.itemFromElement(element.doc);
+
+    Assert.areSame('4eea2554', item.callSetupID, 'item.callSetupID is incorrect');
+    Assert.isTrue(item.isFromCallSetup(), 'item is not a call setup leg');
+  },
+
   testRequestedEvent: function() {
     var Assert = YAHOO.util.Assert;
     var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.requestedEvent);
@@ -172,19 +187,6 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     Assert.isFalse(item.isConfirmed(), 'item is confirmed');
   },
 
-
-  /*
-   * <active-call xmlns="onsip:active-calls">
-   *   <dialog-state>confirmed</dialog-state>
-   *   <to-aor>foo@example.onsip.com</to-aor>
-   *   <call-id>ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.</call-id>
-   *   <from-uri>sip:other@example.onsip.com</from-uri>
-   *   <to-uri>sip:foo@example.onsip.com</to-uri>
-   *   <from-tag>53498145</from-tag>
-   *   <to-tag>as11173b9d</to-tag>
-   *   <branch>z9hG4bK7bb6.4c45a015.0</branch>
-   * </active-call>
-   */
   testConfirmedEvent: function() {
     var Assert = YAHOO.util.Assert;
     var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.confirmedEvent);
@@ -217,7 +219,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   testCreateSuccess: function () {
     var Assert = YAHOO.util.Assert,
       successCalled = false,
-      response = OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" type="result" to="jid@foo.com" id="theid" ><command xmlns="http://jabber.org/protocol/commands" status="completed" node="create" sessionid="123aSessID" ><x xmlns="jabber:x:data" type="result" ><field type="fixed" var="call-id" ><value>123aCallID</value></field></x></command></iq>');
+      response = OXTest.Packet.extendWithXML('<iq from="commands.active-calls.xmpp.onsip.com" type="result" to="jid@foo.com" id="theid" ><command xmlns="http://jabber.org/protocol/commands" status="completed" node="create" sessionid="123aSessID" ><x xmlns="jabber:x:data" type="result" ><field type="fixed" var="call-setup-id" ><value>1234abcd</value></field></x></command></iq>');
 
     this.conn.addResponse(response);
 
