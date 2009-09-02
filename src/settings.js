@@ -46,6 +46,14 @@ OX.Settings = OX.Base.extend(/** @lends OX.Settings*/{
       userAgents: OX.URI.parse('xmpp:pubsub.user-agents.xmpp.onsip.com'),
       /** URI for voicemail PubSub service. */
       voicemail: OX.URI.parse('xmpp:pubsub.voicemail.xmpp.onsip.com')
+    },
+
+    /**
+     * URIs for Presence.
+     */
+    presence: {
+      /** URI for sending directed Presence. */
+      userAgents: OX.URI.parse('xmpp:commands.user-agents.xmpp.onsip.com')
     }
   }
 });
