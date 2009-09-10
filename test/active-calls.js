@@ -230,7 +230,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
       }
     };
 
-    this.ActiveCalls.create('to@example.com', 'from@example.com', callbacks);
+    this.ActiveCalls.create('to@example.com', 'from@example.com', 'abcd1234', callbacks);
 
     Assert.areEqual(true, successCalled, "onSuccess was not called");
 
@@ -253,7 +253,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
       }
     };
 
-    this.ActiveCalls.create('bar', 'foo', callbacks);
+    this.ActiveCalls.create('bar', 'foo',  'abcd1234', callbacks);
 
     Assert.areEqual(true, errorCalled, "onError was not called");
   },

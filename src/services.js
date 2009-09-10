@@ -123,8 +123,8 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     /** The branch tag for this pre-dialog event. */
     branch: null,
 
-    /** The tag inserted into the referred-by field */
-    referredBy: null,
+    /** The tag inserted into the call-setup-id field */
+    callSetupID: null,
 
     isFromCallSetup: function() {
       return !!this.callSetupID;
@@ -231,9 +231,10 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    * @function
    * @param {String} to the SIP address to terminate the call at
    * @param {String} from the SIP address to originate the call from
+   * @param {String} callSetupID the end to end call tracking code to be used for a call setup
    * @param {Object} [cb] An object supplying callback functions for 'onSuccess', and 'onError'.
    */
-  create: function (to, from, cb) {
+  create: function (to, from, callSetupID, cb) {
     var uri   = OX.Settings.URIs.command.createCall,
         xData = OX.XMPP.XDataForm.create({type: 'submit'}),
         cmd   = OX.XMPP.Command.create({node: uri.queryParam('node')}, xData),
@@ -241,6 +242,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
 
     xData.addField('to', to);
     xData.addField('from', from);
+    xData.addField('call-setup-id', callSetupID);
 
     cb = cb || {};
 
