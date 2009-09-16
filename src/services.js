@@ -17,7 +17,12 @@ OX.Services = {};
  * @extends OX.Base
  * @requires connection property inherited from an {@link OX.Connection}.
  */
-OX.Services.Auth = OX.Base.extend(/** @lends OX.Services.Auth */{
+OX.Services.Auth = OX.Base.extend(OX.Mixins.EntityTime, /** @lends OX.Services.Auth */{
+
+  entityTime: function(cb) {
+    return this.getTime(OX.Settings.URIs.entity.auth, cb);
+  },
+
   /**
    * Authorize a JID for a SIP address, authorized via a password. This
    * password is sent in clear text to the XMPP API, so your connection

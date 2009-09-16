@@ -148,6 +148,40 @@ OXTest.Auth = new YAHOO.tool.TestCase({
 
     Assert.isFalse(successFlag, 'Was successful trying to auth plain.');
     Assert.isTrue(errorFlag, 'Did not get error trying to auth plain.');
+  },
+
+  testAuthEntityTime: function() {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isFunction(this.Auth.entityTime,
+                      'auth entity time function not available.');
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML("<iq type='result'"
+                                                      + "    from='juliet@capulet.com/balcony'"
+                                                      + "    to='romeo@montague.net/orchard'"
+                                                      + "    id='time_1'>"
+                                                      + "  <time xmlns='urn:xmpp:time'>"
+                                                      + "    <tzo>-06:00</tzo>"
+                                                      + "    <utc>2006-12-19T17:58:35Z</utc>"
+                                                      + "  </time>"
+                                                      + "</iq>"));
+
+    var successful = false, errorFlag = false, tzo, utc;
+
+    this.Auth.entityTime({
+      onSuccess: function(packet, time) {
+        tzo = time.tzo;
+        utc = time.utc;
+        successFlag = true;
+      },
+      onError: function() { errorFlag = true; }
+    });
+
+    Assert.isFalse(errorFlag, 'error flag should be false');
+    Assert.isTrue(successFlag, 'success flag should be true');
+
+    Assert.areEqual('-06:00', tzo, 'tzo is wrong');
+    Assert.areEqual('2006-12-19T17:58:35Z', utc, 'utc is wrong');
   }
 });
 

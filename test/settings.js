@@ -27,6 +27,10 @@ OXTest.Settings = new YAHOO.tool.TestCase({
   testHasAuthCommandURIs: function () {
     var Assert = YAHOO.util.Assert;
 
+    Assert.areSame('xmpp:commands.auth.xmpp.onsip.com',
+                   OX.Settings.URIs.entity.auth.convertToString(),
+                   'OX.Settings.URIs.entity.auth is wrong');
+
     Assert.areSame('xmpp:commands.auth.xmpp.onsip.com?;node=authorize-plain',
                    OX.Settings.URIs.command.authorizePlain.convertToString(),
                    'OX.Settings.URIs.command.authPlain is wrong.');

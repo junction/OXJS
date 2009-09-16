@@ -8,6 +8,10 @@ OX.Settings = OX.Base.extend(/** @lends OX.Settings*/{
    * Various URIs of interest.
    */
   URIs: {
+    entity: {
+      auth: OX.URI.parse('xmpp:commands.auth.xmpp.onsip.com')
+    },
+
     /**
      * URIs for Ad Hoc Commands.
      */
