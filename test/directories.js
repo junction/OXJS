@@ -1,15 +1,48 @@
 OXTest.Directories = new YAHOO.tool.TestCase({
   name: 'Directories Tests',
 
-  _should: {
-    /*
-     * Don't target any directories tests for now.
-     */
-    ignore: {
-      testServiceMixin:   true,
-      testPubSubURI:      true,
-      testItemFromElement: true
-    }
+  itemXML: {
+    user: '<message from="pubsub.directories.xmpp.onsip.com" type="headline" to="jgreen!example.onsip.com@my.onsip.com" >'
+          + '<event xmlns="http://jabber.org/protocol/pubsub#event">'
+          + '<items node="/example.onsip.com/user" >'
+          + '<item id="hiro" >'
+          + '<entity xmlns="onsip:xmpp:directories">'
+          + '<sip-uri>sip:hiro@example.onsip.com</sip-uri>'
+          + '<name>Hiro Protagonist</name>'
+          + '</entity>'
+          + '</item>'
+          + '</items>'
+          + '</event>'
+          + '<header name="Collection" >/me/jgreen!example.onsip.com@my.onsip.com</header>'
+          + '</message>',
+
+    aliasExtension: '<message from="pubsub.directories.xmpp.onsip.com" type="headline" to="jgreen!example.onsip.com@my.onsip.com" >'
+                    + '<event xmlns="http://jabber.org/protocol/pubsub#event">'
+                    + '<items node="/example.onsip.com/alias-extension" >'
+                    + '<item id="7002" >'
+                    + '<alias xmlns="onsip:xmpp:directories">'
+                    + '<sip-uri>sip:7002@example.onsip.com</sip-uri>'
+                    + '<xmpp-uri>xmpp:pubsub.directories.xmpp.onsip.com/?node=/example.onsip.com/user;item=mick</xmpp-uri>'
+                    + '</alias>'
+                    + '</item>'
+                    + '</items>'
+                    + '</event>'
+                    + '<header name="Collection" >/me/jgreen!example.onsip.com@my.onsip.com</header>'
+                    + '</message>',
+
+    aliasPhoneNumber: '<message from="pubsub.directories.xmpp.onsip.com" type="headline" to="jgreen!example.onsip.com@my.onsip.com" >'
+                      + '<event xmlns="http://jabber.org/protocol/pubsub#event">'
+                      + '<items node="/example.onsip.com/alias-phone-number" >'
+                      + '<item id="12132211428" >'
+                      + '<alias xmlns="onsip:xmpp:directories">'
+                      + '<sip-uri>sip:12132211428@jnctn.net</sip-uri>'
+                      + '<xmpp-uri>xmpp:pubsub.directories.xmpp.onsip.com/?node=/example.onsip.com/time-switch;item=tfn.business.hour.rule</xmpp-uri>'
+                      + '</alias>'
+                      + '</item>'
+                      + '</items>'
+                      + '</event>'
+                      + '<header name="Collection" >/me/jgreen!exampleonsip.com@my.onsip.com<./header>'
+                      + '</message>'
   },
 
   setUp: function () {
@@ -20,19 +53,6 @@ OXTest.Directories = new YAHOO.tool.TestCase({
 
     this.successFlag = false;
     this.errorFlag = false;
-    this.subHandlers = {
-      onSuccess: function (requestedURI, finalURI) {
-        this.successFlag = true;
-        Assert.areSame('/',       requestedURI);
-        Assert.areSame('/me/jid', finalURI);
-      },
-
-      onError: function (requestedURI, finalURI) {
-        this.errorFlag = true;
-        Assert.areSame('/',       requestedURI);
-        Assert.areSame('/me/jid', finalURI);
-      }
-    };
   },
 
   tearDown: function () {
@@ -57,25 +77,36 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.areSame('xmpp:pubsub.directories.xmpp.onsip.com',
-                   this.Directories.pubSubURI,
-                   'Directories.pubSub URI is wrong.');
+                   this.Directories.pubSubURI.convertToString(),
+                   'Directories.pubSubURI is wrong.');
   },
 
-  testItemFromElement: function () {
+  testItemFromElement: function() {
     var Assert = YAHOO.util.Assert;
 
-    var itemXML = '';
     Assert.isFunction(this.Directories.itemFromElement,
-                      'Directory service cannot turn packet into item.');
-    var packet = OXTest.Message.extend({
-      from: 'user-agents.xmpp.onsip.com',
-      to:   'me@example.com',
-      doc:  OXTest.DOMParser.parse(itemXML)
-    });
-    var item = this.Directories.itemFromElement(packet.doc);
+                      'method itemFromElement does not exist on Directories.');
+  },
+
+  testUserItem: function () {
+    var Assert = YAHOO.util.Assert,
+      element = OXTest.DOMParser.parse(OXTest.Directories.itemXML.user);
+
+    var item = this.Directories.itemFromElement(element.doc);
+
     Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
-    Assert.areSame(this.conn, item.connection,
-                   'Directory item connection is wrong.');
+    Assert.areSame('sip:hiro@example.onsip.com', item.sipURI, 'sipURI is incorrect');
+    Assert.areSame('Hiro Protagonist', item.name, 'name is incorrect');
+  },
+
+  testAliasExtensionItem: function() {
+    var Assert = YAHOO.util.Assert,
+      element = OXTest.DOMParser.parse(OXTest.Directories.itemXML.aliasExtension);
+
+    var item = this.Directories.itemFromElement(element.doc);
+    Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
+    Assert.isObject(item.xmppURI, 'item xmppURI is not an object');
+    Assert.areSame('sip:7002@example.onsip.com', item.sipURI, 'sipURI is incorrect');
   }
 });
 
