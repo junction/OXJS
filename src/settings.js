@@ -27,6 +27,9 @@ OX.Settings = OX.Base.extend(/** @lends OX.Settings*/{
       /** URI for Ad Hoc Command to label a call. */
       labelCall: OX.URI.parse('xmpp:commands.recent-calls.xmpp.onsip.com?;node=label'),
 
+      /** URI for Ad Hoc Command to delete a voicemail. */
+      deleteVoicemail: OX.URI.parse('xmpp:commands.voicemail.xmpp.onsip.com?;node=delete'),
+
       /** URI for Ad Hoc Command to authorize with a plain-text password. */
       authorizePlain: OX.URI.parse('xmpp:commands.auth.xmpp.onsip.com?;node=authorize-plain'),
 
