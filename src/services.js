@@ -288,14 +288,17 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
     /** The contact of this user agent. */
     contact:  null,
 
-    /** The time this user agent last registered. */
+    /** The registration received IP & port. */
     received: null,
 
     /** The user agent identifier string. */
     device:   null,
 
     /** The time at which the user agent registration will expire. */
-    expires:  null
+    expires:  null,
+
+    /** The time at which a user-agent dialog event started */
+    time: null
   }),
 
   itemFromElement: function (element) {
@@ -329,6 +332,9 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
         break;
       case 'expires':
         attrs.expires = value;
+        break;
+      case 'time':
+        attrs.time = value;
         break;
       }
     }
