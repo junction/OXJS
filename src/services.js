@@ -458,6 +458,45 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
       labels:   null,
 
       /**
+       * Cache this Voicemail.
+       *
+       * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+       *
+       * @see http://wiki.junctionnetworks.com/docs/Voicemail_Component#cache
+       * @example
+       * voicemail.cache();
+       */
+      cacheMessage: function (callbacks) {
+        var iq    = OX.XMPP.IQ.extend(),
+            cmd   = OX.XMPP.Command.extend(),
+            xData = OX.XMPP.XDataForm.extend(),
+            uri   = OX.Settings.URIs.command.cacheVoicemail,
+            node_parts     = this.uri.queryParam('node').split('/'),
+            vm_sip_address = node_parts[2] + '@' + node_parts[1],
+            vm_id          = this.uri.queryParam('item');
+
+        callbacks = callbacks || {};
+
+        iq.to(uri.path);
+        iq.type('set');
+        cmd.node(uri.queryParam('node'));
+        xData.type('submit');
+        xData.addField('vm-sip-address', vm_sip_address);
+        xData.addField('vm-id', vm_id);
+
+        iq.addChild(cmd.addChild(xData));
+
+        this.connection.send(iq.convertToString(), function (packet) {
+          if (!packet) return;
+          if (packet.getType() === 'error' && callbacks.onError && callbacks.onError.constructor == Function) {
+            callbacks.onError(packet);
+          } else if (callbacks.onSuccess && callbacks.onSuccess.constructor == Function) {
+            callbacks.onSuccess(packet);
+          }
+        }, []);
+      },
+
+      /**
        * Delete this Voicemail.
        *
        * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
@@ -488,10 +527,10 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
 
         this.connection.send(iq.convertToString(), function (packet) {
           if (!packet) return;
-          if (packet.getType() === 'error' && callbacks.onError) {
+          if (packet.getType() === 'error' && callbacks.onError && callbacks.onError.constructor == Function) {
             callbacks.onError(packet);
-          } else if (callbacks.onSuccess) {
-            callbacks.onSuccess();
+          } else if (callbacks.onSuccess && callbacks.onSuccess.constructor == Function) {
+            callbacks.onSuccess(packet);
           }
         }, []);
       }
