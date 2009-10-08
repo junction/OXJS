@@ -304,7 +304,7 @@ OX.Mixins.Subscribable = function () {
     function retractURI() {
       var elt    = packet.getNode(),
           from   = elt.getAttribute('from'),
-          items  = elt.firstChild.firstChild,
+          items  = elt.getElementsByTagName('items')[0],
           node   = items.getAttribute('node'),
           itemID = items.firstChild.getAttribute('id');
 
