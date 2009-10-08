@@ -884,6 +884,28 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.areSame(2, publishCount, 'Wrong number of items when publishing.');
   },
 
+  /*
+   * Ejabberd sends headers at the front of the payload, which appears
+   * to be legal.
+   */
+  testPublishWithLeadingHeaders: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><headers xmlns="http://jabber.org/protocol/shim"><header name="Collection">rootnode</header></headers><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo>bar</foo></item></items></event></message>');
+    var publishCount = 0,
+        items = [];
+    this.Subscribable.registerHandler('onPublish', function (item) {
+      publishCount++;
+      items.push(item);
+    });
+
+    this.conn.fireEvent('message', packet);
+    Assert.areSame(1, publishCount, 'Wrong number of items when publishing.');
+    Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item1',
+                   items[0].uri.convertToString(),
+                   'Item1 URI has an incorrect value');
+  },
+
   testRetractHandler: function () {
     var Assert = YAHOO.util.Assert;
 
@@ -896,6 +918,22 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                      'Retract item URI is wrong.');
     });
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><retract id="item"/></items></event></message>');
+    this.conn.fireEvent('message', packet);
+    Assert.isTrue(retractFlag, 'Retract handler did not fire.');
+  },
+
+  testRetractWithLeadingHeaders: function () {
+    var Assert = YAHOO.util.Assert;
+
+    var retractFlag = false;
+    this.Subscribable.registerHandler('onRetract', function (uri) {
+      retractFlag = true;
+      Assert.isObject(uri, 'URI in retract handler is not an object.');
+      Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item',
+                     uri.convertToString(),
+                     'Retract item URI is wrong.');
+    });
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><headers xmlns="http://jabber.org/protocol/shim"><header name="Collection">rootnode</header></headers><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><retract id="item"/></items></event></message>');
     this.conn.fireEvent('message', packet);
     Assert.isTrue(retractFlag, 'Retract handler did not fire.');
   },
