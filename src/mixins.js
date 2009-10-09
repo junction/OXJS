@@ -364,7 +364,6 @@ OX.Mixins.Subscribable = function () {
     if (!packet)
       return;
 
-    window.foo = this;
     var finalURI = this.pubSubURI,
         reqURI   = this.pubSubURI;
 
