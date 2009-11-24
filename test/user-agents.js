@@ -37,11 +37,12 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
     Assert.isFunction(this.UserAgents.itemFromElement,
                       'User agent service cannot turn packet into item.');
 
-    var element = OXTest.DOMParser.parse('<item id="sip:jill@example.com:5060"><user-agent xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received>sip:jack@example.com:5060</received><device>Test UA</device><expires>2009-03-02T15:58:23Z</expires></user-agent></item>');
+    var element = OXTest.DOMParser.parse('<item id="sip:jill@example.com:5060"><user-agent publish-time="2009-11-23T23:28:22Z" xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received>sip:jack@example.com:5060</received><device>Test UA</device><expires>2009-03-02T15:58:23Z</expires></user-agent></item>');
     var item = this.UserAgents.itemFromElement(element.doc);
     Assert.isObject(item, 'UserAgents.itemFromElement did not return an object.');
     Assert.areSame(this.ox, item.connection,
                    'User agent item connection is wrong.');
+
     Assert.areSame('sip:jill@example.com:5060', item.contact,
                    'Contact is wrong');
     Assert.areSame('sip:jack@example.com:5060', item.received,
@@ -53,7 +54,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
   testItemFromElementMissingElements: function () {
     var Assert = YAHOO.util.Assert;
 
-    var element = OXTest.DOMParser.parse('<item id="sip:jill@example.com:5060"><user-agent xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received/><device/><expires/></user-agent></item>');
+    var element = OXTest.DOMParser.parse('<item id="sip:jill@example.com:5060"><user-agent publish-time="2009-11-23T23:28:22Z" xmlns="onsip:user-agents"><contact>sip:jill@example.com:5060</contact><received/><device/><expires/></user-agent></item>');
     var item = this.UserAgents.itemFromElement(element.doc);
     Assert.isObject(item, 'UserAgents.itemFromElement did not return an object.');
     Assert.isUndefined(item.received, 'Missing received should be undefined');

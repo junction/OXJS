@@ -6,7 +6,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
           + '<event xmlns="http://jabber.org/protocol/pubsub#event">'
           + '<items node="/example.onsip.com/user" >'
           + '<item id="hiro" >'
-          + '<entity xmlns="onsip:xmpp:directories">'
+          + '<entity xmlns="onsip:xmpp:directories" publish-time="2009-11-23T23:28:22Z">'
           + '<sip-uri>sip:hiro@example.onsip.com</sip-uri>'
           + '<name>Hiro Protagonist</name>'
           + '</entity>'
@@ -20,7 +20,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
                     + '<event xmlns="http://jabber.org/protocol/pubsub#event">'
                     + '<items node="/example.onsip.com/alias-extension" >'
                     + '<item id="7002" >'
-                    + '<alias xmlns="onsip:xmpp:directories">'
+                    + '<alias xmlns="onsip:xmpp:directories" publish-time="2009-11-23T23:28:22Z">'
                     + '<sip-uri>sip:7002@example.onsip.com</sip-uri>'
                     + '<xmpp-uri>xmpp:pubsub.directories.xmpp.onsip.com/?node=/example.onsip.com/user;item=mick</xmpp-uri>'
                     + '</alias>'
@@ -34,7 +34,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
                       + '<event xmlns="http://jabber.org/protocol/pubsub#event">'
                       + '<items node="/example.onsip.com/alias-phone-number" >'
                       + '<item id="12132211428" >'
-                      + '<alias xmlns="onsip:xmpp:directories">'
+                      + '<alias xmlns="onsip:xmpp:directories" publish-time="2009-11-23T23:28:22Z">'
                       + '<sip-uri>sip:12132211428@jnctn.net</sip-uri>'
                       + '<xmpp-uri>xmpp:pubsub.directories.xmpp.onsip.com/?node=/example.onsip.com/time-switch;item=tfn.business.hour.rule</xmpp-uri>'
                       + '</alias>'
@@ -95,6 +95,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     var item = this.Directories.itemFromElement(element.doc);
 
     Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
+
     Assert.areSame('sip:hiro@example.onsip.com', item.sipURI, 'sipURI is incorrect');
     Assert.areSame('Hiro Protagonist', item.name, 'name is incorrect');
   },
@@ -105,6 +106,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
 
     var item = this.Directories.itemFromElement(element.doc);
     Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
+
     Assert.isObject(item.xmppURI, 'item xmppURI is not an object');
     Assert.areSame('sip:7002@example.onsip.com', item.sipURI, 'sipURI is incorrect');
   }

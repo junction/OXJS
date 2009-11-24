@@ -859,7 +859,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testPublishHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo>bar</foo></item><item id="item2"><foo>baz</foo></item></items></event></message>');
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo publish-time="2009-11-23T23:28:22Z">bar</foo></item><item id="item2"><foo publish-time="2009-11-23T23:28:22Z">baz</foo></item></items></event></message>');
 
     var publishCount = 0,
         items = [];
@@ -891,7 +891,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testPublishWithLeadingHeaders: function () {
     var Assert = YAHOO.util.Assert;
 
-    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><headers xmlns="http://jabber.org/protocol/shim"><header name="Collection">rootnode</header></headers><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo>bar</foo></item></items></event></message>');
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><headers xmlns="http://jabber.org/protocol/shim"><header name="Collection">rootnode</header></headers><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo publish-time="2009-11-23T23:28:22Z">bar</foo></item></items></event></message>');
     var publishCount = 0,
         items = [];
     this.Subscribable.registerHandler('onPublish', function (item) {
@@ -941,7 +941,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testGetItemsSuccess: function () {
     var Assert = YAHOO.util.Assert;
 
-    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="/"><item id="item1"><foo>bar</foo></item><item id="item2"><foo>baz</foo></item></items></pubsub></iq>');
+    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="/"><item id="item1"><foo publish-time="2009-11-23T23:28:22Z">bar</foo></item><item id="item2"><foo publish-time="2009-11-23T23:28:22Z">baz</foo></item></items></pubsub></iq>');
     this.conn.addResponse(packet);
 
     var successFlag = false, errorFlag = false;
@@ -993,7 +993,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testGetCollectionItems: function () {
     var Assert = YAHOO.util.Assert;
 
-    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="node1"><item id="item1"><foo>bar</foo></item><item id="item2"><foo>baz</foo></item></items><items node="node2"><item id="node2-item1"><foo>baz</foo></item><item id="node2-item2"><bar>baz</bar></item></items></pubsub></iq>');
+    var packet = OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" type="result" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><items node="node1"><item id="item1"><foo publish-time="2009-11-23T23:28:22Z">bar</foo></item><item id="item2"><foo publish-time="2009-11-23T23:28:22Z">baz</foo></item></items><items node="node2"><item id="node2-item1"><foo publish-time="2009-11-23T23:28:22Z">baz</foo></item><item id="node2-item2"><bar>baz</bar></item></items></pubsub></iq>');
     this.conn.addResponse(packet);
 
     var successFlag = false, errorFlag = false;
@@ -1001,6 +1001,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       onSuccess: function (items) {
         successFlag = true;
         Assert.areSame(4, items.length);
+
+        Assert.areSame('2009-11-23T23:28:22Z', items[0].publishTime, 'item.publishTime is incorrect');
+        Assert.areSame('2009-11-23T23:28:22Z', items[1].publishTime, 'item.publishTime is incorrect');
+
         Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item1',
                        items[0].uri.convertToString());
         Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item2',

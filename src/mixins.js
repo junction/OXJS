@@ -260,6 +260,13 @@ OX.Mixins.Subscribable = function () {
       return OX.URI.fromObject({path: from,
                                 query: ';node=' + node + ';item=' + itemID});
     }
+    function publishTime(element) {
+      var firstChild  = element.firstChild,
+          publishTime = firstChild && firstChild.getAttribute('publish-time');
+
+      return publishTime;
+    }
+
     /*
      * TODO: Without XPath we're taking some schema risks
      * here. Really we only want `/iq/pubsub/items/item'
@@ -280,6 +287,8 @@ OX.Mixins.Subscribable = function () {
         for (var ii = 0, ilen = children.length; ii < ilen; ii++) {
           if (children[ii].tagName && children[ii].tagName === 'item') {
             item = this.itemFromElement(children[ii]);
+
+            item.publishTime = publishTime(children[ii]);
             item.uri = itemURI(children[ii].getAttribute('id'),
                                node);
             rc.push(item);
