@@ -1,1 +1,17 @@
 OnSIP XMPP JavaScript
+---------------------
+
+The OnSIP XMPP Javascript library (oxjs) is a fully functional
+implementation of the OnSIP XMPP-API.  The my.onsip.com interface
+utilizes oxjs on top of strophe for it's XMPP & XMPP-API connectivity.
+
+Getting Started:
+
+make src
+make doc
+
+
+Examples:
+
+for the examples to work properly they must be served from same domain as the bosh resource they are trying to connect to in order to avoid cross domain issues.
+
