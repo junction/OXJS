@@ -317,7 +317,7 @@ DemoApp.JSJaC = function() {
         oArgs = new Object();
         oArgs.domain   = aForm.server.value;
         oArgs.resource = 'ox-jsjac-demo';
-        oArgs.username = aForm.username.value.replace(/@/, '!');
+        oArgs.username = aForm.username.value; //.replace(/@/, '!');
         oArgs.pass     = aForm.password.value;
         oArgs.register = false;
         this.con.connect(oArgs);

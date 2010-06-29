@@ -276,7 +276,7 @@ DemoApp.OX = function() {
       item.name = 'item';
       item.attr('jid', jid);
       item.attr('name', name);
-      
+
       for (var i = 0;  i < groups.length; i++) {
         groupStanza = OX.XMPP.Stanza.extend();
         groupStanza.name = 'group';
@@ -321,9 +321,9 @@ DemoApp.OX = function() {
       item.name = 'item';
       item.attr('jid', jid);
       item.attr('subscription', 'remove');
-      
+
       iq.addChild(query.addChild(item));
-      
+
       DemoApp.OX.con.send(iq.toString(), function (packet) {
         if (!packet)
           return;
@@ -340,7 +340,7 @@ DemoApp.OX = function() {
 
     _handleRostersIq: function (packet) {
      var items = packet.getElementsByTagName('x')[0].getElementsByTagName('item');
-     for (var i=0; i < items.length; i++) {            
+     for (var i=0; i < items.length; i++) {
        var name         = items[i].attributes["name"].value,
            jid          = items[i].attributes["jid"].value,
            group        = items[i].getElementsByTagName('group')[0].firstChild.nodeValue,
@@ -383,13 +383,13 @@ DemoApp.OX = function() {
        }
      }
 
-      var id   = packet.attributes["id"].value; 
-      var from = packet.attributes["to"].value; 
+      var id   = packet.attributes["id"].value;
+      var from = packet.attributes["to"].value;
       var to   = packet.attributes["from"].value;
       var iq    = OX.XMPP.IQ.extend();
       iq.from(from);
       iq.to(to);
-      iq.type('result'); 
+      iq.type('result');
       iq.attr('id', id);
       DemoApp.OX.con.send(iq.toString());
 
@@ -416,19 +416,19 @@ DemoApp.OX = function() {
                 }
               }
             }
-            _addOutput('#rosters_xmpp_onsip_com .current_roster', 
+            _addOutput('#rosters_xmpp_onsip_com .current_roster',
                        name_str + ' :: ' + jid_str + ' :: ' + groups_str);
           }
         }
       }
 
-      var id   = packet.attributes["id"].value; 
-      var from = packet.attributes["to"].value; 
-      var to   = packet.attributes["from"].value; 
+      var id   = packet.attributes["id"].value;
+      var from = packet.attributes["to"].value;
+      var to   = packet.attributes["from"].value;
       var iq    = OX.XMPP.IQ.extend();
       iq.from(from);
       iq.to(to);
-      iq.type('result'); 
+      iq.type('result');
       iq.attr('id', id);
       DemoApp.OX.con.send(iq.toString());
 
@@ -482,8 +482,7 @@ DemoApp.Strophe = function() {
     doLogin: function (aForm) {
       $('err').html('');
 
-      var jid  = aForm.username.value.replace(/@/, '!') +
-                 '@' + aForm.server.value,
+      var jid  = aForm.username.value;
           pass = aForm.password.value;
       con.connect(jid, pass, handleStatusChanged);
 
