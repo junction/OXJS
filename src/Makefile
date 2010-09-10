@@ -11,7 +11,10 @@ JAVA =	java
 
 all:	src doc
 
-src:	ox.js
+src:	ox.js jslint
+
+jslint:
+	../frameworks/jslint/jslint ../ox.js
 
 doc:	$(DOCDIR)/index.html
 
