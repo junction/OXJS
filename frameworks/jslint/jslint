@@ -74,7 +74,7 @@ for my $op ( keys %opt ) {
 
 $ENV{LOAD_DOT_JSLINT}++ if -e "$ENV{HOME}/.jslint";
 
-my $path = "/usr/share/jslint";
+my $path = "../frameworks/jslint";
 $path = $ENV{"JSLINT_HOME"} unless -d $path;
 $path = "." unless -d $path;
 
@@ -87,32 +87,16 @@ for my $bin ( qw(smjs js v8 rhino) ) {
 }
     
 unless( -e $js ) {
-    die "Could not find path to 'smjs' or 'js'\n";
+    die "Could not find path to 'smjs', 'js', 'v8', or 'rhino'\n";
 }
 my $output = `$js $path/jslintrun.js <$file`;
 
-$output =~ s/<div( id=\w+)>//g;
-$output =~ s/<\/?div>//g;
-$output =~ s/<\/?i>//g;
-$output =~ s/<\/?code>//g;
-$output =~ s/&nbsp;/ /g;
-$output =~ s/&amp;/&/g;
-$output =~ s/<\/?p( class=\w+)?>/\n/g;
-$output =~ s/<div( class=(\w+))?>/$2: /g;
-$output =~ s/<br\/?>/\n/g;
-
-#$output =~ s/Problem at line (\d+) character (\d+):\s+/$file:$1:$2\n/g;
-
-#Implied global: YAHOO 2 3 4 25 79 180 245, children 86 130, clicked_to 89 145, console 37 73 125 168 175 226 239, document 48 74 176 189 242, domUpdate 75 83, end 16, i 93, selected_template 63, selected_to 88 146, start 17
-
-#$output =~ s/(Implied global: .*)/filter_globals($1)/em;
-
-if ($output == "All good.") {
-    print "All good!\n";
-} else {
-    error $output;
+sub error {
+    undef;
 }
 
+error $output
+    or print $output;
 
 sub filter_globals {
     my $str = shift;

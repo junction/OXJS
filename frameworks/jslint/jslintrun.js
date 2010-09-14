@@ -90,6 +90,24 @@ var result = JSLINT(body, options);
 if (result) {
   print('All good.');
 } else {
-  print('Problems:');
-  print(JSLINT.report());
+  var errors = JSLINT.data().errors, error,
+      str = "";
+  for (var i = 0, len = errors ? errors.length: 0; i < len; i++) {
+    error = errors[i];
+    if (error) {
+      str += "Problem at line " + error.line + " character " + error.character +
+             ": " + error.reason + "\n\n" + error.evidence + "\n\n";
+    }
+  }
+  var unuseds = JSLINT.data().unuseds, unused;
+  for (var i = 0, len = unuseds ? unuseds.length: 0; i < len; i++) {
+    unused = unuseds[i];
+    str += "Unused variable '" + unused.name + "' on line " + unused.line + '\n\n';
+  }
+  var implieds = JSLINT.data().implieds, implied;
+  for (var i = 0, len = implieds ? implieds.length: 0; i < len; i++) {
+    implied = implieds[i];
+    str += "Implied variable '" + implied.name + "' on line " + implied.line + '\n\n';
+  }
+  print(str.slice(0, -2));
 }
