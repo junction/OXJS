@@ -634,7 +634,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var successFlag = false, subscribedFlag = false;
     this.Subscribable.registerHandler('onSubscribed', function (uri) {
       subscribedFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
                      'uri is not actual requested uri.');
     });
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));

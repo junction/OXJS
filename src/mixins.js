@@ -283,7 +283,7 @@ OX.Mixins.Subscribable = (function () {
     for (var i = 0, len = items.length; i < len; i++) {
       if (items[i] && items[i].childNodes) {
         var children = items[i].childNodes,
-            node     = items[i].getAttribute('node'),
+            node     = items[i].getAttribute('node') || '/',
             item;
 
         for (var ii = 0, ilen = children.length; ii < ilen; ii++) {
@@ -307,7 +307,7 @@ OX.Mixins.Subscribable = (function () {
       var elt    = packet.getNode(),
           from   = elt.getAttribute('from'),
           sub    = elt.firstChild.firstChild,
-          node   = sub.getAttribute('node');
+          node   = sub.getAttribute('node') || '/';
 
       return OX.URI.fromObject({path:   from, query: ';node=' + node});
     }
@@ -316,7 +316,7 @@ OX.Mixins.Subscribable = (function () {
       var elt    = packet.getNode(),
           from   = elt.getAttribute('from'),
           items  = elt.getElementsByTagName('items')[0],
-          node   = items.getAttribute('node'),
+          node   = items.getAttribute('node') || '/',
           itemID = items.firstChild.getAttribute('id');
 
       return OX.URI.fromObject({path:  from,
@@ -400,7 +400,7 @@ OX.Mixins.Subscribable = (function () {
         }
 
         subscriptions.push({
-          node: subElements[i].getAttribute('node'),
+          node: subElements[i].getAttribute('node') || '/',
           jid: subElements[i].getAttribute('jid'),
           subscription: subElements[i].getAttribute('subscription'),
           subid: subElements[i].getAttribute('subid')
