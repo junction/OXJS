@@ -22,16 +22,21 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
     // Scan from ? to # to find query               - optional
     // Scan from # to EOL to find fragment          - optional
     var parts = uriString.match(/^([^:]*:)(\/\/[^\/]*\/)?([^?]*)(\?[^#]*)?(#.*)?/);
-    if (parts[1])
+    if (parts[1]) {
       scheme = parts[1].substr(0, parts[1].length - 1);
-    if (parts[2])
+    }
+    if (parts[2]) {
       authority = parts[2].substr(2, parts[2].length - 2).substr(0, parts[2].length - 3);
-    if (parts[3])
+    }
+    if (parts[3]) {
       path = parts[3];
-    if (parts[4])
+    }
+    if (parts[4]) {
       query = parts[4].substr(1, parts[4].length - 1);
-    if (parts[5])
+    }
+    if (parts[5]) {
       fragment = parts[5].substr(1, parts[5].length - 1);
+    }
 
     return OX.URI.Base.extend({scheme: scheme, authority: authority,
                                path: path, query: query, fragment: fragment});
@@ -93,14 +98,16 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
    * @returns {String} The action of this query, or undefined if none found.
    */
   action: function () {
-    if (!this.query)
+    if (!this.query) {
       return undefined;
+    }
 
     var parts = this.query.split(';');
-    if (parts[0] === '')
+    if (parts[0] === '') {
       return undefined;
-    else
+    } else {
       return parts[0];
+    }
   },
 
   /**
@@ -114,14 +121,16 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
    * @returns {String} The value of the parameter, or undefined if not found.
    */
   queryParam: function (param) {
-    if (!this.query)
+    if (!this.query) {
       return undefined;
+    }
 
     var parts = this.query.split(';');
     for (var i = 1, len = parts.length; i < len; i++) {
       var kvp = parts[i].split('=');
-      if (kvp[0] === param)
+      if (kvp[0] === param) {
         return kvp[1] || '';
+      }
     }
     return undefined;
   },

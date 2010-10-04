@@ -19,7 +19,7 @@ OX.Services = {};
  */
 OX.Services.Auth = OX.Base.extend(OX.Mixins.EntityTime, /** @lends OX.Services.Auth */{
 
-  entityTime: function(cb) {
+  entityTime: function (cb) {
     return this.getTime(OX.Settings.URIs.entity.auth, cb);
   },
 
@@ -51,10 +51,18 @@ OX.Services.Auth = OX.Base.extend(OX.Mixins.EntityTime, /** @lends OX.Services.A
         (arguments[arguments.length - 1].onSucess || arguments[arguments.length - 1].onError)) {
       callbacks = arguments[arguments.length - 1];
 
-      if (authForAll == callbacks) authForAll = null;
-      if (jid == callbacks)        jid = null;
-      if (password == callbacks)   password = null;
-      if (address == callbacks)    address = null;
+      if (authForAll === callbacks) {
+        authForAll = null;
+      }
+      if (jid === callbacks) {
+        jid = null;
+      }
+      if (password === callbacks) {
+        password = null;
+      }
+      if (address === callbacks) {
+        address = null;
+      }
     }
 
     iq.to(uri.path);
@@ -64,14 +72,15 @@ OX.Services.Auth = OX.Base.extend(OX.Mixins.EntityTime, /** @lends OX.Services.A
     xData.addField('sip-address', address);
     xData.addField('password', password);
     xData.addField('auth-for-all', authForAll ? 'true' : 'false');
-    if (jid)
+    if (jid) {
       xData.addField('jid', jid);
-
+    }
     iq.addChild(cmd.addChild(xData));
 
     this.connection.send(iq.convertToString(), function (packet) {
-      if (!packet)
+      if (!packet) {
         return;
+      }
 
       if (packet.getType() === 'error' && callbacks.onError) {
         callbacks.onError(packet);
@@ -131,20 +140,20 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     /** The tag inserted into the call-setup-id field */
     callSetupID: null,
 
-    isFromCallSetup: function() {
+    isFromCallSetup: function () {
       return !!this.callSetupID;
     },
 
-    isCreated: function() {
-      return this.dialogState == 'created';
+    isCreated: function () {
+      return this.dialogState === 'created';
     },
 
-    isRequested: function() {
-      return this.dialogState == 'requested';
+    isRequested: function () {
+      return this.dialogState === 'requested';
     },
 
-    isConfirmed: function() {
-      return this.dialogState == 'confirmed';
+    isConfirmed: function () {
+      return this.dialogState === 'confirmed';
     },
 
     /**
@@ -153,7 +162,7 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
      * This is a convenience funtion to make the correct API call based
      * upon the dialog state of the current this object.
      */
-    hangup: function() {
+    hangup: function () {
       return this.isConfirmed() ? this.terminate() : this.cancel();
     }
 
@@ -169,20 +178,22 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
    * @returns {OX.Services.ActiveCalls.Item} item
    */
   itemFromElement: function (element) {
-    if (!element)
+    if (!element) {
       return undefined;
+    }
 
     var activeCallNode = element.getElementsByTagName('active-call'),
         attrs          = {connection: this.connection};
 
-    if (!activeCallNode || !activeCallNode[0])
+    if (!activeCallNode || !activeCallNode[0]) {
       return undefined;
+    }
 
     var childNodes = activeCallNode[0].childNodes;
 
     function getFirstNodeValue(node) {
       var child = node.firstChild;
-      if (child && child.nodeValue == null && child.firstChild) {
+      if (child && child.nodeValue === null && child.firstChild) {
         return arguments.callee(child);
       } else if (child && child.nodeValue) {
         return child.nodeValue;
@@ -193,8 +204,9 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     for (var i = 0, len = childNodes.length; i < len; i++) {
       var node = childNodes[i];
 
-      if (!node.nodeName)
+      if (!node.nodeName) {
         continue;
+      }
 
       switch (node.nodeName.toLowerCase()) {
       case 'dialog-state':
@@ -251,14 +263,15 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
 
     cb = cb || {};
 
-    this.connection.send(iq.convertToString(), function(packet) {
-      if(!packet)
+    this.connection.send(iq.convertToString(), function (packet) {
+      if (!packet) {
         return;
+      }
 
-      if (packet.getType() === 'error'
-          && cb.onError && cb.onError.constructor == Function) {
-          cb.onError(packet);
-      } else if (cb.onSuccess && cb.onSuccess.constructor == Function) {
+      if (packet.getType() === 'error' &&
+          cb.onError && cb.onError.constructor === Function) {
+        cb.onError(packet);
+      } else if (cb.onSuccess && cb.onSuccess.constructor === Function) {
         cb.onSuccess(packet);
       }
     }, []);
@@ -302,22 +315,25 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
   }),
 
   itemFromElement: function (element) {
-    if (!element)
+    if (!element) {
       return undefined;
+    }
 
     var userAgentNode = element.getElementsByTagName('user-agent'),
         attrs         = {connection: this.connection};
 
-    if (!userAgentNode || !userAgentNode[0])
+    if (!userAgentNode || !userAgentNode[0]) {
       return undefined;
+    }
     var children = userAgentNode[0].childNodes;
 
     for (var i = 0, len = children.length; i < len; i++) {
       var node = children[i],
           value;
 
-      if (!node.nodeName)
+      if (!node.nodeName) {
         continue;
+      }
 
       value = (node.firstChild && node.firstChild.nodeValue) || undefined;
       switch (node.nodeName.toLowerCase()) {
@@ -352,36 +368,40 @@ OX.Services.UserAgents = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Se
  */
 OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
   function itemType(element) {
-    if (!element)
+    if (!element) {
       return undefined;
-    else if (element.getElementsByTagName('voicemail').length > 0)
+    } else if (element.getElementsByTagName('voicemail').length > 0) {
       return 'voicemail';
-    else if (element.getElementsByTagName('labels').length > 0)
+    } else if (element.getElementsByTagName('labels').length > 0) {
       return 'labels';
-    else
+    } else {
       return undefined;
+    }
   }
 
   function voicemailItem(element) {
-    if (!element)
+    if (!element) {
       return undefined;
+    }
 
     var rc = {};
     var voicemailNode = element.getElementsByTagName('voicemail');
 
-    if (!voicemailNode || !voicemailNode[0])
+    if (!voicemailNode || !voicemailNode[0]) {
       return undefined;
+    }
 
     var children = voicemailNode[0].childNodes;
     for (var i = 0, len = children.length; i < len; i++) {
       var node = children[i];
 
-      if (!node.nodeName || !node.firstChild)
+      if (!node.nodeName || !node.firstChild) {
         continue;
+      }
 
       switch (node.nodeName.toLowerCase()) {
       case 'mailbox':
-        rc.mailbox = parseInt(node.firstChild.nodeValue);
+        rc.mailbox = parseInt(node.firstChild.nodeValue, 10);
         break;
       case 'caller-id':
         rc.callerID = node.firstChild.nodeValue;
@@ -393,14 +413,15 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
         rc.sipfrom = node.firstChild.nodeValue;
         break;
       case 'duration':
-        rc.duration = parseInt(node.firstChild.nodeValue);
+        rc.duration = parseInt(node.firstChild.nodeValue, 10);
         break;
       case 'labels':
         var labels = [];
         for (var j = 0, jlen = node.childNodes.length; j < jlen; j++) {
           var elt = node.childNodes[j];
-          if (elt.tagName && elt.tagName == 'label')
+          if (elt.tagName && elt.tagName === 'label') {
             labels.push(elt.firstChild.nodeValue);
+          }
         }
         rc.labels = labels;
         break;
@@ -410,21 +431,24 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
   }
 
   function labelItem(element) {
-    if (!element)
+    if (!element) {
       return undefined;
+    }
 
     var rc = {labels: []};
     var labelsNode = element.getElementsByTagName('labels');
 
-    if (!labelsNode || !labelsNode[0])
+    if (!labelsNode || !labelsNode[0]) {
       return undefined;
+    }
 
     var children = labelsNode[0].childNodes;
     for (var i = 0, len = children.length; i < len; i++) {
       var node = children[i];
 
-      if (node.nodeName && node.nodeName == 'label')
+      if (node.nodeName && node.nodeName === 'label') {
         rc.labels.push(node.firstChild.nodeValue);
+      }
     }
     return rc;
   }
@@ -487,10 +511,13 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
         iq.addChild(cmd.addChild(xData));
 
         this.connection.send(iq.convertToString(), function (packet) {
-          if (!packet) return;
-          if (packet.getType() === 'error' && callbacks.onError && callbacks.onError.constructor == Function) {
+          if (!packet) {
+            return;
+          }
+          if (packet.getType() === 'error' && callbacks.onError &&
+              callbacks.onError.constructor === Function) {
             callbacks.onError(packet);
-          } else if (callbacks.onSuccess && callbacks.onSuccess.constructor == Function) {
+          } else if (callbacks.onSuccess && callbacks.onSuccess.constructor === Function) {
             callbacks.onSuccess(packet);
           }
         }, []);
@@ -526,10 +553,13 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
         iq.addChild(cmd.addChild(xData));
 
         this.connection.send(iq.convertToString(), function (packet) {
-          if (!packet) return;
-          if (packet.getType() === 'error' && callbacks.onError && callbacks.onError.constructor == Function) {
+          if (!packet) {
+            return;
+          }
+          if (packet.getType() === 'error' && callbacks.onError &&
+              callbacks.onError.constructor === Function) {
             callbacks.onError(packet);
-          } else if (callbacks.onSuccess && callbacks.onSuccess.constructor == Function) {
+          } else if (callbacks.onSuccess && callbacks.onSuccess.constructor === Function) {
             callbacks.onSuccess(packet);
           }
         }, []);
@@ -555,13 +585,15 @@ OX.Services.Voicemail = OX.Base.extend(OX.Mixins.Subscribable, function () {
       switch (itemType(element)) {
       case 'voicemail':
         item = voicemailItem(element);
-        if (item)
+        if (item) {
           rc = this.Item.extend(item, {connection: this.connection});
+        }
         break;
       case 'labels':
         item = labelItem(element);
-        if (item)
+        if (item) {
           rc = this.LabelItem.extend(item, {connection: this.connection});
+        }
         break;
       }
 
@@ -587,7 +619,7 @@ OX.Services.Directories = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
   AliasItem: OX.Item.extend(/** @lends OX.Service.Directories.AliasItem# */{
     sipURI: null,
     xmppURI: null,
-    id: function() {
+    id: function () {
       console.log(this);
       return this.uri.queryParam('item');
     }
@@ -596,33 +628,36 @@ OX.Services.Directories = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
   EntityItem: OX.Item.extend(/** @lends OX.Service.Directories.EntityItem# */{
     sipURI: null,
     name: null,
-    id: function() {
+    id: function () {
       console.log(this);
       return this.uri.queryParam('item');
     }
   }),
 
-  itemFromElement: function(element) {
-    if (!element)
+  itemFromElement: function (element) {
+    if (!element) {
       return undefined;
+    }
 
     var aliasNode =  element.getElementsByTagName('alias'),
         entityNode = element.getElementsByTagName('entity'),
         node       = aliasNode[0] || entityNode[0],
         attrs      = { connection: this.connection };
 
-    if (!node)
+    if (!node) {
       return undefined;
+    }
 
     var childNodes = node.childNodes;
 
-    for (var i=0, len=childNodes.length; i<len; i++) {
+    for (var i = 0, len = childNodes.length; i < len; i++) {
       var childNode = childNodes[i],
           childNodeName = childNode.nodeName,
           value = (childNode && childNode.firstChild && childNode.firstChild.nodeValue) || undefined;
 
-      if (!childNode)
+      if (!childNode) {
         continue;
+      }
 
       switch (childNodeName.toLowerCase()) {
       case 'sip-uri':
@@ -690,21 +725,24 @@ OX.Services.Rosters = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.Servi
         uri   = OX.Settings.URIs.command.pushRosterGroups;
 
     var callbacks = {};
-    if (arguments.length > 0 && arguments[arguments.length - 1])
+    if (arguments.length > 0 && arguments[arguments.length - 1]) {
       callbacks = arguments[arguments.length - 1];
+    }
 
     iq.to(uri.path);
     iq.type('set');
     cmd.node(uri.queryParam('node'));
     xData.type('submit');
-    if (jid)
+    if (jid) {
       xData.addField('jid', jid);
+    }
 
     iq.addChild(cmd.addChild(xData));
 
     this.connection.send(iq.convertToString(), function (packet) {
-      if (!packet)
+      if (!packet) {
         return;
+      }
 
       if (packet.getType() === 'error' && callbacks.onError) {
         callbacks.onError(packet);

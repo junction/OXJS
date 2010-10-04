@@ -50,16 +50,20 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @return {OX.Connection}
    */
   initConnection: function () {
-    if (!this.getJID() || this.getJID() == '') throw new OX.Error('missing JID');
+    if (!this.getJID() || this.getJID() === '') {
+      throw new OX.Error('missing JID');
+    }
 
     var serviceMap = {};
 
-    for (var s in this.services) if (this.services.hasOwnProperty(s)) {
-      var service = this.services[s];
+    for (var s in this.services) {
+      if (this.services.hasOwnProperty(s)) {
+        var service = this.services[s];
 
-      this[s] = service.extend({connection: this});
-      if (service.pubSubURI) {
-        serviceMap[service.pubSubURI] = service;
+        this[s] = service.extend({connection: this});
+        if (service.pubSubURI) {
+          serviceMap[service.pubSubURI] = service;
+        }
       }
     }
 

@@ -42,8 +42,10 @@ OX.Base = {
    */
   mixin: function () {
     for (var i = 0, len = arguments.length; i < len; i++) {
-      for (var k in arguments[i]) if (arguments[i].hasOwnProperty(k)) {
-        this[k] = arguments[i][k];
+      for (var k in arguments[i]) {
+        if (arguments[i].hasOwnProperty(k)) {
+          this[k] = arguments[i][k];
+        }
       }
     }
 

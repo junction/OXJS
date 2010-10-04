@@ -29,9 +29,9 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
    * @param {String} [value] If value is supplied, the attribute will be set.
    * @returns {String} the value of the attribute.
    */
-  attr: function(name,value) {
+  attr: function (name, value) {
     this.attributes = this.attributes || {};
-    if(value) {
+    if (value) {
       this.attributes[name] = value;
     }
     return this.attributes[name];
@@ -43,9 +43,9 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
    * @param {OX.XML.Element} child The XML element to add as a child.
    * @returns {OX.XML.Element} The receiver.
    */
-  addChild: function(child) {
+  addChild: function (child) {
     this.children = this.children || [];
-    if(child) {
+    if (child) {
       this.children.push(child);
     }
     return this;
@@ -56,17 +56,23 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
    *
    * @returns {String} This XML element as XML text.
    */
-  convertToString: function() {
+  convertToString: function () {
     var ret = "";
     var attrs = [];
 
-    if (this.xmlns) this.attr('xmlns',this.xmlns);
+    if (this.xmlns) {
+      this.attr('xmlns', this.xmlns);
+    }
 
-    if(this.attributes) for(var name in this.attributes) {
-      var val = this.attributes[name];
-      if(!val) continue;
+    if (this.attributes) {
+      for (var name in this.attributes) {
+        var val = this.attributes[name];
+        if (!val) {
+          continue;
+        }
 
-      attrs.push(name + '="' + val + '"');
+        attrs.push(name + '="' + val + '"');
+      }
     }
 
     ret += "<" + this.name;
@@ -78,7 +84,9 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
       ret += this.children[i].convertToString();
     }
 
-    if(this.text) ret += this.text;
+    if (this.text) {
+      ret += this.text;
+    }
 
     ret += "</" + this.name + ">";
 
@@ -94,20 +102,26 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
    * @param {OX.XML.Element[]} [elements] An array of OX.XML.Element to assign as children.
    * @returns {OX.XML.Element}
    */
-  create: function(attrs, elements) {
+  create: function (attrs, elements) {
     var ret = this.extend();
 
-    if (attrs) for(var k in attrs) {
-      if (attrs.hasOwnProperty(k)) {
-        var v = attrs[k];
-        if (!v) continue;
-        ret.attr(k,v);
+    if (attrs) {
+      for (var k in attrs) {
+        if (attrs.hasOwnProperty(k)) {
+          var v = attrs[k];
+          if (!v) {
+            continue;
+          }
+          ret.attr(k, v);
+        }
       }
     }
 
     elements = (elements && elements.addChild) ? [elements] : elements;
-    if (elements && elements.length) for(var i=0,len=elements.length; i < len; i++) {
-      ret.addChild(elements[i]);
+    if (elements && elements.length) {
+      for (var i = 0, len = elements.length; i < len; i++) {
+        ret.addChild(elements[i]);
+      }
     }
 
     return ret;
@@ -127,11 +141,11 @@ OX.XMPP = {};
  * @class
  */
 OX.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XMPP.Stanza# */{
-  to: function(val) {
+  to: function (val) {
     return this.attr('to', val);
   },
 
-  from: function(val) {
+  from: function (val) {
     return this.attr('from', val);
   }
 });
@@ -145,7 +159,7 @@ OX.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XMPP.Stanza# */{
 OX.XMPP.IQ = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.IQ# */{
   name: 'iq',
 
-  type: function(val) {
+  type: function (val) {
     return this.attr('type', val);
   }
 });
@@ -181,11 +195,11 @@ OX.XMPP.Command = OX.XML.Element.extend(/** @lends OX.XMPP.Command# */{
   name: 'command',
   xmlns: 'http://jabber.org/protocol/commands',
 
-  node: function(val) {
+  node: function (val) {
     return this.attr('node', val);
   },
 
-  action: function(val) {
+  action: function (val) {
     return this.attr('action', val);
   }
 });
@@ -200,7 +214,7 @@ OX.XMPP.XDataForm = OX.XML.Element.extend(/** @lends OX.XMPP.XDataForm# */{
   name: 'x',
   xmlns: 'jabber:x:data',
 
-  type: function(val) {
+  type: function (val) {
     return this.attr('type', val);
   },
 
@@ -214,17 +228,19 @@ OX.XMPP.XDataForm = OX.XML.Element.extend(/** @lends OX.XMPP.XDataForm# */{
    * @param {String} type XDataField type see XEP: 0004.
    * @returns {OX.XMPP.XDataForm} The receiver.
    */
-  addField: function(name,value,type) {
-    var f,v;
+  addField: function (name, value, type) {
+    var f, v;
     f = OX.XML.Element.extend({name: 'field'});
-    f.attr('var',name);
+    f.attr('var', name);
 
-    if(value) {
+    if (value) {
       v = OX.XML.Element.extend({name: 'value', text: value});
       f.addChild(v);
     }
 
-    if(type) f.attr('type',type);
+    if (type) {
+      f.attr('type', type);
+    }
 
     return this.addChild(f);
   }

@@ -31,60 +31,73 @@ SOFTWARE.
 
 
 /* SpiderMonkey globals */
-/*global environment, load, JSLINT, print, readline */
+/*global environment, load, JSLINT, print, readline, read */
 
 /*global options */
 options = {};
 
 // should pull in "options" var
-if (environment.LOAD_DOT_JSLINT) {
-  load(environment.HOME + '/.jslint');
-}
+load('../.jslint');
+
 
 var body = "";
 var line;
 var blcount = 0;
-while (true) {
-  line = readline();
-  body = body + line + "\n";
-  // HACK
-  // cant figure out how to tell EOF
-  // from a normal blank line so arbitrarily
-  // count 100 sequential blank lines and
-  // assume we have finished
-  if (line.length === 0) {
-    // blank line, so increment
-    blcount = blcount + 1;
-    if (blcount >= 100) {
+if ('readline' in this) {
+  while (true) {
+    if (readline) {
+      line = readline();
+    }
+    // SpiderMonkey 1.8 returns 'null' when
+    // the end of the file is reached.
+    if (line === null) {
       break;
     }
-  }
-  else {
+    body = body + line + "\n";
+    // HACK
+    // cant figure out how to tell EOF
+    // from a normal blank line so arbitrarily
+    // count 100 sequential blank lines and
+    // assume we have finished
+    if (line.length === 0) {
+    // blank line, so increment
+      blcount = blcount + 1;
+      if (blcount >= 100) {
+        break;
+      }
+    } else {
     // not blank, so reset
-    blcount = 0;
+      blcount = 0;
+    }
   }
+} else if ('read' in this) {
+  body = read('../ox.js');
 }
 
-for (var env in environment) {
-  if (environment.hasOwnProperty(env)) {
-    var m = env.match(/JSLINT_(\w+)/);
-    if (m && m.length) {
-      /* use JSLINT_HOME internally, so just skip */
-      if (m[1] === "HOME") {
-        continue;
-      }
-      /* magic var to set the indentation in case you
+if ('environment' in this) {
+  for (var env in environment) {
+    if (environment.hasOwnProperty(env)) {
+      var m = env.match(/JSLINT_(\w+)/);
+      if (m && m.length) {
+        /* use JSLINT_HOME internally, so just skip */
+        if (m[1] === "HOME") {
+          continue;
+        }
+        /* magic var to set the indentation in case you
          dont like the '4' Douglas uses */
-      if (m[1] === "indent") {
-        options[m[1]] = parseInt(environment[m[0]], 10);
-      } else {
-        options[m[1]] = true;
+        if (m[1] === "indent") {
+          options[m[1]] = parseInt(environment[m[0]], 10);
+        } else {
+          options[m[1]] = true;
+        }
       }
     }
   }
-}
 
-load(environment.JSLINT_HOME + '/fulljslint.js');
+  load(environment.JSLINT_HOME + '/fulljslint.js');
+} else {
+  load('../frameworks/jslint/fulljslint.js');
+}
 
 var result = JSLINT(body, options);
 if (result) {

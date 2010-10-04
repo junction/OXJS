@@ -72,7 +72,7 @@ for my $op ( keys %opt ) {
     $ENV{"JSLINT_$op"} = $opt{$op} if $opt{$op};
 }
 
-$ENV{LOAD_DOT_JSLINT}++ if -e "$ENV{HOME}/.jslint";
+$ENV{LOAD_DOT_JSLINT}++ if -e "../.jslint";
 
 my $path = "../frameworks/jslint";
 $path = $ENV{"JSLINT_HOME"} unless -d $path;

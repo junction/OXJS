@@ -5,7 +5,7 @@
  * throw new OX.Error('the error message');
  *
  */
-OX.Error = function(message) {
+OX.Error = function (message) {
   this.message = message;
 };
 OX.Error.prototype = new Error();

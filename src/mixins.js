@@ -14,20 +14,18 @@ OX.Mixins = {};
  *
  * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  */
-OX.Mixins.EntityTime = function() {
+OX.Mixins.EntityTime = (function () {
   return /** @lends OX.Mixins.EntityTime# */ {
     getTime: function (entityURI, callbacks) {
       var iq = OX.XMPP.IQ.extend(),
-          time = OX.XML.Element.extend({
-            name: 'time',
-            xmlns: 'urn:xmpp:time'
-          });
+          time = OX.XML.Element.extend({name: 'time',
+                                        xmlns: 'urn:xmpp:time'});
 
       iq.to(entityURI.path);
       iq.type('get');
       iq.addChild(time);
 
-      this.connection.send(iq.convertToString(), function(packet) {
+      this.connection.send(iq.convertToString(), function (packet) {
         if (packet.getType() === 'error' && callbacks.onError) {
           callbacks.onError(packet);
         } else if (callbacks.onSuccess) {
@@ -43,7 +41,7 @@ OX.Mixins.EntityTime = function() {
       });
     }
   };
-}();
+}());
 
 /**
  * CallDialog mixin.
@@ -55,7 +53,7 @@ OX.Mixins.EntityTime = function() {
  * @requires fromTag property on receiving object.
  * @requires toTag property on receiving object.
  */
-OX.Mixins.CallDialog = function () {
+OX.Mixins.CallDialog = (function () {
   return /** @lends OX.Mixins.CallDialog# */{
     /**
      * Transfer a call to a sip address.
@@ -89,8 +87,9 @@ OX.Mixins.CallDialog = function () {
       iq.addChild(cmd.addChild(xData));
 
       this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet)
+        if (!packet) {
           return;
+        }
 
         if (packet.getType() === 'error' && callbacks.onError) {
           callbacks.onError(packet);
@@ -128,8 +127,9 @@ OX.Mixins.CallDialog = function () {
       iq.addChild(cmd.addChild(xData));
 
       this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet)
+        if (!packet) {
           return;
+        }
 
         if (packet.getType() === 'error' && callbacks.onError) {
           callbacks.onError(packet);
@@ -166,8 +166,9 @@ OX.Mixins.CallDialog = function () {
       iq.addChild(cmd.addChild(xData));
 
       this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet)
+        if (!packet) {
           return;
+        }
 
         if (packet.getType() === 'error' && callbacks.onError) {
           callbacks.onError(packet);
@@ -177,7 +178,7 @@ OX.Mixins.CallDialog = function () {
       }, []);
     }
   };
-}();
+}());
 
 /**
  * CallLabeler mixin.
@@ -186,7 +187,7 @@ OX.Mixins.CallDialog = function () {
  * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires callID property on receiving object.
  */
-OX.Mixins.CallLabeler = function () {
+OX.Mixins.CallLabeler = (function () {
   return /** @lends OX.Mixins.CallLabeler# */{
     /**
      * Label a call with a short string.
@@ -215,8 +216,9 @@ OX.Mixins.CallLabeler = function () {
       iq.addChild(cmd.addChild(xData));
 
       this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet)
+        if (!packet) {
           return;
+        }
 
         if (packet.getType() === 'error' && callbacks.onError) {
           callbacks.onError(packet);
@@ -226,7 +228,7 @@ OX.Mixins.CallLabeler = function () {
       }, []);
     }
   };
-}();
+}());
 
 /**
  * Subscribable mixin.
@@ -236,17 +238,17 @@ OX.Mixins.CallLabeler = function () {
  * @requires pubSubURI The URI of the PubSub service.
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
-OX.Mixins.Subscribable = function () {
+OX.Mixins.Subscribable = (function () {
   /**#nocode+*/
   function packetType(element) {
     switch (element.tagName) {
     case 'subscription':
       return element.getAttribute('subscription');
     case 'items':
-      if (element.firstChild.tagName === 'retract')
+      if (element.firstChild.tagName === 'retract') {
         return 'retract';
-      else
-        return 'publish';
+      }
+      return 'publish';
     default:
       return undefined;
     }
@@ -260,7 +262,7 @@ OX.Mixins.Subscribable = function () {
       return OX.URI.fromObject({path: from,
                                 query: ';node=' + node + ';item=' + itemID});
     }
-    function publishTime(element) {
+    function getPublishTime(element) {
       var firstChild  = element.firstChild,
           publishTime = firstChild && firstChild.getAttribute('publish-time');
 
@@ -288,7 +290,7 @@ OX.Mixins.Subscribable = function () {
           if (children[ii].tagName && children[ii].tagName === 'item') {
             item = this.itemFromElement(children[ii]);
 
-            item.publishTime = publishTime(children[ii]);
+            item.publishTime = getPublishTime(children[ii]);
             item.uri = itemURI(children[ii].getAttribute('id'),
                                node);
             rc.push(item);
@@ -343,14 +345,14 @@ OX.Mixins.Subscribable = function () {
     case 'publish':
       if (this._subscriptionHandlers.onPublish) {
         var items = convertItems.call(this, packet.getNode());
-        for (var i = 0, len = items.length; i < len; i++)
+        for (var i = 0, len = items.length; i < len; i++) {
           this._subscriptionHandlers.onPublish(items[i]);
+        }
       }
       break;
     case 'retract':
       if (this._subscriptionHandlers.onRetract) {
-        var retractURI = retractURI();
-        this._subscriptionHandlers.onRetract(retractURI);
+        this._subscriptionHandlers.onRetract(retractURI());
       }
       break;
     }
@@ -358,8 +360,9 @@ OX.Mixins.Subscribable = function () {
 
   function jidHandler(packet) {
     var event = packet.getNode().getElementsByTagName('event')[0];
-    if (!event)
+    if (!event) {
       return;
+    }
 
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
@@ -370,8 +373,9 @@ OX.Mixins.Subscribable = function () {
     redirectCount = redirectCount || 0;
     origNode      = origNode      || node;
 
-    if (!packet)
+    if (!packet) {
       return;
+    }
 
     var finalURI = this.pubSubURI,
         reqURI   = this.pubSubURI;
@@ -384,14 +388,16 @@ OX.Mixins.Subscribable = function () {
       reqURI   = reqURI.extend({query: ';node=' + origNode});
     }
 
-    if (packet.getType() == 'error' && callbacks.onError) {
+    if (packet.getType() === 'error' && callbacks.onError) {
       // TODO: handle getSubscriptions redirects
       callbacks.onError(reqURI, finalURI, packet);
-    } else if (packet.getType() == 'result' && callbacks.onSuccess) {
+    } else if (packet.getType() === 'result' && callbacks.onSuccess) {
       var subscriptions = [],
           subElements = packet.getNode().getElementsByTagName('subscription');
-      for (var i=0; i<subElements.length; i++) {
-        if (strict && this.connection.getJID() !== subElements[i].getAttribute('jid'))  continue;
+      for (var i = 0; i < subElements.length; i++) {
+        if (strict && this.connection.getJID() !== subElements[i].getAttribute('jid')) {
+          continue;
+        }
 
         subscriptions.push({
           node: subElements[i].getAttribute('node'),
@@ -406,7 +412,9 @@ OX.Mixins.Subscribable = function () {
   }
 
   function configureNodeHandler(packet, subscription, options, callbacks) {
-    if (!packet) return;
+    if (!packet) {
+      return;
+    }
 
     if (packet.getType() === 'error') {
       // TODO: handle redirects
@@ -423,8 +431,9 @@ OX.Mixins.Subscribable = function () {
     callbacks = callbacks || {};
     redirects = redirects || 0;
 
-    if (!packet)
+    if (!packet) {
       return;
+    }
 
     var finalURI = this.pubSubURI.extend({query: ';node=' + node}),
         reqURI   = this.pubSubURI.extend({query: ';node=' + (origNode || node)});
@@ -466,8 +475,9 @@ OX.Mixins.Subscribable = function () {
     var uri = this.pubSubURI.extend({query: ';node=' + node});
     callbacks = callbacks || {};
 
-    if (!packet)
+    if (!packet) {
       return;
+    }
 
     if (packet.getType() === 'error') {
       if (callbacks.onError) {
@@ -483,8 +493,9 @@ OX.Mixins.Subscribable = function () {
   function getItemsHandler(packet, callbacks) {
     callbacks = callbacks || {};
 
-    if (!packet)
+    if (!packet) {
       return;
+    }
 
     if (packet.getType() === 'error') {
       if (callbacks.onError) {
@@ -531,12 +542,14 @@ OX.Mixins.Subscribable = function () {
 
     xData.addField('FORM_TYPE', 'http://jabber.org/protocol/pubsub#subscribe_options');
 
-    for (var o in options) if (options.hasOwnProperty(o)) {
-      var trVal = options[o];
-      if (optionTransforms[o]) {
-        trVal = optionTransforms[o]('toString', trVal);
+    for (var o in options) {
+      if (options.hasOwnProperty(o)) {
+        var trVal = options[o];
+        if (optionTransforms[o]) {
+          trVal = optionTransforms[o]('toString', trVal);
+        }
+        xData.addField('pubsub#' + o, trVal);
       }
-      xData.addField('pubsub#' + o, trVal);
     }
 
     return opts;
@@ -560,34 +573,38 @@ OX.Mixins.Subscribable = function () {
     pubsub.addChild(opts);
 
     var that = this;
-    var wrappedCb = function() { configureNodeHandler.apply(that, arguments); },
+    var wrappedCb = function () {
+          configureNodeHandler.apply(that, arguments);
+        },
         wrappedArgs = [subscription, options, callbacks];
 
     this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
   }
 
   function doSubscribe(node, options, callbacks, origNode, redirectCount) {
-      var iq        = OX.XMPP.IQ.extend(),
-          pubsub    = OX.XML.Element.extend({name:  'pubsub',
-                                             xmlns: 'http://jabber.org/protocol/pubsub'}),
-          subscribe = OX.XML.Element.extend({name: 'subscribe'});
+    var iq        = OX.XMPP.IQ.extend(),
+        pubsub    = OX.XML.Element.extend({name:  'pubsub',
+                                       xmlns: 'http://jabber.org/protocol/pubsub'}),
+        subscribe = OX.XML.Element.extend({name: 'subscribe'});
 
-      iq.to(this.pubSubURI.path);
-      iq.type('set');
-      subscribe.attr('node', node);
-      subscribe.attr('jid', this.connection.getJID());
-      pubsub.addChild(subscribe);
-      if (options) {
-        var opts = objectToOptionsForm.call(this, options);
-        pubsub.addChild(opts);
-      }
-      iq.addChild(pubsub);
+    iq.to(this.pubSubURI.path);
+    iq.type('set');
+    subscribe.attr('node', node);
+    subscribe.attr('jid', this.connection.getJID());
+    pubsub.addChild(subscribe);
+    if (options) {
+      var opts = objectToOptionsForm.call(this, options);
+      pubsub.addChild(opts);
+    }
+    iq.addChild(pubsub);
 
-      var that = this;
-      var cb = function () { subscriptionHandler.apply(that, arguments); };
+    var that = this;
+    var cb = function () {
+      subscriptionHandler.apply(that, arguments);
+    };
 
-      this.connection.send(iq.convertToString(), cb,
-                           [node, options, callbacks, origNode, redirectCount]);
+    this.connection.send(iq.convertToString(), cb,
+                         [node, options, callbacks, origNode, redirectCount]);
   }
 
   function doGetSubcriptions(node, callbacks, origNode, redirectCount, strict) {
@@ -598,13 +615,17 @@ OX.Mixins.Subscribable = function () {
     iq.to(this.pubSubURI.path);
     iq.type('get');
 
-    if (node) sub.attr('node', node);
+    if (node) {
+      sub.attr('node', node);
+    }
 
     pub.addChild(sub);
     iq.addChild(pub);
 
     var that = this;
-    var wrappedCb = function() { getSubscriptionsHandler.apply(that, arguments); },
+    var wrappedCb = function () {
+          getSubscriptionsHandler.apply(that, arguments);
+        },
         wrappedArgs = [node, callbacks, origNode, redirectCount, strict];
 
     this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
@@ -612,7 +633,7 @@ OX.Mixins.Subscribable = function () {
   /**#nocode-*/
 
   return /** @lends OX.Mixins.Subscribable# */{
-    init: function() {
+    init: function () {
       var tpl = OX.Mixins.Subscribable._subscriptionHandlers;
       this._subscriptionHandlers = OX.Base.extend(tpl);
     },
@@ -633,22 +654,22 @@ OX.Mixins.Subscribable = function () {
      *
      * @example
      * service.getSubscriptions('/', {
-     *   onSuccess: function(requestedURI, finalURI, subscriptions, packet) {},
-     *   onError: function(requestedURI, finalURI, packet)
+     *   onSuccess: function (requestedURI, finalURI, subscriptions, packet) {},
+     *   onError: function (requestedURI, finalURI, packet)
      * })
      *
      * @example
      * service.getSubscriptions({
-     *   onSuccess: function(requestedURI, finalURI, subscriptions, packet) {},
-     *   onError: function(requestedURI, finalURI, packet)
+     *   onSuccess: function (requestedURI, finalURI, subscriptions, packet) {},
+     *   onError: function (requestedURI, finalURI, packet)
      * })
      */
-    getSubscriptions: function(node, callbacks, strictJIDMatch) {
-      if (arguments.length == 1) {
+    getSubscriptions: function (node, callbacks, strictJIDMatch) {
+      if (arguments.length === 1) {
         callbacks = arguments[0];
         node = undefined;
         strictJIDMatch = undefined;
-      } else if (arguments.length == 2 &&
+      } else if (arguments.length === 2 &&
                  (arguments[0].hasOwnProperty('onSucess') || arguments[0].hasOwnProperty('onError'))) {
         callbacks = arguments[0];
         strictJIDMatch = arguments[1];
@@ -658,7 +679,7 @@ OX.Mixins.Subscribable = function () {
       doGetSubcriptions.call(this, node, callbacks, node, 0, strictJIDMatch);
     },
 
-    configureNode: function(subscription, options, callbacks) {
+    configureNode: function (subscription, options, callbacks) {
       doConfigureNode.apply(this, arguments);
     },
 
@@ -682,7 +703,7 @@ OX.Mixins.Subscribable = function () {
      * });
      */
     subscribe: function (node, options, callbacks) {
-      if (arguments.length == 2) {
+      if (arguments.length === 2) {
         callbacks = options;
         options   = undefined;
       }
@@ -715,7 +736,9 @@ OX.Mixins.Subscribable = function () {
       iq.addChild(pubsub.addChild(unsubscribe));
 
       var that = this;
-      var cb = function () { unsubscriptionHandler.apply(that, arguments); };
+      var cb = function () {
+        unsubscriptionHandler.apply(that, arguments);
+      };
       this.connection.send(iq.convertToString(), cb, [node, callbacks]);
     },
 
@@ -743,7 +766,9 @@ OX.Mixins.Subscribable = function () {
       iq.addChild(pubsub.addChild(items));
 
       var that = this;
-      var cb = function () { getItemsHandler.apply(that, arguments); };
+      var cb = function () {
+        getItemsHandler.apply(that, arguments);
+      };
       this.connection.send(iq.convertToString(), cb, [callbacks]);
     },
 
@@ -756,7 +781,9 @@ OX.Mixins.Subscribable = function () {
     registerSubscriptionHandlers: function () {
       var uri = this.pubSubURI;
       var that = this;
-      var handler = function () { jidHandler.apply(that, arguments); };
+      var handler = function () {
+        jidHandler.apply(that, arguments);
+      };
       this.connection.registerJIDHandler(uri.path, handler);
     },
 
@@ -836,4 +863,4 @@ OX.Mixins.Subscribable = function () {
       onRetract: function (uri) {}
     }
   };
-}();
+}());

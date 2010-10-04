@@ -1,0 +1,10 @@
+options = {
+   devel: true,
+   eqeqeq: true,
+   forin: true,
+   undef: true,
+   white: true,
+   browser: true,
+   indent: 2,
+   predef: ['Element', 'window', 'OX']
+};

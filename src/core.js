@@ -2,23 +2,23 @@
  * @namespace
  */
 var OX = {
-  debug: function() {
+  debug: function () {
     return window.console && window.console.debug && window.console.debug.apply(window.console, arguments);
   },
 
-  log: function() {
+  log: function () {
     return window.console && window.console.log && window.console.log.apply(window.console, arguments);
   },
 
-  warn: function() {
+  warn: function () {
     return window.console && window.console.warn && window.console.warn.apply(window.console, arguments);
   },
 
-  error: function() {
+  error: function () {
     return window.console && window.console.error && window.console.error.apply(window.console, arguments);
   },
 
-  group: function() {
+  group: function () {
     if (window.console && window.console.group) {
       window.console.group.apply(window.console, arguments);
     } else {
@@ -26,8 +26,10 @@ var OX = {
     }
   },
 
-  groupEnd: function() {
-    if (window.console && window.console.groupEnd) window.console.groupEnd();
+  groupEnd: function () {
+    if (window.console && window.console.groupEnd) {
+      window.console.groupEnd();
+    }
   }
 
 };
