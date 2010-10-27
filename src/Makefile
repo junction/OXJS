@@ -1,6 +1,6 @@
 SRC =	core.js error.js base.js uri.js settings.js 	\
 	connection-adapter.js uri.js mixins.js item.js	\
-	services.js connection.js xml.js
+	services.js connection.js xml.js strophe_adapter.js
 
 DOCDIR = ../doc
 
