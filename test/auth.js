@@ -111,6 +111,26 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     Assert.isTrue(successFlag, 'Was not successful trying to auth plain.');
   },
 
+  // implemented to fix a bug found on 11/4/10
+  testAuthPlainSuccessWithNoOnErrorCallback: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="commands.auth.xmpp.onsip.com" to="mock@example.com" id="test" type="result"><command xmlns="http://jabber.org/protocol/commands" status="completed" node="authorize-plain" sessionid="session-id"><note type="info">JID \'alice@example.com\' has been authorized to access resources for SIP Address \'alice@example.com\'</note><x xmlns="jabber:x:data" type="result"><field type="fixed" var="expires"><value>2009-02-19T21:08:38Z</value></field>'
+                                                      + '<field type="fixed" var="sip" >'
+                                                      + '<value>alice@example.com</value>'
+                                                      + '</field></x></command></iq>'));
+
+    var successFlag = false;
+    this.Auth.authorizePlain('alice@example.com', 'password', {
+      onSuccess: function (packet) {
+        successFlag = true;
+        Assert.isObject(packet, 'Packet should be an object');
+      }
+    });
+
+    Assert.isTrue(successFlag, 'Was not successful trying to auth plain.');
+  },
+
   testAuthPlainSuccessWithMultipleAuthorizations: function () {
     var Assert = YAHOO.util.Assert;
 

@@ -48,7 +48,7 @@ OX.Services.Auth = OX.Base.extend(OX.Mixins.EntityTime, /** @lends OX.Services.A
     var callbacks = {};
     if (arguments.length > 0 &&
         arguments[arguments.length - 1] &&
-        (arguments[arguments.length - 1].onSucess || arguments[arguments.length - 1].onError)) {
+        (arguments[arguments.length - 1].onSuccess || arguments[arguments.length - 1].onError)) {
       callbacks = arguments[arguments.length - 1];
 
       if (authForAll === callbacks) {
