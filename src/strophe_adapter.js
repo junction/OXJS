@@ -172,7 +172,6 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
         delete this._callbacks[this._callbackQueue.pop()];
       }
     }
-    node.setAttribute('xmlns', 'jabber:client');
     return this.strophe.send(node);
   },
 
