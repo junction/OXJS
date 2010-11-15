@@ -1,18 +1,27 @@
 /**
+ * @namespace
  * Namespace for OX settings.
  *
  * This provides top-level knobs to tweak in order to adjust behavior.
  */
 OX.Settings = OX.Base.extend(/** @lends OX.Settings*/{
+
   /**
+   * @namespace
    * Various URIs of interest.
    */
   URIs: {
+    /**
+     * @namespace
+     * URIs for entities.
+     */
     entity: {
+      /** URI for Authentication with the XMPP API */
       auth: OX.URI.parse('xmpp:commands.auth.xmpp.onsip.com')
     },
 
     /**
+     * @namespace
      * URIs for Ad Hoc Commands.
      */
     command: {
@@ -40,6 +49,7 @@ OX.Settings = OX.Base.extend(/** @lends OX.Settings*/{
     },
 
     /**
+     * @namespace
      * URIs for PubSub.
      */
     pubSub: {
@@ -58,6 +68,7 @@ OX.Settings = OX.Base.extend(/** @lends OX.Settings*/{
     },
 
     /**
+     * @namespace
      * URIs for Presence.
      */
     presence: {

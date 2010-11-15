@@ -1,236 +1,4 @@
 /**
- * Mixins namespace.
- * @namespace
- */
-OX.Mixins = {};
-
-/**
- * Entity Time Mixin
- *
- * @namespace
- *
- * XEP 0202: Entity Time
- * http://xmpp.org/extensions/xep-0202.html
- *
- * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
- */
-OX.Mixins.EntityTime = (function () {
-  return /** @lends OX.Mixins.EntityTime# */ {
-    getTime: function (entityURI, callbacks) {
-      var iq = OX.XMPP.IQ.extend(),
-          time = OX.XML.Element.extend({name: 'time',
-                                        xmlns: 'urn:xmpp:time'});
-
-      iq.to(entityURI.path);
-      iq.type('get');
-      iq.addChild(time);
-
-      this.connection.send(iq.convertToString(), function (packet) {
-        if (packet.getType() === 'error' && callbacks.onError) {
-          callbacks.onError(packet);
-        } else if (callbacks.onSuccess) {
-          var node = packet.getNode(),
-            elTZO = node.getElementsByTagName('tzo')[0],
-            elUTC = node.getElementsByTagName('utc')[0];
-
-          callbacks.onSuccess(packet, {
-            tzo: elTZO && (elTZO.textContent || elTZO.text),
-            utc: elUTC && (elUTC.textContent || elUTC.text)
-          });
-        }
-      });
-    }
-  };
-}());
-
-/**
- * CallDialog mixin.
- *
- * @namespace
- *
- * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
- * @requires callID property on receiving object.
- * @requires fromTag property on receiving object.
- * @requires toTag property on receiving object.
- */
-OX.Mixins.CallDialog = (function () {
-  return /** @lends OX.Mixins.CallDialog# */{
-    /**
-     * Transfer a call to a sip address.
-     *
-     * @param {String} targetURI To what SIP URI to transfer the active call.
-     * @param {String} endpoint Either 'caller' or 'callee'
-     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
-     *
-     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#transfer
-     * @example
-     * call.transfer('sip:lisa@example.com', 'callee');
-     */
-    transfer: function (targetURI, endpoint, callbacks) {
-      var iq    = OX.XMPP.IQ.extend(),
-          cmd   = OX.XMPP.Command.extend(),
-          xData = OX.XMPP.XDataForm.extend(),
-          uri   = OX.Settings.URIs.command.transferCall;
-
-      callbacks = callbacks || {};
-
-      iq.to(uri.path);
-      iq.type('set');
-      cmd.node(uri.queryParam('node'));
-      xData.type('submit');
-      xData.addField('call-id',    this.callID);
-      xData.addField('from-tag',   this.fromTag);
-      xData.addField('to-tag',     this.toTag);
-      xData.addField('target-uri', targetURI);
-      xData.addField('endpoint',   endpoint);
-
-      iq.addChild(cmd.addChild(xData));
-
-      this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet) {
-          return;
-        }
-
-        if (packet.getType() === 'error' && callbacks.onError) {
-          callbacks.onError(packet);
-        } else if (callbacks.onSuccess) {
-          callbacks.onSuccess();
-        }
-      }, []);
-    },
-
-    /**
-     * Terminate this call.
-     *
-     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
-     *
-     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#terminate
-     * @example
-     * call.terminate();
-     */
-    terminate: function (callbacks) {
-      var iq    = OX.XMPP.IQ.extend(),
-          cmd   = OX.XMPP.Command.extend(),
-          xData = OX.XMPP.XDataForm.extend(),
-          uri   = OX.Settings.URIs.command.terminateCall;
-
-      callbacks = callbacks || {};
-
-      iq.to(uri.path);
-      iq.type('set');
-      cmd.node(uri.queryParam('node'));
-      xData.type('submit');
-      xData.addField('call-id',  this.callID);
-      xData.addField('from-tag', this.fromTag);
-      xData.addField('to-tag',   this.toTag);
-
-      iq.addChild(cmd.addChild(xData));
-
-      this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet) {
-          return;
-        }
-
-        if (packet.getType() === 'error' && callbacks.onError) {
-          callbacks.onError(packet);
-        } else if (callbacks.onSuccess) {
-          callbacks.onSuccess();
-        }
-      }, []);
-    },
-
-    /**
-     * Cancel this call.
-     *
-     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
-     *
-     * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#cancel
-     * @example
-     * call.cancel();
-     */
-    cancel: function (callbacks) {
-      var iq    = OX.XMPP.IQ.extend(),
-          cmd   = OX.XMPP.Command.extend(),
-          xData = OX.XMPP.XDataForm.extend(),
-          uri   = OX.Settings.URIs.command.cancelCall;
-
-      callbacks = callbacks || {};
-
-      iq.to(uri.path);
-      iq.type('set');
-      cmd.node(uri.queryParam('node'));
-      xData.type('submit');
-      xData.addField('call-id',  this.callID);
-      xData.addField('from-tag', this.fromTag);
-
-      iq.addChild(cmd.addChild(xData));
-
-      this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet) {
-          return;
-        }
-
-        if (packet.getType() === 'error' && callbacks.onError) {
-          callbacks.onError(packet);
-        } else if (callbacks.onSuccess) {
-          callbacks.onSuccess();
-        }
-      }, []);
-    }
-  };
-}());
-
-/**
- * CallLabeler mixin.
- *
- * @namespace
- * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
- * @requires callID property on receiving object.
- */
-OX.Mixins.CallLabeler = (function () {
-  return /** @lends OX.Mixins.CallLabeler# */{
-    /**
-     * Label a call with a short string.
-     *
-     * @param {String} label A short string used to label this call.
-     * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
-     *
-     * @example
-     * call.label('alice');
-     */
-    label: function (label, callbacks) {
-      var iq    = OX.XMPP.IQ.extend(),
-          cmd   = OX.XMPP.Command.extend(),
-          xData = OX.XMPP.XDataForm.extend(),
-          uri   = OX.Settings.URIs.command.labelCall;
-
-      callbacks = callbacks || {};
-
-      iq.to(uri.path);
-      iq.type('set');
-      cmd.node(uri.queryParam('node'));
-      xData.type('submit');
-      xData.addField('call-id', this.callID);
-      xData.addField('label',   label);
-
-      iq.addChild(cmd.addChild(xData));
-
-      this.connection.send(iq.convertToString(), function (packet) {
-        if (!packet) {
-          return;
-        }
-
-        if (packet.getType() === 'error' && callbacks.onError) {
-          callbacks.onError(packet);
-        } else if (callbacks.onSuccess) {
-          callbacks.onSuccess();
-        }
-      }, []);
-    }
-  };
-}());
-
-/**
  * Subscribable mixin.
  *
  * @namespace
@@ -238,7 +6,7 @@ OX.Mixins.CallLabeler = (function () {
  * @requires pubSubURI The URI of the PubSub service.
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
  */
-OX.Mixins.Subscribable = (function () {
+OX.Mixin.Subscribable = (function () {
   /**#nocode+*/
   function packetType(element) {
     switch (element.tagName) {
@@ -632,11 +400,29 @@ OX.Mixins.Subscribable = (function () {
   }
   /**#nocode-*/
 
-  return /** @lends OX.Mixins.Subscribable# */{
-    init: function () {
-      var tpl = OX.Mixins.Subscribable._subscriptionHandlers;
+  return /** @lends OX.Mixin.Subscribable# */{
+
+    /**
+     * Registers appropriate handlers with the connection for pubSubJID.
+     */
+    init: function ($super) {
+      var tpl = OX.Mixin.Subscribable._subscriptionHandlers;
       this._subscriptionHandlers = OX.Base.extend(tpl);
-    },
+
+      if (this.connection && this.pubSubURI) {
+        var uri = this.pubSubURI;
+        var that = this;
+        var handler = function () {
+          jidHandler.apply(that, arguments);
+        };
+        this.connection.registerJIDHandler(uri.path, handler);
+      }
+
+      if ($super instanceof Function) {
+        $super();
+      }
+
+    }.around(),
 
     /**
      * Get subscriptions on a node.
@@ -770,21 +556,6 @@ OX.Mixins.Subscribable = (function () {
         getItemsHandler.apply(that, arguments);
       };
       this.connection.send(iq.convertToString(), cb, [callbacks]);
-    },
-
-    /**
-     * Registers appropriate handlers with the connection for
-     * pubSubJID. This should be called after mixin.
-     *
-     * service.registerSubscriptionHandlers();
-     */
-    registerSubscriptionHandlers: function () {
-      var uri = this.pubSubURI;
-      var that = this;
-      var handler = function () {
-        jidHandler.apply(that, arguments);
-      };
-      this.connection.registerJIDHandler(uri.path, handler);
     },
 
     /**

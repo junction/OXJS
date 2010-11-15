@@ -69,4 +69,4 @@ OX.MockStropheConnection = OX.Base.extend({
   send: function () {}
 });
 
-YAHOO.tool.TestRunner.add(OX.Test.StropheAdapter);
+YAHOO.tool.TestRunner.add(OXTest.StropheAdapter);

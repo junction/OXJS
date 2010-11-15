@@ -104,9 +104,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   },
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
     this.ActiveCalls = this.ox.ActiveCalls;
 
     this.successFlag = false;
@@ -124,7 +123,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Services.ActiveCalls,
+    Assert.isObject(OX.Service.ActiveCalls,
                     'ActiveCalls mixin is not available');
     Assert.isObject(this.ActiveCalls, 'ActiveCalls is not initialized');
     Assert.areSame(this.ox,           this.ox.ActiveCalls.connection);
@@ -292,13 +291,6 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isFunction(this.ActiveCalls.Item.transfer,
                       'ActiveCalls.Item.transfer is not a function');
-  },
-
-  testLabel: function () {
-    var Assert = YAHOO.util.Assert;
-
-    Assert.isFunction(this.ActiveCalls.Item.label,
-                      'ActiveCalls.Item.label is not a function');
   },
 
   testDialogState: function () {

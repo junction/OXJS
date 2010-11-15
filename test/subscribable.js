@@ -2,21 +2,19 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   name: 'Subscribable Mixin Tests',
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
 
     var that = this;
     var itemFromElement = function () {
       return that.itemFromElement.apply(that, arguments);
     };
 
-    this.Subscribable = OX.Base.extend(OX.Mixins.Subscribable, {
+    this.Subscribable = OX.Base.extend(OX.Mixin.Subscribable, {
       connection:      this.ox,
       pubSubURI:       OX.URI.parse('xmpp:pubsub@example.com'),
       itemFromElement: itemFromElement
     });
-    this.Subscribable.registerSubscriptionHandlers();
   },
 
   itemFromElement: function (element) {
@@ -194,17 +192,15 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var resourceConn = OXTest.ConnectionMock.extend({jid: function() { return 'mock@example.com/brooklyn'; }}).init();
         resourceOx = OX.Connection.extend({connection: resourceConn});
 
-    resourceOx.initConnection();
     var itemFromElement = function () {
       return that.itemFromElement.apply(that, arguments);
     };
 
-    var resourceSubscribable = OX.Base.extend(OX.Mixins.Subscribable, {
+    var resourceSubscribable = OX.Base.extend(OX.Mixin.Subscribable, {
       connection:     resourceOx,
       pubSubURI:      OX.URI.parse('xmpp:pubsub@example.com'),
       itemFromElement: itemFromElement
     });
-    resourceSubscribable.registerSubscriptionHandlers();
     /** end this test setup **/
 
     var Assert = YAHOO.util.Assert;
@@ -245,17 +241,15 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var resourceConn = OXTest.ConnectionMock.extend({jid: function() { return 'mock@example.com/brooklyn'; }}).init();
         resourceOx = OX.Connection.extend({connection: resourceConn});
 
-    resourceOx.initConnection();
     var itemFromElement = function () {
       return that.itemFromElement.apply(that, arguments);
     };
 
-    var resourceSubscribable = OX.Base.extend(OX.Mixins.Subscribable, {
+    var resourceSubscribable = OX.Base.extend(OX.Mixin.Subscribable, {
       connection:     resourceOx,
       pubSubURI:      OX.URI.parse('xmpp:pubsub@example.com'),
       itemFromElement: itemFromElement
     });
-    resourceSubscribable.registerSubscriptionHandlers();
     /** end this test setup **/
 
     var Assert = YAHOO.util.Assert;
@@ -503,7 +497,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                    'Did not get error trying to unsubscribe.');
   },
 
-  testMultipleServicesSubscriptionHandlers: function() {
+  testMultipleServiceSubscriptionHandlers: function() {
     var Assert = YAHOO.util.Assert;
 
     var that = this;
@@ -511,19 +505,18 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       return that.itemFromElement.apply(that, arguments);
     };
 
-    var subscribableService2 = OX.Base.extend(OX.Mixins.Subscribable, {
+    var subscribableService2 = OX.Base.extend(OX.Mixin.Subscribable, {
       connection:     this.ox,
       pubSubURI:      OX.URI.parse('xmpp:pubsub2@example.com'),
       itemFromElement: itemFromElement
     });
-    subscribableService2.registerSubscriptionHandlers();
 
     Assert.areNotSame(subscribableService2._subscriptionHandlers,
                       this.Subscribable._subscriptionHandlers,
                      'subscribableService2 has identical _subscriptionHandlers');
   },
 
-  testMultipleServicesRegisterHandler: function() {
+  testMultipleServiceRegisterHandler: function() {
     var Assert = YAHOO.util.Assert;
 
     var that = this;
@@ -531,12 +524,11 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       return that.itemFromElement.apply(that, arguments);
     };
 
-    var subscribableService2 = OX.Base.extend(OX.Mixins.Subscribable, {
+    var subscribableService2 = OX.Base.extend(OX.Mixin.Subscribable, {
       connection:     this.ox,
       pubSubURI:      OX.URI.parse('xmpp:pubsub2@example.com'),
       itemFromElement: itemFromElement
     });
-    subscribableService2.registerSubscriptionHandlers();
 
     Assert.isObject(this.ox.jidHandlers['pubsub@example.com'], 'this.Subscribable is not registered');
     Assert.isObject(this.ox.jidHandlers['pubsub2@example.com'], 'subscribableService2 is not registered');

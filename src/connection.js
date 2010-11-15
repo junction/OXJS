@@ -5,13 +5,13 @@
  *
  * @class
  * @extends OX.Base
- * @property {OX.Services.Auth} Auth#
- * @property {OX.Services.Auth} ActiveCalls#
- * @property {OX.Services.Auth} UserAgents#
- * @property {OX.Services.Auth} Voicemail#
- * @property {OX.Services.Auth} Directories#
- * @property {OX.Services.Auth} Preferences#
- * @property {OX.Services.Auth} RecentCalls#
+ * @property {OX.Service.Auth} Auth#
+ * @property {OX.Service.Auth} ActiveCalls#
+ * @property {OX.Service.Auth} UserAgents#
+ * @property {OX.Service.Auth} Voicemail#
+ * @property {OX.Service.Auth} Directories#
+ * @property {OX.Service.Auth} Preferences#
+ * @property {OX.Service.Auth} RecentCalls#
  */
 OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
   /**
@@ -21,14 +21,14 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @see OX.Connection#initConnection
    */
   services: {
-    Auth:        OX.Services.Auth,
-    ActiveCalls: OX.Services.ActiveCalls,
-    Directories: OX.Services.Directories,
-    Preferences: OX.Services.Preferences,
-    RecentCalls: OX.Services.RecentCalls,
-    UserAgents:  OX.Services.UserAgents,
-    Voicemail:   OX.Services.Voicemail,
-    Rosters:     OX.Services.Rosters
+    Auth:        OX.Service.Auth,
+    ActiveCalls: OX.Service.ActiveCalls,
+    Directories: OX.Service.Directories,
+    Preferences: OX.Service.Preferences,
+    RecentCalls: OX.Service.RecentCalls,
+    UserAgents:  OX.Service.UserAgents,
+    Voicemail:   OX.Service.Voicemail,
+    Rosters:     OX.Service.Rosters
   },
 
   /**
@@ -41,44 +41,44 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
   jidHandlers: {},
 
   /**
-   * Initialize the service properties.
-   *
-   * @example
-   * var ox = OX.Connection.extend();
-   * ox.initConnection();
-   *
-   * @return {OX.Connection}
+   * Initialize the Connection with Services hooked up
+   * with a connection and then stuck on the top level namespace.
+   * @private
    */
-  initConnection: function () {
-    if (!this.getJID() || this.getJID() === '') {
-      throw new OX.Error('missing JID');
-    }
+  init: function ($super) {
+    if (this.connection) {
+      if (!this.getJID() || this.getJID() === '') {
+        throw new OX.Error('missing JID');
+      }
 
-    var serviceMap = {};
+      var serviceMap = {};
 
-    for (var s in this.services) {
-      if (this.services.hasOwnProperty(s)) {
-        var service = this.services[s];
+      for (var s in this.services) {
+        if (this.services.hasOwnProperty(s)) {
+          var service = this.services[s];
 
-        this[s] = service.extend({connection: this});
-        if (service.pubSubURI) {
-          serviceMap[service.pubSubURI] = service;
+          this[s] = service.extend({connection: this});
+          if (service.pubSubURI) {
+            serviceMap[service.pubSubURI] = service;
+          }
         }
       }
+
+      // Register for incoming messages.
+      var that = this;
+      this.connection.registerHandler('message', function (msg) {
+        var from = msg.getFrom(),
+            fn = that.jidHandlers[from];
+        if (fn) {
+          fn(msg);
+        }
+      });
     }
 
-    // Register for incoming messages.
-    var that = this;
-    this.connection.registerHandler('message', function (msg) {
-      var from = msg.getFrom();
-      var fn = that.jidHandlers[from];
-      if (fn) {
-        fn(msg);
-      }
-    });
-
-    return this;
-  },
+    if ($super instanceof Function) {
+      $super();
+    }
+  }.around(),
 
   /**
    * Sends an XML string to the connection adapter.

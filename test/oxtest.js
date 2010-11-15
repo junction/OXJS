@@ -285,7 +285,7 @@ YAHOO.util.Assert.isGetItems = function (xml, jid, node) {
                'get items node is wrong');
 };
 
-YAHOO.util.Assert.throws = function(errorClass,cb) {
+YAHOO.util.Assert.throws = function (errorClass, cb) {
   try {
     cb();
   } catch(e) {

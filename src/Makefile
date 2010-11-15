@@ -1,6 +1,10 @@
-SRC =	core.js error.js base.js uri.js settings.js 	\
-	connection-adapter.js uri.js mixins.js item.js	\
-	services.js connection.js xml.js strophe_adapter.js
+SRC =	core.js error.js base.js util.js uri.js settings.js 	\
+	connection_adapter.js uri.js item.js	\
+	mixins/call_dialog.js mixins/entity_time.js mixins/subscribable.js	\
+	services/active_calls.js services/auth.js \
+	services/directories.js services/preferences.js services/recent_calls.js	\
+	services/rosters.js services/user_agents.js services/voicemail.js	\
+	connection.js xml.js strophe_adapter.js
 
 DOCDIR = ../doc
 

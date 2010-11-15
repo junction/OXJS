@@ -2,9 +2,8 @@ OXTest.Connection = new YAHOO.tool.TestCase({
   name: 'OX Connection Tests',
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
-    this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
+    this.conn = OXTest.ConnectionMock.extend();
+    this.ox = OX.Connection.extend({ connection: this.conn });
   },
 
   tearDown: function () {
@@ -16,10 +15,14 @@ OXTest.Connection = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert,
      expectedError = new Error();
 
-    var badAdapter = OXTest.ConnectionMock.extend({jid: function () { return undefined } }).init(),
-      badOx = OX.Connection.extend({connection: badAdapter});
-
-    Assert.throws(OX.Error, function() { badOx.initConnection(); });
+    var badAdapter = OXTest.ConnectionMock.extend({
+      jid: function () {
+        return undefined;
+      }
+    });
+    Assert.throws(OX.Error, function () {
+                    OX.Connection.extend({ connection: badAdapter });
+                  });
   },
 
   testGetJID: function () {

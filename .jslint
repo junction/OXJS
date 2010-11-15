@@ -6,5 +6,5 @@ options = {
    white: true,
    browser: true,
    indent: 2,
-   predef: ['Element', 'window', 'OX']
+   predef: ['Element', 'window', 'OX', 'ActiveXObject', 'DOMParser']
 };

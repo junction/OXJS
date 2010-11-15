@@ -33,3 +33,21 @@ var OX = {
   }
 
 };
+
+/**
+ * Namespace for service mixins.
+ *
+ * These objects should not be used directly, but only when
+ * instantiated from an {@link OX.Connection}.
+ *
+ * @namespace
+ *
+ * @see OX.Connection
+ */
+OX.Service = {};
+
+/**
+ * Mixins namespace.
+ * @namespace
+ */
+OX.Mixin = {};

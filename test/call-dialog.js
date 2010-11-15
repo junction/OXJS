@@ -2,11 +2,10 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
   name: 'CallDialog Mixin Tests',
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
 
-    this.CallDialog = OX.Base.extend(OX.Mixins.CallDialog, {
+    this.CallDialog = OX.Base.extend(OX.Mixin.CallDialog, {
       connection: this.ox,
       callID:     'call-id',
       fromTag:    'from-tag',
@@ -23,7 +22,7 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
   testTransfer: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(OX.Mixins.CallDialog.transfer,
+    Assert.isFunction(OX.Mixin.CallDialog.transfer,
                       'CallDialog.transfer is not a function.');
     this.CallDialog.transfer('sip:alice@example.com', 'callee');
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
@@ -65,7 +64,7 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
   testTerminate: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(OX.Mixins.CallDialog.terminate,
+    Assert.isFunction(OX.Mixin.CallDialog.terminate,
                       'CallDialog.terminate is not a function.');
     this.CallDialog.terminate();
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',
@@ -105,7 +104,7 @@ OXTest.CallDialog = new YAHOO.tool.TestCase({
   testCancel: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isFunction(OX.Mixins.CallDialog.cancel,
+    Assert.isFunction(OX.Mixin.CallDialog.cancel,
                       'CallDialog.cancel is not a function.');
     this.CallDialog.cancel();
     Assert.isCommand(this.conn._data, 'commands.active-calls.xmpp.onsip.com',

@@ -46,9 +46,8 @@ OXTest.Directories = new YAHOO.tool.TestCase({
   },
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
     this.Directories = this.ox.Directories;
 
     this.successFlag = false;
@@ -67,7 +66,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Services.Directories,
+    Assert.isObject(OX.Service.Directories,
                     'Directories mixin is not available');
     Assert.isObject(this.Directories, 'Directories is not initialized');
     Assert.areSame(this.ox,           this.ox.Directories.connection);

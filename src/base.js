@@ -41,10 +41,28 @@ OX.Base = {
    * @see OX.Base.extend
    */
   mixin: function () {
-    for (var i = 0, len = arguments.length; i < len; i++) {
-      for (var k in arguments[i]) {
-        if (arguments[i].hasOwnProperty(k)) {
-          this[k] = arguments[i][k];
+    var i, len, key, base, mixin,
+        /** @ignore */
+        empty = function () {}, transform;
+
+    for (i = 0, len = arguments.length; i < len; i++) {
+      for (key in arguments[i]) {
+        if (arguments[i].hasOwnProperty(key)) {
+          mixin = arguments[i][key];
+
+          if (this[name] && mixin._oxInferior) {
+            continue;
+          }
+
+          if (mixin instanceof Function && mixin._ox) {
+            for (transform in mixin._ox) {
+              if (mixin._ox.hasOwnProperty(transform)) {
+                mixin._ox[transform](this, mixin, key);
+              }
+            }
+          }
+
+          this[key] = mixin;
         }
       }
     }

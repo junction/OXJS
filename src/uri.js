@@ -11,7 +11,8 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
    * @returns {OX.URI.Base} A new OX.URI.Base object
    *
    * @example
-   * var uri = OX.URI.parse('xmpp:lisa@example.com');
+   *   var uri = OX.URI.parse('xmpp:lisa@example.com');
+   *   // -> { path: "lisa@example.com", scheme: "xmpp" }
    */
   parse: function (uriString) {
     var scheme, authority, path, query, fragment;

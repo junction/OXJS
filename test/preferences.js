@@ -13,9 +13,8 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
   },
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
     this.Preferences = this.ox.Preferences;
   },
 
@@ -28,7 +27,7 @@ OXTest.Preferences = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Services.Preferences,
+    Assert.isObject(OX.Service.Preferences,
                     'Preferences mixin is not available');
     Assert.isObject(this.ox.Preferences, 'Preferences is not initialized');
     Assert.areSame(this.ox,              this.ox.Preferences.connection);

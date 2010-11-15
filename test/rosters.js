@@ -2,9 +2,8 @@ OXTest.Rosters = new YAHOO.tool.TestCase({
   name: 'Rosters Tests',
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
     this.Rosters = this.ox.Rosters;
   },
 
@@ -17,7 +16,7 @@ OXTest.Rosters = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Services.Rosters,
+    Assert.isObject(OX.Service.Rosters,
                     'Rosters mixin is not available');
     Assert.isObject(this.Rosters, 'Rosters mixin is not initialized');
     Assert.areSame(this.ox, this.ox.Rosters.connection);

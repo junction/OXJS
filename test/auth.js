@@ -2,9 +2,8 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   name: 'Auth Tests',
 
   setUp: function () {
-    this.conn = OXTest.ConnectionMock.extend().init();
+    this.conn = OXTest.ConnectionMock.extend();
     this.ox = OX.Connection.extend({connection: this.conn});
-    this.ox.initConnection();
 
     this.Auth = this.ox.Auth;
   },
@@ -17,7 +16,7 @@ OXTest.Auth = new YAHOO.tool.TestCase({
   testServiceMixin: function () {
     var Assert = YAHOO.util.Assert;
 
-    Assert.isObject(OX.Services.Auth,
+    Assert.isObject(OX.Service.Auth,
                     'Auth mixin is not available');
     Assert.isObject(this.Auth, 'Auth mixin is not initialized');
     Assert.areSame(this.ox, this.ox.Auth.connection);
