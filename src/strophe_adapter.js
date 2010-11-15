@@ -25,7 +25,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    * @returns {String} The JID associated with the connection.
    */
   jid: function () {
-    return this.strophe.jid;
+    return this.connection.jid;
   },
 
   /**
@@ -55,7 +55,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
     };
 
     this.unregisterHandler(event);
-    this._handlers[event] = this.strophe.addHandler(wrapper, null, event,
+    this._handlers[event] = this.connection.addHandler(wrapper, null, event,
                                                     null, null, null);
   },
 
@@ -68,7 +68,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
     var queue = this._callbackQueue, i, len = queue.length, rest;
 
     if (this._handlers[event]) {
-      this.strophe.deleteHandler(this._handlers[event]);
+      this.connection.deleteHandler(this._handlers[event]);
       delete this._handlers[event];
 
       // Remove from the callback queue
@@ -118,7 +118,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
     var node = this.createNode(xml),
         that = this;
 
-    if (!this.strophe.connected || this.strophe.disconnecting) {
+    if (!this.connection.connected || this.connection.disconnecting) {
       OX.log('Prevented "' + xml + '" from being sent because ' +
              'the BOSH connection is being disposed / is disposed.');
       return false;
@@ -159,11 +159,11 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
 
       var id = node.getAttribute('id');
       if (!id) {
-        id = this.strophe.getUniqueId();
+        id = this.connection.getUniqueId();
         node.setAttribute('id', id);
       }
 
-      this._callbacks[id] = this.strophe.addHandler(wrapper, null, null,
+      this._callbacks[id] = this.connection.addHandler(wrapper, null, null,
                                                        null, id, null);
       this._callbackQueue.unshift(id);
       if (this._callbackQueue.length > this.MAX_QUEUE_SIZE) {
@@ -172,7 +172,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
         delete this._callbacks[this._callbackQueue.pop()];
       }
     }
-    return this.strophe.send(node);
+    return this.connection.send(node);
   },
 
   /**

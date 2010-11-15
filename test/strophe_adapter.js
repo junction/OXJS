@@ -19,13 +19,13 @@ OXTest.StropheAdapter = new YAHOO.tool.TestCase({
     this.adapter.send("<test>", empty);
     Assert.areSame(1, this.adapter._callbackQueue.length);
     id = this.conn.recentlyRegistered;
-    this.conn.triggerEvent(id, OX.Test.Packet.extendWithXML("<iq id=\"" + id + "\"/>").getNode());
+    this.conn.triggerEvent(id, OXTest.Packet.extendWithXML("<iq id=\"" + id + "\"/>").getNode());
     Assert.areSame(0, this.adapter._callbackQueue.length);
 
     this.adapter.send("<test>", empty);
     this.adapter.send("<test>", empty);
     id = this.conn.recentlyRegistered;
-    this.conn.triggerEvent(id, OX.Test.Packet.extendWithXML("<iq id=\"" + id + "\"/>").getNode());
+    this.conn.triggerEvent(id, OXTest.Packet.extendWithXML("<iq id=\"" + id + "\"/>").getNode());
     Assert.areSame(1, this.adapter._callbackQueue.length);
   },
 

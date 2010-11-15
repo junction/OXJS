@@ -3,7 +3,7 @@ OXTest.UserAgents = new YAHOO.tool.TestCase({
 
   setUp: function () {
     this.conn = OXTest.ConnectionMock.extend();
-    this.ox = OX.Connection.extend({connection: this.conn});
+    this.ox = OX.Connection.extend({connectionAdapter: this.conn});
     this.UserAgents = this.ox.UserAgents;
   },
 

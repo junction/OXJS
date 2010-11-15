@@ -3,7 +3,7 @@ OXTest.Connection = new YAHOO.tool.TestCase({
 
   setUp: function () {
     this.conn = OXTest.ConnectionMock.extend();
-    this.ox = OX.Connection.extend({ connection: this.conn });
+    this.ox = OX.Connection.extend({ connectionAdapter: this.conn });
   },
 
   tearDown: function () {
@@ -21,7 +21,7 @@ OXTest.Connection = new YAHOO.tool.TestCase({
       }
     });
     Assert.throws(OX.Error, function () {
-                    OX.Connection.extend({ connection: badAdapter });
+                    OX.Connection.extend({ connectionAdapter: badAdapter });
                   });
   },
 

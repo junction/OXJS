@@ -3,7 +3,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
   setUp: function () {
     this.conn = OXTest.ConnectionMock.extend();
-    this.ox = OX.Connection.extend({connection: this.conn});
+    this.ox = OX.Connection.extend({connectionAdapter: this.conn});
 
     var that = this;
     var itemFromElement = function () {
@@ -190,7 +190,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testGetSubscriptionsWithoutStrictJIDCheck: function() {
     /** start this test setup **/
     var resourceConn = OXTest.ConnectionMock.extend({jid: function() { return 'mock@example.com/brooklyn'; }}).init();
-        resourceOx = OX.Connection.extend({connection: resourceConn});
+        resourceOx = OX.Connection.extend({connectionAdapter: resourceConn});
 
     var itemFromElement = function () {
       return that.itemFromElement.apply(that, arguments);
@@ -239,7 +239,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testGetSubscriptionsWithStrictJIDCheck: function() {
     /** start this test setup **/
     var resourceConn = OXTest.ConnectionMock.extend({jid: function() { return 'mock@example.com/brooklyn'; }}).init();
-        resourceOx = OX.Connection.extend({connection: resourceConn});
+        resourceOx = OX.Connection.extend({connectionAdapter: resourceConn});
 
     var itemFromElement = function () {
       return that.itemFromElement.apply(that, arguments);

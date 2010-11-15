@@ -1,7 +1,6 @@
 /**
- * Connection object to use for all OXJS connections. The +initConnection+
- * {@link OX.Connection#initConnection} method MUST be called after
- * extending this object.
+ * Connection object to use for all OXJS connections.
+ * The connection MUST have a valid connectionAdapter to function.
  *
  * @class
  * @extends OX.Base
@@ -14,11 +13,11 @@
  * @property {OX.Service.Auth} RecentCalls#
  */
 OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
+
   /**
-   * Map of instance names to instance objects. Used during
-   * initConnection().
-   *
-   * @see OX.Connection#initConnection
+   * Map of instance names to instance objects.
+   * They are instantiated on extend time when a
+   * connectionAdapter is provided.
    */
   services: {
     Auth:        OX.Service.Auth,
@@ -46,7 +45,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @private
    */
   init: function ($super) {
-    if (this.connection) {
+    if (this.connectionAdapter) {
       if (!this.getJID() || this.getJID() === '') {
         throw new OX.Error('missing JID');
       }
@@ -66,7 +65,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
 
       // Register for incoming messages.
       var that = this;
-      this.connection.registerHandler('message', function (msg) {
+      this.connectionAdapter.registerHandler('message', function (msg) {
         var from = msg.getFrom(),
             fn = that.jidHandlers[from];
         if (fn) {
@@ -90,7 +89,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @see OX.ConnectionAdapter#send
    */
   send: function (xml, callback, args) {
-    this.connection.send(xml, callback, args || []);
+    this.connectionAdapter.send(xml, callback, args || []);
   },
 
   /**
@@ -104,7 +103,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @see OX.ConnectionAdapter#jid
    */
   getJID: function () {
-    return this.connection.jid();
+    return this.connectionAdapter.jid();
   },
 
   /**
@@ -112,7 +111,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * handler is active at a time per JID.
    *
    * @example
-   * var ox = OX.Connection.extend().initConnection();
+   * var ox = OX.Connection.extend({ connectionAdapter: bosh });
    * ox.registerJIDHandler('pubsub.active-calls.xmpp.onsip.com', function (packet) {
    *   ...
    * });
@@ -133,7 +132,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * Unregister the handler, if any, for a JID.
    *
    * @example
-   * var ox = OX.Connection.extend().initConnection();
+   * var ox = OX.Connection.extend({ connectionAdapter: bosh });
    * ox.unregisterJIDHandler('pubsub.active-calls.xmpp.onsip.com');
    *
    * @param {String} jid The jid who's events we listen to.
