@@ -24,9 +24,9 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
    *   call.transfer('sip:lisa@example.com', 'callee');
    */
   transfer: function (targetURI, endpoint, callbacks) {
-    var iq    = OX.XMPP.IQ.extend(),
-        cmd   = OX.XMPP.Command.extend(),
-        xData = OX.XMPP.XDataForm.extend(),
+    var iq    = OX.XML.XMPP.IQ.extend(),
+        cmd   = OX.XML.XMPP.Command.extend(),
+        xData = OX.XML.XMPP.XDataForm.extend(),
         uri   = OX.Settings.URIs.command.transferCall;
 
     callbacks = callbacks || {};
@@ -70,9 +70,9 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
    *  call.terminate();
    */
   terminate: function (callbacks) {
-    var iq    = OX.XMPP.IQ.extend(),
-        cmd   = OX.XMPP.Command.extend(),
-        xData = OX.XMPP.XDataForm.extend(),
+    var iq    = OX.XML.XMPP.IQ.extend(),
+        cmd   = OX.XML.XMPP.Command.extend(),
+        xData = OX.XML.XMPP.XDataForm.extend(),
         uri   = OX.Settings.URIs.command.terminateCall;
 
     callbacks = callbacks || {};
@@ -114,9 +114,9 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
    *   call.cancel();
    */
   cancel: function (callbacks) {
-    var iq    = OX.XMPP.IQ.extend(),
-        cmd   = OX.XMPP.Command.extend(),
-        xData = OX.XMPP.XDataForm.extend(),
+    var iq    = OX.XML.XMPP.IQ.extend(),
+        cmd   = OX.XML.XMPP.Command.extend(),
+        xData = OX.XML.XMPP.XDataForm.extend(),
         uri   = OX.Settings.URIs.command.cancelCall;
 
     callbacks = callbacks || {};

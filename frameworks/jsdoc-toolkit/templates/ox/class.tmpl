@@ -89,6 +89,26 @@
 				</for>
 				</dl>
 			</if>
+      <if test="data.requires.length">
+        <dl class="detailList">
+				<dt class="heading">Requires:</dt>
+				<for each="item" in="data.requires">
+				<dt>{+resolveLinks(item)+}</dt>
+				</for>
+				</dl>
+			</if>
+			<if test="data.params.length">
+				<dl class="detailList">
+				<dt class="heading">Parameters:</dt>
+				<for each="item" in="data.params">
+					<dt>
+						{+((item.type)?"<span class=\"light fixedFont\">("+(new Link().toSymbol(item.type))+")</span> " : "")+}<b>{+item.name+}</b>
+						<if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
+					</dt>
+					<dd>{+resolveLinks(item.desc)+}</dd>
+				</for>
+				</dl>
+			</if>
 			<if test="data.example.length">
 			<for each="example" in="data.example">
 			<p class="code"><code>{+highlight(example)+}</code></p>

@@ -44,7 +44,7 @@ OX.Base.mixin.call(Function.prototype, /** @scope Function.prototype */{
    *       return 'bar' + junk;
    *     }
    *   });
-   *   var fooBar = OX.Base.extend({
+   *   var fooBar = foo.extend({
    *     bar: function ($super, junk) {
    *       return 'foo' + $super(junk);
    *     }.around()

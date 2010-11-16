@@ -9,9 +9,11 @@ OX.XML = {};
  * A simple XML element class.
  *
  * @example
- * var newElement = OX.XML.Element.extend({name: 'foo'})
- * newElement.attr('bar', 'bam');
- * newElement.addChild(OX.XML.Element.extend({name: 'child'});
+ *   var newElement = OX.XML.Element.extend({name: 'foo'});
+ *   newElement.attr('bar', 'bam');
+ *   newElement.addChild(OX.XML.Element.extend({name: 'child'}));
+ *   newElement.toString();
+ *   // -> '<foo bar="bam"><child></child></foo>'
  *
  * @extends OX.Base
  */
@@ -129,91 +131,139 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
 });
 
 /**
- * Namespace for XMPP XML elements.
  * @namespace
+ * Namespace for XMPP XML elements.
  */
-OX.XMPP = {};
+OX.XML.XMPP = {};
 
 /**
+ * @class
  * Generic XMPP stanza.
  *
  * @extends OX.XML.Element
- * @class
  */
-OX.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XMPP.Stanza# */{
+OX.XML.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XML.XMPP.Stanza# */{
+
+  /**
+   * The 'to' attribute of the stanza.
+   *
+   * @param {String} [value] The value to set the 'to' attribute.
+   * @returns {String} The value of the 'to' attribute.
+   */
   to: function (val) {
     return this.attr('to', val);
   },
 
+  /**
+   * The 'from' attribute of the stanza.
+   *
+   * @param {String} [value] The value to set the 'from' attribute.
+   * @returns {String} The value of the 'from' attribute.
+   */
   from: function (val) {
     return this.attr('from', val);
   }
 });
 
 /**
- * XMPP IQ stanza.
- *
- * @extends OX.XMPP.Stanza
  * @class
+ * XMPP IQ (Info Query) stanza.
+ *
+ * @extends OX.XML.XMPP.Stanza
  */
-OX.XMPP.IQ = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.IQ# */{
+OX.XML.XMPP.IQ = OX.XML.XMPP.Stanza.extend(/** @lends OX.XML.XMPP.IQ# */{
+
+  /** The IQ tag name */
   name: 'iq',
 
+  /**
+   * The 'type' attribute of the stanza.
+   *
+   * @param {String} [value] The value to set the 'type' attribute.
+   * @returns {String} The value of the 'type' attribute.
+   */
   type: function (val) {
     return this.attr('type', val);
   }
 });
 
 /**
+ * @class
  * XMPP PubSub Element
  *
  * @extends OX.XML.Element
- * @class
  */
-OX.XMPP.PubSub = OX.XML.Element.extend(/** @lends OX.XMPP.PubSub# */{
+OX.XML.XMPP.PubSub = OX.XML.Element.extend(/** @lends OX.XML.XMPP.PubSub# */{
+  /** The PubSub tag name */
   name: 'pubsub',
+  /** The PubSub namespace */
   xmlns: 'http://jabber.org/protocol/pubsub'
 });
 
 /**
+ * @class
  * XMPP Message stanza.
  *
- * @extends OX.XMPP.Stanza
- * @class
+ * @extends OX.XML.XMPP.Stanza
  */
-OX.XMPP.Message = OX.XMPP.Stanza.extend(/** @lends OX.XMPP.Message# */{
+OX.XML.XMPP.Message = OX.XML.XMPP.Stanza.extend(/** @lends OX.XML.XMPP.Message# */{
+  /** The Message tag name */
   name: 'message'
 });
 
 /**
+ * @class
  * XMPP AdHoc Command element.
  *
  * @extends OX.XML.Element
- * @class
+ * @see <a href="http://xmpp.org/extensions/xep-0050.html">XEP-0050 Ad-Hoc Commands</a>
  */
-OX.XMPP.Command = OX.XML.Element.extend(/** @lends OX.XMPP.Command# */{
+OX.XML.XMPP.Command = OX.XML.Element.extend(/** @lends OX.XML.XMPP.Command# */{
+  /** The Command tag name */
   name: 'command',
+  /** The Command namespace */
   xmlns: 'http://jabber.org/protocol/commands',
 
+  /**
+   * The 'node' attribute of the stanza.
+   *
+   * @param {String} [value] The value to set the 'node' attribute.
+   * @returns {String} The value of the 'node' attribute.
+   */
   node: function (val) {
     return this.attr('node', val);
   },
 
+  /**
+   * The 'action' attribute of the stanza.
+   *
+   * @param {String} [value] The value to set the 'action' attribute.
+   * @returns {String} The value of the 'action' attribute.
+   */
   action: function (val) {
     return this.attr('action', val);
   }
 });
 
 /**
+ * @class
  * XMPP XDataForm element.
  *
  * @extends OX.XML.Element
- * @class
+ * @see <a href="http://xmpp.org/extensions/xep-0004.html">XEP-0004 Data Forms</a>
  */
-OX.XMPP.XDataForm = OX.XML.Element.extend(/** @lends OX.XMPP.XDataForm# */{
+OX.XML.XMPP.XDataForm = OX.XML.Element.extend(/** @lends OX.XML.XMPP.XDataForm# */{
+  /** The Data Forms tag name */
   name: 'x',
+  /** The Data Forms namespace */
   xmlns: 'jabber:x:data',
 
+  /**
+   * The 'type' attribute of the stanza.
+   *
+   * @param {String} [value] The value to set the 'type' attribute.
+   * @returns {String} The value of the 'type' attribute.
+   */
   type: function (val) {
     return this.attr('type', val);
   },
@@ -226,7 +276,7 @@ OX.XMPP.XDataForm = OX.XML.Element.extend(/** @lends OX.XMPP.XDataForm# */{
    * @param {String} name The name of the field, as identified in the 'var' attribute.
    * @param {String} value The text to insert into the 'value' element.
    * @param {String} type XDataField type see XEP: 0004.
-   * @returns {OX.XMPP.XDataForm} The receiver.
+   * @returns {OX.XML.XMPP.XDataForm} The receiver.
    */
   addField: function (name, value, type) {
     var f, v;

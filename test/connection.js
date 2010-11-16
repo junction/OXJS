@@ -11,20 +11,6 @@ OXTest.Connection = new YAHOO.tool.TestCase({
     delete this.ox;
   },
 
-  testNoJID: function() {
-    var Assert = YAHOO.util.Assert,
-     expectedError = new Error();
-
-    var badAdapter = OXTest.ConnectionMock.extend({
-      jid: function () {
-        return undefined;
-      }
-    });
-    Assert.throws(OX.Error, function () {
-                    OX.Connection.extend({ connectionAdapter: badAdapter });
-                  });
-  },
-
   testGetJID: function () {
     var Assert = YAHOO.util.Assert;
 

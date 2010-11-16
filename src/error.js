@@ -1,4 +1,5 @@
 /**
+ * @class
  * Simple error class of OXJS.
  *
  * @param {String} message The message to throw.

@@ -305,7 +305,7 @@ OX.Mixin.Subscribable = (function () {
   };
 
   function objectToOptionsForm(options) {
-    var xData = OX.XMPP.XDataForm.create({type: 'submit'}),
+    var xData = OX.XML.XMPP.XDataForm.create({type: 'submit'}),
         opts  = OX.XML.Element.extend({name: 'options'}).create({}, xData);
 
     xData.addField('FORM_TYPE', 'http://jabber.org/protocol/pubsub#subscribe_options');
@@ -324,8 +324,8 @@ OX.Mixin.Subscribable = (function () {
   }
 
   function doConfigureNode(subscription, options, callbacks) {
-    var iq = OX.XMPP.IQ.extend(),
-        pubsub = OX.XMPP.PubSub.extend();
+    var iq = OX.XML.XMPP.IQ.extend(),
+        pubsub = OX.XML.XMPP.PubSub.extend();
 
     iq.to(this.pubSubURI.path);
     iq.type('set');
@@ -350,7 +350,7 @@ OX.Mixin.Subscribable = (function () {
   }
 
   function doSubscribe(node, options, callbacks, origNode, redirectCount) {
-    var iq        = OX.XMPP.IQ.extend(),
+    var iq        = OX.XML.XMPP.IQ.extend(),
         pubsub    = OX.XML.Element.extend({name:  'pubsub',
                                        xmlns: 'http://jabber.org/protocol/pubsub'}),
         subscribe = OX.XML.Element.extend({name: 'subscribe'});
@@ -376,8 +376,8 @@ OX.Mixin.Subscribable = (function () {
   }
 
   function doGetSubcriptions(node, callbacks, origNode, redirectCount, strict) {
-    var iq = OX.XMPP.IQ.extend(),
-        pub = OX.XMPP.PubSub.extend(),
+    var iq = OX.XML.XMPP.IQ.extend(),
+        pub = OX.XML.XMPP.PubSub.extend(),
         sub = OX.XML.Element.extend({name: 'subscriptions'});
 
     iq.to(this.pubSubURI.path);
@@ -402,9 +402,7 @@ OX.Mixin.Subscribable = (function () {
 
   /**
    * @name OX.Subscription
-   * @class
-   * @description
-   * Subscription object signature.
+   * @class Subscription object signature.
    * @see <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">XMPP PubSub schema</a>
    */
 
@@ -483,7 +481,7 @@ OX.Mixin.Subscribable = (function () {
      *     @param {OX.URI} callbacks.onError.requestedURI The URI you requested.
      *     @param {OX.URI} callbacks.onError.finalURI The redirected URI that your requested URI maps to.
      *     @param {OX.PacketAdapter} callbacks.onError.packet The packet recieved.
-     * @param {Bool} [strictJIDMatch] Only apply callbacks to subscriptions that match the exact JID as the current connection.
+     * @param {Boolean} [strictJIDMatch] Only apply callbacks to subscriptions that match the exact JID as the current connection.
      * This will NOT match a bare JID to a full JID.
      *
      * @example
@@ -568,7 +566,7 @@ OX.Mixin.Subscribable = (function () {
      *   });
      */
     unsubscribe: function (node, callbacks) {
-      var iq          = OX.XMPP.IQ.extend(),
+      var iq          = OX.XML.XMPP.IQ.extend(),
           pubsub      = OX.XML.Element.extend({name:  'pubsub',
                                                xmlns: 'http://jabber.org/protocol/pubsub'}),
           unsubscribe = OX.XML.Element.extend({name: 'unsubscribe'});
@@ -603,7 +601,7 @@ OX.Mixin.Subscribable = (function () {
      *   });
      */
     getItems: function (node, callbacks) {
-      var iq     = OX.XMPP.IQ.extend(),
+      var iq     = OX.XML.XMPP.IQ.extend(),
           pubsub = OX.XML.Element.extend({name:  'pubsub',
                                           xmlns: 'http://jabber.org/protocol/pubsub'}),
           items  = OX.XML.Element.extend({name: 'items'});
@@ -659,6 +657,7 @@ OX.Mixin.Subscribable = (function () {
      */
     _subscriptionHandlers: {
       /**
+       * @private
        * This handler is called when we get a pending subscription
        * notification.
        *
@@ -667,6 +666,7 @@ OX.Mixin.Subscribable = (function () {
       onPending: function (uri) {},
 
       /**
+       * @private
        * This handler is called when we get a completed subscription.
        *
        * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
@@ -674,6 +674,7 @@ OX.Mixin.Subscribable = (function () {
       onSubscribed: function (uri) {},
 
       /**
+       * @private
        * This handler is called when we our subscription is removed.
        *
        * @param {OX.URI.Base} uri The node we were unsubscribed from.
@@ -681,6 +682,7 @@ OX.Mixin.Subscribable = (function () {
       onUnsubscribed: function (uri) {},
 
       /**
+       * @private
        * This handler is called when an item is published.
        *
        * @param {OX.Item} item The published item.
@@ -688,6 +690,7 @@ OX.Mixin.Subscribable = (function () {
       onPublish: function (item) {},
 
       /**
+       * @private
        * This handler is called when an item is retracted.
        *
        * @param {OX.URI.Base} uri The URI of the retracted item.

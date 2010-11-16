@@ -21,12 +21,12 @@ OXTest.XML = new YAHOO.tool.TestCase({
 
     Assert.isObject(OX.XML, 'OX.XML not found');
     Assert.isObject(OX.XML.Element, 'OX.XML.Element not found');
-    Assert.isObject(OX.XMPP, 'OX.XMPP not found');
-    Assert.isObject(OX.XMPP.Stanza, 'OX.XMPP.Stanza not found');
-    Assert.isObject(OX.XMPP.IQ, 'OX.XMPP.IQ not found');
-    Assert.isObject(OX.XMPP.Message, 'OX.XMPP.Message not found');
-    Assert.isObject(OX.XMPP.Command, 'OX.XMPP.Command not found');
-    Assert.isObject(OX.XMPP.XDataForm, 'OX.XMPP.XDataForm not found');
+    Assert.isObject(OX.XML.XMPP, 'OX.XML.XMPP not found');
+    Assert.isObject(OX.XML.XMPP.Stanza, 'OX.XML.XMPP.Stanza not found');
+    Assert.isObject(OX.XML.XMPP.IQ, 'OX.XML.XMPP.IQ not found');
+    Assert.isObject(OX.XML.XMPP.Message, 'OX.XML.XMPP.Message not found');
+    Assert.isObject(OX.XML.XMPP.Command, 'OX.XML.XMPP.Command not found');
+    Assert.isObject(OX.XML.XMPP.XDataForm, 'OX.XML.XMPP.XDataForm not found');
   },
 
   testXMLAPI: function() {
@@ -93,7 +93,7 @@ OXTest.XML = new YAHOO.tool.TestCase({
   testIQStructure: function() {
     var Assert = YAHOO.util.Assert;
     var
-      iq = OX.XMPP.IQ.extend();
+      iq = OX.XML.XMPP.IQ.extend();
       body = OX.XML.Element.extend({name: 'garbage', text: 'text'});
 
     iq.to('testTo@sender.com');
@@ -129,7 +129,7 @@ OXTest.XML = new YAHOO.tool.TestCase({
 
   testPubSubStructure: function() {
     var Assert = YAHOO.util.Assert;
-    var p = OX.XMPP.PubSub.extend();
+    var p = OX.XML.XMPP.PubSub.extend();
 
     Assert.areEqual("pubsub", p.name, 'pubsub element name is incorrect');
     Assert.areEqual("http://jabber.org/protocol/pubsub", p.xmlns, 'pubsub namespace is incorrect');
@@ -137,14 +137,14 @@ OXTest.XML = new YAHOO.tool.TestCase({
 
   testCommandAPI: function() {
     var Assert = YAHOO.util.Assert;
-    Assert.isFunction(OX.XMPP.Command.node);
-    Assert.isFunction(OX.XMPP.Command.action);
+    Assert.isFunction(OX.XML.XMPP.Command.node);
+    Assert.isFunction(OX.XML.XMPP.Command.action);
   },
 
   testCommandStructure: function() {
     var Assert = YAHOO.util.Assert;
-    var iq = OX.XMPP.IQ.extend(),
-      cmd = OX.XMPP.Command.extend();
+    var iq = OX.XML.XMPP.IQ.extend(),
+      cmd = OX.XML.XMPP.Command.extend();
 
     iq.addChild(cmd);
     cmd.node("foo");
@@ -175,15 +175,15 @@ OXTest.XML = new YAHOO.tool.TestCase({
 
   testXDataFormAPI: function() {
     var Assert = YAHOO.util.Assert;
-    Assert.isFunction(OX.XMPP.XDataForm.type, 'type is not a function');
-    Assert.isFunction(OX.XMPP.XDataForm.addField, 'addField is not a function');
+    Assert.isFunction(OX.XML.XMPP.XDataForm.type, 'type is not a function');
+    Assert.isFunction(OX.XML.XMPP.XDataForm.addField, 'addField is not a function');
   },
 
   testXDataFormStructure: function() {
     var Assert = YAHOO.util.Assert;
-    var iq = OX.XMPP.IQ.extend(),
-      cmd = OX.XMPP.Command.extend(),
-      x = OX.XMPP.XDataForm.extend();
+    var iq = OX.XML.XMPP.IQ.extend(),
+      cmd = OX.XML.XMPP.Command.extend(),
+      x = OX.XML.XMPP.XDataForm.extend();
 
     iq.addChild(cmd);
     cmd.node("foo");

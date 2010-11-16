@@ -1,9 +1,14 @@
 /**
  * @namespace
- * Namespace for voicemail related services.
+ * <p>Namespace for voicemail related services.</p>
+ * <p>The voicemail pubsub service allows subscribed users to
+ * receive updates regarding the status of their voicemail account(s),
+ * e.g. added, deleted, or moved voicemail messages.</p>
+ *
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
  * @requires connection property inherited from an {@link OX.Connection}.
+ * @see <a href="http://wiki.onsip.com/docs/Voicemail_Pubsub">Voicemail PubSub</a>
  */
 OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
   function itemType(element) {
@@ -123,16 +128,19 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
       /**
        * Cache this Voicemail.
        *
-       * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+       * @param {Object} [callbacks] Callbacks with 'onSuccess' and 'onError'
+       *   @param {Function} [callbacks.onSuccess] The success callback
+       *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet recieved.
+       *   @param {Function} [callbacks.onError] The error callback
+       *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+       * @returns {void}
        *
        * @see <a href="http://wiki.onsip.com/docs/Voicemail_Component#cache">Voicemail caching</a>
-       * @example
-       *   voicemail.cacheMessage();
        */
       cacheMessage: function (callbacks) {
-        var iq    = OX.XMPP.IQ.extend(),
-            cmd   = OX.XMPP.Command.extend(),
-            xData = OX.XMPP.XDataForm.extend(),
+        var iq    = OX.XML.XMPP.IQ.extend(),
+            cmd   = OX.XML.XMPP.Command.extend(),
+            xData = OX.XML.XMPP.XDataForm.extend(),
             uri   = OX.Settings.URIs.command.cacheVoicemail,
             node_parts     = this.uri.queryParam('node').split('/'),
             vm_sip_address = node_parts[2] + '@' + node_parts[1],
@@ -165,16 +173,19 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
       /**
        * Delete this Voicemail.
        *
-       * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+       * @param {Object} [callbacks] Callbacks with 'onSuccess' and 'onError'
+       *   @param {Function} [callbacks.onSuccess] The success callback
+       *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet recieved.
+       *   @param {Function} [callbacks.onError] The error callback
+       *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+       * @returns {void}
        *
        * @see <a href="http://wiki.onsip.com/docs/Voicemail_Component#delete">Deleting voicemail</a>
-       * @example
-       *   voicemail.deleteMessage();
        */
       deleteMessage: function (callbacks) {
-        var iq    = OX.XMPP.IQ.extend(),
-            cmd   = OX.XMPP.Command.extend(),
-            xData = OX.XMPP.XDataForm.extend(),
+        var iq    = OX.XML.XMPP.IQ.extend(),
+            cmd   = OX.XML.XMPP.Command.extend(),
+            xData = OX.XML.XMPP.XDataForm.extend(),
             uri   = OX.Settings.URIs.command.deleteVoicemail,
             node_parts     = this.uri.queryParam('node').split('/'),
             vm_sip_address = node_parts[2] + '@' + node_parts[1],
@@ -218,6 +229,16 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
       labels: null
     }),
 
+    /**
+     * Returns an OX.Service.Voicemail.Item or OX.Service.Voicemail.LabelItem from an XML Document.
+     * This method should be called once for each item to be constructed.
+     * If a DOMElement contains more than one item node, only the first
+     * item node will be returned as an OX.Service.Voicemail.Item
+     *
+     * @param {Element|Node} element The DOM Element or Node to parse into a {@link OX.Service.Voicemail.Item} or
+     *                               {@link OX.Service.Voicemail.LabelItem}.
+     * @returns {OX.Service.Voicemail.Item} The item created from the element passed in.
+     */
     itemFromElement: function (element) {
       var rc, item;
 

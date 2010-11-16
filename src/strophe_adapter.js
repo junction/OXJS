@@ -1,6 +1,17 @@
 /**
  * @class
- * Strophe Connection Adapter
+ * Provides a Connection Adapter for the BOSH library Strophe.
+ * The adapter tries to deal with possible memory leaks due to unanswered
+ * IQs, having a max queue size of handlers. You should be able to plug-and-play
+ * with this adapter and Strophe like the following example:
+ *
+ * @example
+ *   var bosh = new Strophe.Connection('/http-bind/');
+ *   var ox = OX.Connection.extend({
+ *     connectionAdapter: OX.StropheAdapter.extend({
+ *       connection: bosh
+ *     })
+ *   });
  * @extends OX.ConnectionAdapter
  */
 OX.StropheAdapter = OX.ConnectionAdapter.extend(
@@ -10,7 +21,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
   _callbacks: {},
   /** @private */
   _handlers: {},
-
+  /** @private */
   _callbackQueue: [],
 
   /**
@@ -18,17 +29,23 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    * When it reaches the maximum size, it will warn you about it,
    * and begin removing stale handlers, assuming that they will never be called.
    * This exists as a catch for memory leaks. Change this value to meet your needs.
+   *
+   * You <i>will</i> be warned when this quota is reached.
+   * Make sure that you aren't throwing away any live messages
+   * if you want to keep the MAX_QUEUE_SIZE where it is.
    */
   MAX_QUEUE_SIZE: 100,
 
   /** @private */
-  init: function () {
+  init: function ($super) {
     this._callbacks = {};
     this._handlers = {};
     this._callbackQueue = [];
-  },
+    $super();
+  }.around(),
 
   /**
+   * The connection's JID.
    * @returns {String} The JID associated with the connection.
    */
   jid: function () {
@@ -40,6 +57,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    *
    * @param {String} event The top level XMPP tag name to register for.
    * @param {Function} handler The function handler for the event.
+   * @returns {void}
    */
   registerHandler: function (event, handler) {
     var that = this;
@@ -70,6 +88,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    * Unsubscribe from corresponding event.
    *
    * @param {String} event The event to unsubscribe from.
+   * @returns {void}
    */
   unregisterHandler: function (event) {
     var queue = this._callbackQueue, i, len = queue.length, rest;
@@ -120,6 +139,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    * @param {String} xml The xml to send.
    * @param {Function} callback The function to call when done.
    * @param {Array} args A list of arguments to provide to the callback.
+   * @returns {void}
    */
   send: function (xml, callback, args) {
     var node = this.createNode(xml),

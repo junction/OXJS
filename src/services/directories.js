@@ -1,9 +1,19 @@
 /**
- * Namespace for directory related services.
  * @namespace
+ * <p>Namespace for directory related services.</p>
+ * <p>The Directories Service provides subscribed users to
+ * recieve updates regarding their organization's directory.</p>
+ * <p>There are two node levels that a user can subscribe to:</p>
+ *  <ul>
+ *    <li>/me/jid</li>
+ *    <li>/sip-domain</li>
+ *  </ul>
+ * <p>Different results <i>may</i> be generated depending upon which node is subscribed to.</p>
+ * <p>Please note that subscribing to '/' will redirect your subscription request to '/me/jid'.</p>
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
  * @requires connection property inherited from an {@link OX.Connection}.
+ * @see <a href="http://wiki.onsip.com/docs/Directories_Pubsub">Directories PubSub</a>
  */
 OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service.Directories */{
 
@@ -13,31 +23,64 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
   pubSubURI: OX.Settings.URIs.pubSub.directories,
 
   /**
-   * @class AliasItem
+   * @class
+   * A directory item.
    * @extends OX.Item
    */
-  AliasItem: OX.Item.extend(/** @lends OX.Service.Directories.AliasItem# */{
+  Item: OX.Item.extend(/** @lends OX.Service.Directories.Item# */{
+    /**
+     * The SIP URI of the entry.
+     * @type {OX.URI}
+     */
     sipURI: null,
-    xmppURI: null,
+
+    /**
+     * The ID of the item.
+     * @returns {String} The item attribute of the URI query.
+     */
     id: function () {
-      console.log(this);
       return this.uri.queryParam('item');
     }
+  })
+
+});
+
+OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
+  /**
+   * @class
+   * An alias for a contact.
+   * @extends OX.Service.Directories.Item
+   */
+  AliasItem: OX.Service.Directories.extend(/** @lends OX.Service.Directories.AliasItem# */{
+    /**
+     * The XMPP URI of the alias.
+     * @type {OX.URI}
+     */
+    xmppURI: null
   }),
 
   /**
-   * @class EntityItem
-   * @extends OX.Item
+   * @class
+   * A contact.
+   * @extends OX.Service.Directories.Item
    */
-  EntityItem: OX.Item.extend(/** @lends OX.Service.Directories.EntityItem# */{
-    sipURI: null,
-    name: null,
-    id: function () {
-      console.log(this);
-      return this.uri.queryParam('item');
-    }
+  EntityItem: OX.Service.Directories.Item.extend(/** @lends OX.Service.Directories.EntityItem# */{
+    /**
+     * The name of the entity.
+     * @type {OX.URI}
+     */
+    name: null
   }),
 
+  /**
+   * Returns the appropriate OX.Service.Directories.Item (AliasItem or EntityItem) from an XML Document.
+   * This method should be called once for each item to be constructed.
+   * If a DOMElement contains more than one item node, only the first
+   * item node will be returned as an OX.Service.Directories.Item
+   *
+   * @param {Element|Node} element The DOM Element or Node to parse into a {@link OX.Service.Directories.Item}
+   * @returns {OX.Service.ActiveCalls.Item} The item.
+   */
   itemFromElement: function (element) {
     if (!element) {
       return undefined;
@@ -76,7 +119,6 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
       }
     }
 
-    var ret = aliasNode[0] ? this.AliasItem.extend(attrs) : this.EntityItem.extend(attrs);
-    return ret;
+    return aliasNode[0] ? this.AliasItem.extend(attrs) : this.EntityItem.extend(attrs);
   }
 });

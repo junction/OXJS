@@ -1,6 +1,6 @@
 /**
- * Namespace for preferences related services.
  * @namespace
+ * Namespace for preferences related services. This service has not been implemented yet.
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
  * @requires connection property inherited from an {@link OX.Connection}.

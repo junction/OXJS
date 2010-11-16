@@ -4,18 +4,28 @@
  * The connection MUST have a valid connectionAdapter to function.
  * The Connection object is the core API for OXJS.
  *
+ * The Connection assumes that the consumer understands when
+ * to make calls (when the connection is established). This allows
+ * you to configure OX at read-time, rather than at run-time.
+ *
  * @example
+ *   var bosh = new Strophe.Connection('/http-bind/');
  *   var ox = OX.Connection.extend({
  *     connectionAdapter: OX.StropheAdapter.extend({
- *       connection: new Strophe.Connection('/http-bind/')
+ *       connection: bosh
  *     })
  *   });
  *
- *   // OK- OX is ready to go! Let's authenticate...
- *   ox.Auth.authorizePlain("sip@example.com", "password", "jid@example.com", {
- *     onSuccess: function () {
- *       alert("You got the OK to go on ahead!");
- *     } 
+ *   // A naive approach...
+ *   bosh.connect("juliet@example.com", "romeo", function (status) {
+ *     if (status === Strophe.Status.CONNECTED) {
+ *       // OK- OX is ready to go! Let's authenticate...
+ *       ox.Auth.authorizePlain("sip@example.com", "password", "jid@example.com", {
+ *         onSuccess: function () {
+ *           alert("You got the OK to go on ahead!");
+ *         }
+ *       });
+ *     }
  *   });
  *
  * @extends OX.Base
@@ -63,10 +73,6 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    */
   init: function ($super) {
     if (this.connectionAdapter) {
-      if (!this.getJID() || this.getJID() === '') {
-        throw new OX.Error('missing JID');
-      }
-
       var serviceMap = {};
 
       for (var s in this.services) {

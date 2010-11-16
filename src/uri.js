@@ -1,6 +1,6 @@
 /**
- * URI namespace.
  * @namespace
+ * URI namespace, as defined in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.
  * @extends OX.Base
  */
 OX.URI = OX.Base.extend(/** @lends OX.URI */{
@@ -59,8 +59,8 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
 });
 
 /**
- * Traits object for URI.
  * @namespace
+ * Traits object for URI.
  * @extends OX.Base
  */
 OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
@@ -95,8 +95,8 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
    * Return the action, if any, in the query parameters.
    *
    * @example
-   * uri.action();
-   *
+   *   var uri = OX.URI.parse('xmpp:lisa@example.com?message');
+   *   uri.action();
    * @returns {String} The action of this query, or undefined if none found.
    */
   action: function () {
@@ -117,7 +117,9 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
    * parameters.
    *
    * @example
-   * uri.queryParam('paramName');
+   *   var uri = OX.URI.parse('xmpp:lisa@example.com?;item=1');
+   *   uri.queryParam('item');
+   *   // -> '1'
    *
    * @param {String} param The parameter who's value is looked up.
    * @returns {String} The value of the parameter, or undefined if not found.
@@ -139,6 +141,11 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
 
   /**
    * Convert URI object to string representation.
+   * @example
+   *   OX.URI.extend({ scheme: 'sip',
+   *                   path: 'lisa@example.com' }).toString();
+   *   //-> "sip:lisa@example.com"
+   * @returns {String} The URI converted to a string.
    */
   toString: function () {
     var authority = this.authority ? '//' + this.authority + '/' : '',

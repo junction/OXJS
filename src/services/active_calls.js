@@ -1,20 +1,36 @@
 /**
  * @namespace
- * Namespace for active-calls related services.
+ * <p>Namespace for active-calls related services.</p>
+ *
+ * <p>Active Calls pubsub allows for subscribing to
+ * evented data regarding the current calls of a SIP address.
+ * Data returned in the events may be used for call control
+ * purposes in the Active Calls command component or
+ * for other application specific usage.</p>
+ *
+ * <p>The Active-Calls component is responsible for
+ * all third party call control (3PCC) requests for the XMPP API.
+ * Each command node of the Active Calls component performs
+ * a specific 3PCC function, see below for more information.</p>
+ *
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
- * @requires connection property inherited from an {@link OX.Connection}.
+ * @requires A connection property inherited from an {@link OX.Connection}.
+ * @requires Authentication to interact with PubSub via {@link OX.Service.Auth}.
+ * @see <a href="http://wiki.onsip.com/docs/Active-Calls_Pubsub">ActiveCalls PubSub</a>
+ * @see <a href="http://wiki.onsip.com/docs/Active-Calls_Component">ActiveCalls Component</a>
  */
 OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service.ActiveCalls */ {
+
   /**
    * URI for this PubSub service.
    */
   pubSubURI: OX.Settings.URIs.pubSub.activeCalls,
 
   /**
+   * @namespace
    * Active Call Item.
    * @name OX.Service.ActiveCalls.Item
-   * @namespace
    * @extends OX.Item
    * @extends OX.Mixin.CallDialog
    */
@@ -52,18 +68,30 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
     /** The tag inserted into the call-setup-id field */
     callSetupID: null,
 
+    /**
+     * @returns {Boolean} Whether the call was from the callSetupID.
+     */
     isFromCallSetup: function () {
       return !!this.callSetupID;
     },
 
+    /**
+     * @returns {Boolean} Whether the call was created or not.
+     */
     isCreated: function () {
       return this.dialogState === 'created';
     },
 
+    /**
+     * @returns {Boolean} Whether the call was requested.
+     */
     isRequested: function () {
       return this.dialogState === 'requested';
     },
 
+    /**
+     * @returns {Boolean} Whether the call was confirmed.
+     */
     isConfirmed: function () {
       return this.dialogState === 'confirmed';
     },
@@ -73,6 +101,7 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
      * a call based on whether or not the call has been answered (confirmed).
      * This is a convenience funtion to make the correct API call based
      * upon the dialog state of the current this object.
+     * @returns {void}
      */
     hangup: function () {
       return this.isConfirmed() ? this.terminate() : this.cancel();
@@ -86,7 +115,7 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
    * If a DOMElement contains more than one item node, only the first
    * item node will be returned as an OX.Service.ActiveCalls.Item
    *
-   * @param {DOMElement} element
+   * @param {Element|Node} element The DOM Element or Node to parse into a {@link OX.Service.ActiveCalls.Item}
    * @returns {OX.Service.ActiveCalls.Item} item
    */
   itemFromElement: function (element) {
@@ -160,19 +189,33 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
   },
 
   /**
-   * Create a new call.
+   * Create a new call. Note that an 'onSuccess' does <b>NOT</b> mean that call you requested
+   * has started, rather it means the XMPP API has handled your IQ (Info Query) stanza.
+   * In this case, 'onSuccess' is more of an acknowledgement rather than a notification
+   * of a successful call being created. You need to monitor ActiveCalls in PubSub to
+   * be notified when a call is actually created.
    *
-   * @function
    * @param {String} to the SIP address to terminate the call at
    * @param {String} from the SIP address to originate the call from
    * @param {String} callSetupID the end to end call tracking code to be used for a call setup
-   * @param {Object} [cb] An object supplying callback functions for 'onSuccess', and 'onError'.
+   * @param {Object} [callbacks] Callbacks with 'onSuccess' and 'onError'
+   *   @param {Function} [callbacks.onSuccess] The success callback
+   *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet recieved.
+   *   @param {Function} [callbacks.onError] The error callback
+   *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+   * @returns {void}
+   * @example
+   *   // Have Paul call John.
+   *   ox.ActiveCalls.create('sip:john@example.com', 'sip:paul@example.com', 'foobar');
+   *
+   *   // Have John call 1-800-801-3381.
+   *   ox.ActiveCalls.create('sip:18008013381@example.com', 'sip:george@example.com', 'foobaz');
    */
   create: function (to, from, callSetupID, cb) {
     var uri   = OX.Settings.URIs.command.createCall,
-        xData = OX.XMPP.XDataForm.create({type: 'submit'}),
-        cmd   = OX.XMPP.Command.create({node: uri.queryParam('node')}, xData),
-        iq    = OX.XMPP.IQ.create({to: uri.path, type: 'set'}, cmd);
+        xData = OX.XML.XMPP.XDataForm.create({type: 'submit'}),
+        cmd   = OX.XML.XMPP.Command.create({node: uri.queryParam('node')}, xData),
+        iq    = OX.XML.XMPP.IQ.create({to: uri.path, type: 'set'}, cmd);
 
     xData.addField('to', to);
     xData.addField('from', from);

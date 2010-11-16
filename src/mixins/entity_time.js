@@ -1,9 +1,8 @@
 /**
  * @namespace
- * Entity Time Mixin
+ * Entity Time Mixin.
  *
- * <a href="http://xmpp.org/extensions/xep-0202.html">XEP 0202: Entity Time</a>
- *
+ * @see <a href="http://xmpp.org/extensions/xep-0202.html">XEP 0202: Entity Time</a>
  * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  */
 OX.Mixin.EntityTime = /** @lends OX.Mixin.EntityTime# */{
@@ -15,12 +14,14 @@ OX.Mixin.EntityTime = /** @lends OX.Mixin.EntityTime# */{
    *   @param {Function} [callbacks.onSuccess] The success callback
    *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet recieved.
    *     @param {Object} [callbacks.onSuccess.time] The parsed time with slots 'tzo' and 'utc'.
+   *       @param {String} [callbacks.onSuccess.time.utc] The UTC time according to the responding entity.
+   *       @param {String} [callbacks.onSuccess.time.tzo] The entity's numeric time zone offset from UTC.
    *   @param {Function} [callbacks.onError] The error callback
    *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
    * @returns {void}
    */
   getTime: function (entityURI, callbacks) {
-    var iq = OX.XMPP.IQ.extend(),
+    var iq = OX.XML.XMPP.IQ.extend(),
         time = OX.XML.Element.extend({name: 'time',
                                       xmlns: 'urn:xmpp:time'});
 

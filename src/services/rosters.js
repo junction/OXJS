@@ -1,8 +1,13 @@
 /**
- * Namespace for roster related services.
  * @namespace
+ * <p>Namespace for roster related services.</p>
+ * <p>This service provides a way to request a Roster Item Exchange
+ * that advises an XMPP Client what to do with the user's Roster
+ * (adding, modifying, and deleting entities).</p>
  * @extends OX.Base
  * @requires connection property inherited from an {@link OX.Connection}.
+ * @see <a href="http://wiki.onsip.com/docs/Rosters_Component">Rosters Component</a>
+ * @see <a href="http://xmpp.org/extensions/xep-0144.html">XEP-0144: Roster Item Exchange</a>
  */
 OX.Service.Rosters = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service.Rosters */{
   /**
@@ -14,6 +19,12 @@ OX.Service.Rosters = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service
    * delete requests for any users who may have been deleted.
    *
    * @param {String} [jid] The full JID to push roster groups to; if not provided, the JID in the IQ 'from' attribute will be assumed.
+   * @param {Object} [callbacks] Callbacks with 'onSuccess' and 'onError'
+   *   @param {Function} [callbacks.onSuccess] The success callback
+   *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet recieved.
+   *   @param {Function} [callbacks.onError] The error callback
+   *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+   * @returns {void}
    *
    * @example
    * ox.Rosters.pushRosterGroups('jid@example.com', {
@@ -22,9 +33,9 @@ OX.Service.Rosters = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service
    * });
    */
   pushRosterGroups: function (jid) {
-    var iq    = OX.XMPP.IQ.extend(),
-        cmd   = OX.XMPP.Command.extend(),
-        xData = OX.XMPP.XDataForm.extend(),
+    var iq    = OX.XML.XMPP.IQ.extend(),
+        cmd   = OX.XML.XMPP.Command.extend(),
+        xData = OX.XML.XMPP.XDataForm.extend(),
         uri   = OX.Settings.URIs.command.pushRosterGroups;
 
     var callbacks = {};
