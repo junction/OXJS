@@ -1,7 +1,6 @@
 /**
- * CallDialog mixin.
- *
  * @namespace
+ * CallDialog mixin.
  *
  * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires callID property on receiving object.
@@ -15,10 +14,14 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
    * @param {String} targetURI To what SIP URI to transfer the active call.
    * @param {String} endpoint Either 'caller' or 'callee'
    * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+   *   @param {Function} [callbacks.onSuccess] The success callback.
+   *   @param {Function} [callbacks.onError] The error callback.
+   *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+   * @returns {void}
    *
-   * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#transfer
+   * @see <a href="http://wiki.onsip.com/docs/Active-Calls_Component#transfer">Transferring a call</a>
    * @example
-   * call.transfer('sip:lisa@example.com', 'callee');
+   *   call.transfer('sip:lisa@example.com', 'callee');
    */
   transfer: function (targetURI, endpoint, callbacks) {
     var iq    = OX.XMPP.IQ.extend(),
@@ -57,10 +60,14 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
    * Terminate this call.
    *
    * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+   *   @param {Function} [callbacks.onSuccess] The success callback.
+   *   @param {Function} [callbacks.onError] The error callback.
+   *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+   * @returns {void}
    *
-   * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#terminate
+   * @see <a href="http://wiki.onsip.com/docs/Active-Calls_Component#terminate">Terminating a call</a>
    * @example
-   * call.terminate();
+   *  call.terminate();
    */
   terminate: function (callbacks) {
     var iq    = OX.XMPP.IQ.extend(),
@@ -97,10 +104,14 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
    * Cancel this call.
    *
    * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+   *   @param {Function} [callbacks.onSuccess] The success callback.
+   *   @param {Function} [callbacks.onError] The error callback.
+   *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+   * @returns {void}
    *
-   * @see http://wiki.junctionnetworks.com/docs/Active-Calls_Component#cancel
+   * @see <a href="http://wiki.onsip.com/docs/Active-Calls_Component#cancel">Cancelling a call</a>
    * @example
-   * call.cancel();
+   *   call.cancel();
    */
   cancel: function (callbacks) {
     var iq    = OX.XMPP.IQ.extend(),

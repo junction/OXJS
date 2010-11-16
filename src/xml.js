@@ -1,10 +1,11 @@
 /**
- * Namespace for XML elements
  * @namespace
+ * Namespace for XML elements
  */
 OX.XML = {};
 
 /**
+ * @class
  * A simple XML element class.
  *
  * @example
@@ -13,7 +14,6 @@ OX.XML = {};
  * newElement.addChild(OX.XML.Element.extend({name: 'child'});
  *
  * @extends OX.Base
- * @class
  */
 OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
   name: null,

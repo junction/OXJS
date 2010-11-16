@@ -1,6 +1,6 @@
 /**
- * Namespace for active-calls related services.
  * @namespace
+ * Namespace for active-calls related services.
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
  * @requires connection property inherited from an {@link OX.Connection}.

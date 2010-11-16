@@ -12,6 +12,10 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
    */
   pubSubURI: OX.Settings.URIs.pubSub.directories,
 
+  /**
+   * @class AliasItem
+   * @extends OX.Item
+   */
   AliasItem: OX.Item.extend(/** @lends OX.Service.Directories.AliasItem# */{
     sipURI: null,
     xmppURI: null,
@@ -21,6 +25,10 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
     }
   }),
 
+  /**
+   * @class EntityItem
+   * @extends OX.Item
+   */
   EntityItem: OX.Item.extend(/** @lends OX.Service.Directories.EntityItem# */{
     sipURI: null,
     name: null,

@@ -1,6 +1,6 @@
 /**
- * Namespace for voicemail related services.
  * @namespace
+ * Namespace for voicemail related services.
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
  * @requires connection property inherited from an {@link OX.Connection}.
@@ -99,9 +99,9 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
     pubSubURI: OX.Settings.URIs.pubSub.voicemail,
 
     /**
-     * Voicemail Item.
      * @name OX.Service.Voicemail.Item
      * @namespace
+     * Voicemail Item.
      * @extends OX.Item
      */
     Item: OX.Item.extend(/** @lends OX.Service.Voicemail.Item# */{
@@ -125,9 +125,9 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
        *
        * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
        *
-       * @see http://wiki.junctionnetworks.com/docs/Voicemail_Component#cache
+       * @see <a href="http://wiki.onsip.com/docs/Voicemail_Component#cache">Voicemail caching</a>
        * @example
-       * voicemail.cache();
+       *   voicemail.cacheMessage();
        */
       cacheMessage: function (callbacks) {
         var iq    = OX.XMPP.IQ.extend(),
@@ -167,9 +167,9 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
        *
        * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
        *
-       * @see http://wiki.junctionnetworks.com/docs/Voicemail_Component#delete
+       * @see <a href="http://wiki.onsip.com/docs/Voicemail_Component#delete">Deleting voicemail</a>
        * @example
-       * voicemail.delete();
+       *   voicemail.deleteMessage();
        */
       deleteMessage: function (callbacks) {
         var iq    = OX.XMPP.IQ.extend(),
@@ -207,10 +207,10 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
     }),
 
     /**
-     * Voicemail Label Item
-     *
      * @name OX.Service.Voicemail.LabelItem
      * @namespace
+     * Voicemail Label Item
+     *
      * @extends OX.Item
      */
     LabelItem: OX.Item.extend(/** @lends OX.Service.Voicemail.LabelItem#*/{

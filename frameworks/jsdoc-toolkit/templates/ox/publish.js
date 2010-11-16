@@ -1,3 +1,79 @@
+var toReplace = [{
+  regexp: new RegExp('\\b' + 'boolean break byte case catch char class const continue debugger default delete do double else false finally float for function if in instanceof int long new return switch this throw throws true try typeof var while'.replace(/ /g, '\\b|\\b') + '\\b', 'gm'),
+  css: 'keyword'
+}, {
+  regexp: new RegExp('\\b' + 'null undefined'.replace(/ /g, '\\b|\\b') + '\\b', 'gm'),
+  css: 'value'
+}, {
+  regexp: new RegExp('[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?', 'g'),
+  css: 'string'
+}, {
+  regexp: new RegExp('"(?:\\.|(\\\\\\")|[^\\""\\n])*"', 'g'),
+  css: 'string'
+}, {
+  regexp: new RegExp("'(?:\\.|(\\\\\\')|[^\\''\\n])*'", 'g'),
+  css: 'string'
+}, {
+  regexp: new RegExp('/\\*[\\s\\S]*?\\*/', 'gm'),
+  css: 'comment'
+}, {
+  regexp: new RegExp('//.*$', 'gm'),
+  css: 'single-line-comment'
+}];
+
+/** highlight an example code block, formatting it properly */
+function highlightBlock(block) {
+  block = String(block).replace(/ /g, '&nbsp;')
+                       .replace(/</g, '&lt;')
+                       .replace(/>/g, '&gt;');
+
+  var matches = [], match, regexp, css, i, len, other, idx, res = [];
+  for (i = 0, len = toReplace.length; i < len; i++) {
+    regexp = toReplace[i].regexp;
+    css = toReplace[i].css;
+    while ((match = regexp.exec(block)) !== null) {
+      matches.push({ value: match[0],
+                     index: match.index,
+                     length: match[0].length,
+                     css: css });
+    }
+  }
+  matches = matches.sort(function (a, b) {
+    return a.index < b.index ? -1: a.index > b.index ? 1 :
+                                   a.length < b.length ? -1:
+                                   a.length > b.length ? 1 : 0;
+  });
+
+  for (i = 0, len = matches.length; i < len; i++) {
+    match = matches[i];
+    for (var j = 0; j < matches.length; j++) {
+      other = matches[j];
+      if (other === null) continue;
+      if (match.index > other.index && match.index < other.index + other.length) {
+        matches[i] = null;
+        break;
+      }
+    }
+  }
+
+  idx = 0;
+  for (i = 0, len = matches.length; i < len; i++) {
+    match = matches[i];
+
+    if (match === null || match.length === 0) continue;
+    res.push(block.slice(idx, match.index));
+    res.push('<span class="');
+    res.push(match.css);
+    res.push('">');
+    res.push(match.value);
+    res.push("</span>");
+    idx = match.index + match.length;
+  }
+  res.push(block.slice(idx));
+
+  return res.join('').replace(/\n/gm, '<br/>');
+}
+
 /** Called automatically by JsDoc Toolkit. */
 function publish(symbolSet) {
 	publish.conf = {  // trailing slash expected for dirs

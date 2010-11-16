@@ -1,7 +1,7 @@
 /**
+ * @namespace
  * Subscribable mixin.
  *
- * @namespace
  * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
  * @requires pubSubURI The URI of the PubSub service.
  * @requires itemFromPacket A function which takes a packet argument and returns an item.
@@ -400,9 +400,51 @@ OX.Mixin.Subscribable = (function () {
   }
   /**#nocode-*/
 
+  /**
+   * @name OX.Subscription
+   * @class
+   * @description
+   * Subscription object signature.
+   * @see <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">XMPP PubSub schema</a>
+   */
+
+  /**
+   * @name OX.Subscription#node
+   * @field
+   * @description
+   * The optional node that the subscription is on.
+   * @type {String}
+   */
+
+  /**
+   * @name OX.Subscription#jid
+   * @field
+   * @description
+   * The required JID that the subscription is on.
+   * @type {String}
+   */
+
+  /**
+   * @name OX.Subscription#subscription
+   * @field
+   * @description
+   * The optional subscription state of the subscription.
+   * One of 'none', 'pending', 'subscribed', or 'unconfigured'.
+   * @type {String}
+   */
+
+  /**
+   * @name OX.Subscription#subid
+   * @field
+   * @description
+   * The optional subscription id.
+   * @type {String}
+   */
+
   return /** @lends OX.Mixin.Subscribable# */{
 
     /**
+     * @private
      * Registers appropriate handlers with the connection for pubSubJID.
      */
     init: function ($super) {
@@ -435,20 +477,29 @@ OX.Mixin.Subscribable = (function () {
      *
      * @param {String} [node] The node name to request subscriptions on. Omitting the node name implies all nodes
      * @param {Object} callbacks an object supplying functions for 'onSuccess' and 'onError'
+     *   @param {Function} callbacks.onSuccess The success callback.
+     *     @param {OX.URI} callbacks.onSuccess.requestedURI The URI you requested.
+     *     @param {OX.URI} callbacks.onSuccess.finalURI The redirected URI that your requested URI maps to.
+     *     @param {OX.Subscription[]} callbacks.onSuccess.subscriptions The subscriptions associated with the finalURI.
+     *     @param {OX.PacketAdapter} callbacks.onSuccess.packet The packet recieved.
+     *   @param {Function} callbacks.onError The error callback.
+     *     @param {OX.URI} callbacks.onError.requestedURI The URI you requested.
+     *     @param {OX.URI} callbacks.onError.finalURI The redirected URI that your requested URI maps to.
+     *     @param {OX.PacketAdapter} callbacks.onError.packet The packet recieved.
      * @param {Bool} [strictJIDMatch] Only apply callbacks to subscriptions that match the exact JID as the current connection.
      * This will NOT match a bare JID to a full JID.
      *
      * @example
-     * service.getSubscriptions('/', {
-     *   onSuccess: function (requestedURI, finalURI, subscriptions, packet) {},
-     *   onError: function (requestedURI, finalURI, packet)
-     * })
+     *   service.getSubscriptions('/', {
+     *     onSuccess: function (requestedURI, finalURI, subscriptions, packet) {},
+     *     onError: function (requestedURI, finalURI, packet)
+     *   });
      *
      * @example
-     * service.getSubscriptions({
-     *   onSuccess: function (requestedURI, finalURI, subscriptions, packet) {},
-     *   onError: function (requestedURI, finalURI, packet)
-     * })
+     *   service.getSubscriptions({
+     *     onSuccess: function (requestedURI, finalURI, subscriptions, packet) {},
+     *     onError: function (requestedURI, finalURI, packet)
+     *   });
      */
     getSubscriptions: function (node, callbacks, strictJIDMatch) {
       if (arguments.length === 1) {
@@ -475,18 +526,24 @@ OX.Mixin.Subscribable = (function () {
      * @param {String} node The node ID to subscribe to.
      * @param {Object} [options] Subscription options.
      * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'.
-     *
+     *   @param {Function} [callbacks.onSuccess] The success callback.
+     *     @param {OX.URI} [callbacks.onSuccess.requestedURI] The URI you requested.
+     *     @param {OX.URI} [callbacks.onSuccess.finalURI] The redirected URI that your requested URI maps to.
+     *   @param {Function} [callbacks.onError] The error callback.
+     *     @param {OX.URI} [callbacks.onError.requestedURI] The URI you requested.
+     *     @param {OX.URI} [callbacks.onError.finalURI] The redirected URI that your requested URI maps to.
+     * 
      * @example
-     * service.subscribe('/', {
-     *   onSuccess: function (requestedURI, finalURI) {},
-     *   onError:   function (requestedURI, finalURI) {}
-     * });
+     *   service.subscribe('/', {
+     *     onSuccess: function (requestedURI, finalURI) {},
+     *     onError:   function (requestedURI, finalURI) {}
+     *   });
      *
-     * var options = {expires: new Date()};
-     * service.subscribe('/', options, {
-     *   onSuccess: function (requestedURI, finalURI) {},
-     *   onError:   function (requestedURI, finalURI) {}
-     * });
+     *   var options = {expires: new Date()};
+     *   service.subscribe('/', options, {
+     *     onSuccess: function (requestedURI, finalURI) {},
+     *     onError:   function (requestedURI, finalURI) {}
+     *   });
      */
     subscribe: function (node, options, callbacks) {
       if (arguments.length === 2) {
@@ -501,13 +558,17 @@ OX.Mixin.Subscribable = (function () {
      * Unsubscribe from a node.
      *
      * @param {String} node The node ID to subscribe to
-     * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'
+     * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'.
+     *   @param {Function} [callbacks.onSuccess] The success callback.
+     *     @param {OX.URI} [callbacks.onSuccess.uri] The URI you unsubscribed from.
+     *   @param {Function} [callbacks.onError] The error callback.
+     *     @param {OX.URI} [callbacks.onSuccess.uri] The URI you failed to unsubscribe from.
      *
      * @example
-     * service.unsubscribe('/', {
-     *   onSuccess: function (uri) {},
-     *   onError:   function (uri) {}
-     * });
+     *   service.unsubscribe('/', {
+     *     onSuccess: function (uri) {},
+     *     onError:   function (uri) {}
+     *   });
      */
     unsubscribe: function (node, callbacks) {
       var iq          = OX.XMPP.IQ.extend(),
@@ -533,12 +594,16 @@ OX.Mixin.Subscribable = (function () {
      *
      * @param {String} node The node ID to subscribe to
      * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'
+     *   @param {Function} [callbacks.onSuccess] The success callback.
+     *     @param {OX.Item[]} [callbacks.onSuccess.items] The items on the PubSub node.
+     *   @param {Function} [callbacks.onError] The error callback.
+     *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The recieved packet.
      *
      * @example
-     * service.getItems('/', {
-     *   onSuccess: function (items) {},
-     *   onError:   function (errorPacket) {}
-     * });
+     *   service.getItems('/', {
+     *     onSuccess: function (items) {},
+     *     onError:   function (errorPacket) {}
+     *   });
      */
     getItems: function (node, callbacks) {
       var iq     = OX.XMPP.IQ.extend(),
@@ -567,7 +632,7 @@ OX.Mixin.Subscribable = (function () {
      * @param {Function} handler A function which accepts one argument, which is the packet response.
      *
      * @example
-     * service.registerHandler('onPublish', function (item) {});
+     *   service.registerHandler('onPublish', function (item) {});
      */
     registerHandler: function (event, handler) {
       this._subscriptionHandlers[event] = handler;
@@ -579,7 +644,7 @@ OX.Mixin.Subscribable = (function () {
      * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onUnsubscribed', 'onPublish' or 'onRetract'.
      *
      * @example
-     * service.unregisterHandler('onPublish', handlerFunction);
+     *   service.unregisterHandler('onPublish', handlerFunction);
      */
     unregisterHandler: function (event) {
     },
@@ -592,9 +657,8 @@ OX.Mixin.Subscribable = (function () {
     itemFromPacket: function (packet) {},
 
     /**
-     * Handlers for various subscription related events.
-     *
      * @private
+     * Handlers for various subscription related events.
      */
     _subscriptionHandlers: {
       /**

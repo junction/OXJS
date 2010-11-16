@@ -1,58 +1,119 @@
 /* default.css */
-body
-{
+body {
 	font: 12px "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
-	width: 800px;
+  margin: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  color: #222;
 }
 
-.header
-{
+#header {
 	clear: both;
-	background-color: #ccc;
-	padding: 8px;
+  font-size: 1.5em;
 }
 
-h1
-{
-	font-size: 150%;
-	font-weight: bold;
-	padding: 0;
-	margin: 1em 0 0 .3em;
+.title {
+  border-bottom: 1px solid #bbb;
 }
 
-hr
-{
+hr {
 	border: none 0;
-	border-top: 1px solid #7F8FB1;
+	border-top: 1px solid #bbb;
 	height: 1px;
 }
 
-pre.code
-{
+code {
 	display: block;
 	padding: 8px;
-	border: 1px dashed #ccc;
+  background-color: rgba(0, 0, 0, .8);
+  color: white;
+	border: 1px solid #000;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
-#index
-{
-	margin-top: 24px;
+.right {
+  text-align: right;
+}
+
+.code {
+  position: relative;
+}
+
+.single-line-comment {
+  color: #ddd;
+}
+
+.comment {
+  color: #89D30;
+}
+
+.keyword {
+  color: #61EAFD;
+}
+
+.string {
+  color: #89DB30;
+}
+
+.value {
+  color: #C15BC6;
+}
+
+.caption {
+  font-size: 100%;
+  position: relative;
+  top: -25px;
+  left: 15px;
+  margin: 0px;
+}
+
+#index {
 	float: left;
 	width: 190px;
 	position: absolute;
-	left: 8px;
-	background-color: #F3F3F3;
+	left: 20px;
+  background-color: #eef;
+  border: 1px solid #999;
 	padding: 8px;
 }
 
-#content
-{
-	margin-left: 215px;
-	width: 600px;
+#content {
+	padding-top: 10px;
 }
 
-.classList
-{
+#content-body {
+  margin-left: 230px;
+}
+
+table.class-definitions {
+  border-spacing: 0px 0px;
+  border: 1px solid #999;
+  border-bottom: none;
+  margin-bottom: 2em;
+  min-width: 600px;
+}
+
+td.label {
+  font-weight: bold;
+  padding-right: 4px;
+  text-align: right;
+  width: 100px;
+  margin: 0;
+}
+
+table.class-definitions td {
+  border-bottom: 1px solid #999;
+  padding: 0.5em;
+  border-collapse: collapse;
+}
+
+table.class-definitions .even {
+  background-color: #eef;
+}
+
+.classList {
 	list-style-type: none;
 	padding: 0;
 	margin: 0 0 0 8px;
@@ -67,23 +128,45 @@ pre.code
 	margin: 0 0 8px 0;
 }
 
-.summaryTable { width: 100%; }
-
-h1.classTitle
-{
-	font-size:170%;
-	line-height:130%;
+.src {
+  margin-left: 10px;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #bbb;
 }
 
-h2 { font-size: 110%; }
+.summaryTable { width: 100%; }
+
 caption, div.sectionTitle
 {
-	background-color: #7F8FB1;
-	color: #fff;
+	color: #;
 	font-size:130%;
 	text-align: left;
 	padding: 2px 6px 2px 6px;
 	border: 1px #7F8FB1 solid;
+}
+
+a {
+  color: blue;
+}
+
+a:visited {
+  color: rgb(85, 26, 139);
+}
+
+h2 a, a#back {
+  text-decoration: none;
+  padding: 2px;
+}
+
+h2 a:hover, a#back:hover {
+  background-color: blue;
+  color: white;
+}
+
+h2 a:visited:hover, a#back:hover {
+  background-color: rgb(85, 26, 139);
+  color: white;
 }
 
 div.sectionTitle { margin-bottom: 8px; }
@@ -105,22 +188,27 @@ div.sectionTitle { margin-bottom: 8px; }
 	text-align: right;
 }
 
-td.attributes, .fixedFont
+.fixedFont {
+	font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
+}
+
+td.attributes
 {
 	line-height: 15px;
-	color: #002EBE;
-	font-family: "Courier New",Courier,monospace;
+	font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
 	font-size: 13px;
+}
+
+.signature { 
+  font-size: 12px;
+	font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
+}
+
+.nameDescription {
+	line-height: 15px;
 }
 
 .summaryTable td.nameDescription
-{
-	text-align: left;
-	font-size: 13px;
-	line-height: 15px;
-}
-
-.summaryTable td.nameDescription, .description
 {
 	line-height: 15px;
 	padding: 4px;
@@ -137,10 +225,9 @@ ul.inheritsList
 }
 
 .detailList {
-	margin-left: 20px; 
 	line-height: 15px;
 }
-.detailList dt { margin-left: 20px; }
+.detailList dt { margin-left: 10px; }
 
 .detailList .heading
 {
@@ -149,14 +236,14 @@ ul.inheritsList
 	margin-left: 0;
 }
 
-.light, td.attributes, .light a:link, .light a:visited
-{
+.light, td.attributes, .light a:link, .light a:visited {
 	color: #777;
-	font-style: italic;
+/*	font-style: italic; */
 }
 
 .fineprint
 {
 	text-align: right;
 	font-size: 10px;
+  padding-bottom: 10px;
 }

@@ -1,16 +1,31 @@
 /**
+ * @class
  * Connection object to use for all OXJS connections.
  * The connection MUST have a valid connectionAdapter to function.
+ * The Connection object is the core API for OXJS.
  *
- * @class
+ * @example
+ *   var ox = OX.Connection.extend({
+ *     connectionAdapter: OX.StropheAdapter.extend({
+ *       connection: new Strophe.Connection('/http-bind/')
+ *     })
+ *   });
+ *
+ *   // OK- OX is ready to go! Let's authenticate...
+ *   ox.Auth.authorizePlain("sip@example.com", "password", "jid@example.com", {
+ *     onSuccess: function () {
+ *       alert("You got the OK to go on ahead!");
+ *     } 
+ *   });
+ *
  * @extends OX.Base
- * @property {OX.Service.Auth} Auth#
- * @property {OX.Service.Auth} ActiveCalls#
- * @property {OX.Service.Auth} UserAgents#
- * @property {OX.Service.Auth} Voicemail#
- * @property {OX.Service.Auth} Directories#
- * @property {OX.Service.Auth} Preferences#
- * @property {OX.Service.Auth} RecentCalls#
+ * @property {OX.Service.Auth} Auth A usable instance of the Auth service.
+ * @property {OX.Service.ActiveCalls} ActiveCalls A useable instance of the ActiveCalls service.
+ * @property {OX.Service.UserAgents} UserAgents A usable instance of the UserAgents service.
+ * @property {OX.Service.Voicemail} Voicemail A usable instance of the Voicemail service.
+ * @property {OX.Service.Directories} Directories A usable instance of the Directories service.
+ * @property {OX.Service.Preferences} Preferences A usable instance of the Preferences service (not implemented).
+ * @property {OX.Service.RecentCalls} RecentCalls A usable instance of the RecentCalls service (not implemented).
  */
 OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
 
@@ -40,9 +55,11 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
   jidHandlers: {},
 
   /**
+   * @private
    * Initialize the Connection with Services hooked up
    * with a connection and then stuck on the top level namespace.
-   * @private
+   * @param {Function} $super The base init that was implemented under {@link OX.Connection#init}
+   * @returns {void}
    */
   init: function ($super) {
     if (this.connectionAdapter) {
@@ -85,6 +102,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @param {String} xml The XML String to send.
    * @param {Function} callback Called when a response to this packet is received with the first argument being the received packet.
    * @param {Array} [args] An array of arguments to be passed to callback after the packet.
+   * @returns {void}
    *
    * @see OX.ConnectionAdapter#send
    */
@@ -96,7 +114,8 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * Returns the JID of this connection.
    *
    * @example
-   * ox.getJID();
+   *   ox.getJID();
+   *   // -> "mock@example.com/some-resource-identifier"
    *
    * @returns {String} This connection's JID.
    *
@@ -110,15 +129,14 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * Registers a message event handler for a JID. Only one
    * handler is active at a time per JID.
    *
-   * @example
-   * var ox = OX.Connection.extend({ connectionAdapter: bosh });
-   * ox.registerJIDHandler('pubsub.active-calls.xmpp.onsip.com', function (packet) {
-   *   ...
-   * });
-   *
    * @param {String} jid The jid who's events we listen to.
    * @param {Function} handler Function of one argument: the message packet received.
-   * @return {OX.Connection} The receiver.
+   * @returns {OX.Connection} The receiver.
+   * @example
+   *   var ox = OX.Connection.extend({ connectionAdapter: bosh });
+   *   ox.registerJIDHandler('pubsub.active-calls.xmpp.onsip.com', function (packet) {
+   *     ...
+   *   });
    *
    * @see OX.Connection#registerJIDHandler
    * @see OX.ConnectionAdapter#registerHandler
@@ -132,11 +150,11 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * Unregister the handler, if any, for a JID.
    *
    * @example
-   * var ox = OX.Connection.extend({ connectionAdapter: bosh });
-   * ox.unregisterJIDHandler('pubsub.active-calls.xmpp.onsip.com');
+   *   var ox = OX.Connection.extend({ connectionAdapter: bosh });
+   *   ox.unregisterJIDHandler('pubsub.active-calls.xmpp.onsip.com');
    *
    * @param {String} jid The jid who's events we listen to.
-   * @return {OX.Connection} The receiver.
+   * @returns {OX.Connection} The receiver.
    *
    * @see OX.Connection#unregisterJIDHandler
    * @see OX.ConnectionAdapter#unregisterHandler

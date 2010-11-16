@@ -1,16 +1,29 @@
 /**
- * Base object for OXJS. All other objects inherit from this one.
  * @class
+ * Base object for OXJS. All other objects inherit from this one.
+ * This provides object inheritance much like Douglas Crockford's
+ * <a href="http://javascript.crockford.com/prototypal.html">Prototypal
+ * Inheritance in JavaScript</a> with a few modifications of our own.
+ *
+ * This framework uses Object templates rather than classes to provide
+ * inheritance.
  */
 OX.Base = {
+
   /**
    * Creates a new object which extends the current object.  Any
    * arguments are mixed in to the new object as if {@link OX.Base.mixin}
    * was called on the new object with remaining args.
    *
    * @example
-   * var obj = OX.Base.extend({param: value});
-   *
+   *   var obj = OX.Base.extend({
+   *     hello: "world"
+   *   });
+   *   obj.hello;
+   *   // -> "world"
+   * 
+   *   OX.Base.hello;
+   *   // -> undefined
    * @returns {OX.Base} the new object
    *
    * @see OX.Base.mixin
@@ -34,7 +47,11 @@ OX.Base = {
    * receiver.
    *
    * @example
-   * obj.mixin({param: value});
+   *   obj.mixin({
+   *     hello: "world"
+   *   });
+   *   obj.hello;
+   *   // -> "world"
    *
    * @returns {OX.Base} the receiver
    *

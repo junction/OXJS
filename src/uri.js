@@ -4,6 +4,7 @@
  * @extends OX.Base
  */
 OX.URI = OX.Base.extend(/** @lends OX.URI */{
+
   /**
    * Parse a string into an OX.URI.Base object.
    *

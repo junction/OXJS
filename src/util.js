@@ -21,7 +21,7 @@ OX.Base.mixin.call(Function.prototype, /** @scope Function.prototype */{
    *
    *   foo.bar();
    *   // -> "superior"
-   * @returns The reciever.
+   * @returns {Function} The reciever.
    */
   inferior: function () {
     this._oxInferior = true;
@@ -54,7 +54,7 @@ OX.Base.mixin.call(Function.prototype, /** @scope Function.prototype */{
    *   // -> 'barbell'
    *   fooBar.bar('n');
    *   // -> 'foobarn'
-   * @returns The reciever.
+   * @returns {Function} The reciever.
    */
   around: function () {
     this._ox = this._ox || {};
@@ -62,10 +62,12 @@ OX.Base.mixin.call(Function.prototype, /** @scope Function.prototype */{
     var empty = function () {},
         slice = Array.prototype.slice;
 
+    /** @ignore */
     this._ox.around = function (template, value, key) {
-      var base = template[key] || function () {};
+      var base = template[key] || empty;
 
       if (base instanceof Function) {
+        /** @ignore */
         base = function () {
           value.apply(this, [base.bind(this)].concat(slice.apply(arguments)));
         };

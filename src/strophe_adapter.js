@@ -1,6 +1,6 @@
 /**
- * Strophe Connection Adapter
  * @class
+ * Strophe Connection Adapter
  * @extends OX.ConnectionAdapter
  */
 OX.StropheAdapter = OX.ConnectionAdapter.extend(
@@ -11,7 +11,17 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
   /** @private */
   _handlers: {},
 
+  /** @private */
   _callbackQueue: [],
+
+  /**
+   * The maximum allowable size for the callback queue.
+   * When it reaches the maximum size, it will warn you
+   * about it, and begin removing stale handlers, assuming
+   * that they will never be called. This exists as a catch
+   * for memory leaks. Change this value to meet your needs.
+   * @type {Number}
+   */
   MAX_QUEUE_SIZE: 100,
 
   /** @private */
@@ -22,6 +32,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
   },
 
   /**
+   * The JID of the connection.
    * @returns {String} The JID associated with the connection.
    */
   jid: function () {
@@ -33,6 +44,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    *
    * @param {String} event The top level XMPP tag name to register for.
    * @param {Function} handler The function handler for the event.
+   * @returns {void}
    */
   registerHandler: function (event, handler) {
     var that = this;
@@ -63,6 +75,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    * Unsubscribe from corresponding event.
    *
    * @param {String} event The event to unsubscribe from.
+   * @returns {void}
    */
   unregisterHandler: function (event) {
     var queue = this._callbackQueue, i, len = queue.length, rest;
@@ -113,6 +126,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    * @param {String} xml The xml to send.
    * @param {Function} callback The function to call when done.
    * @param {Array} args A list of arguments to provide to the callback.
+   * @returns {Boolean} The results of connection.send()
    */
   send: function (xml, callback, args) {
     var node = this.createNode(xml),
@@ -176,9 +190,9 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
   },
 
   /**
+   * @private
    * Convert a stanza into an object that implements {@link OX.PacketAdapter}.
    *
-   * @private
    * @param {Element} stanza The XMPP stanza to pack.
    *
    * @returns {OX.PacketAdapter} The stanza wrapped as a packet.
