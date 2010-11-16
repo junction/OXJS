@@ -60,20 +60,26 @@ OX.Base.mixin.call(Function.prototype, /** @scope Function.prototype */{
     this._ox = this._ox || {};
 
     var empty = function () {},
-        slice = Array.prototype.slice;
+    slice = Array.prototype.slice,
+    /** @ignore */
+    bind = function (lambda, self) {
+      return function () {
+        return lambda.apply(self, arguments);
+      };
+    };
 
     /** @ignore */
     this._ox.around = function (template, value, key) {
       var base = template[key] || empty;
-
-      if (base instanceof Function) {
-        /** @ignore */
-        base = function () {
-          value.apply(this, [base.bind(this)].concat(slice.apply(arguments)));
-        };
+      if (!(base instanceof Function)) {
+        return value;
       }
-      return base;
+
+      return function () {
+        return value.apply(this, [bind(base, this)].concat(slice.apply(arguments)));
+      };
     };
+
     return this;
   }
 });

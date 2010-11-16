@@ -1013,7 +1013,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     });
     Assert.isFalse(errorFlag, 'Got error trying to fetch items.');
     Assert.isTrue(successFlag, 'Did not get success trying to fetch items.');
-  },
+  }
 });
 
 YAHOO.tool.TestRunner.add(OXTest.Subscribable);

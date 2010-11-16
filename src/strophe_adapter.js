@@ -11,16 +11,13 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
   /** @private */
   _handlers: {},
 
-  /** @private */
   _callbackQueue: [],
 
   /**
    * The maximum allowable size for the callback queue.
-   * When it reaches the maximum size, it will warn you
-   * about it, and begin removing stale handlers, assuming
-   * that they will never be called. This exists as a catch
-   * for memory leaks. Change this value to meet your needs.
-   * @type {Number}
+   * When it reaches the maximum size, it will warn you about it,
+   * and begin removing stale handlers, assuming that they will never be called.
+   * This exists as a catch for memory leaks. Change this value to meet your needs.
    */
   MAX_QUEUE_SIZE: 100,
 
@@ -32,7 +29,6 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
   },
 
   /**
-   * The JID of the connection.
    * @returns {String} The JID associated with the connection.
    */
   jid: function () {
@@ -44,7 +40,6 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    *
    * @param {String} event The top level XMPP tag name to register for.
    * @param {Function} handler The function handler for the event.
-   * @returns {void}
    */
   registerHandler: function (event, handler) {
     var that = this;
@@ -68,14 +63,13 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
 
     this.unregisterHandler(event);
     this._handlers[event] = this.connection.addHandler(wrapper, null, event,
-                                                    null, null, null);
+                                                       null, null, null);
   },
 
   /**
    * Unsubscribe from corresponding event.
    *
    * @param {String} event The event to unsubscribe from.
-   * @returns {void}
    */
   unregisterHandler: function (event) {
     var queue = this._callbackQueue, i, len = queue.length, rest;
@@ -126,7 +120,6 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
    * @param {String} xml The xml to send.
    * @param {Function} callback The function to call when done.
    * @param {Array} args A list of arguments to provide to the callback.
-   * @returns {Boolean} The results of connection.send()
    */
   send: function (xml, callback, args) {
     var node = this.createNode(xml),

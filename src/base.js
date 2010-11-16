@@ -38,7 +38,6 @@ OX.Base = {
     if (rc.init && rc.init.constructor === Function) {
       rc.init.call(rc);
     }
-
     return rc;
   },
 
@@ -66,16 +65,16 @@ OX.Base = {
       obj = arguments[i];
       for (key in obj) {
         if (obj.hasOwnProperty(key)) {
-          mixin = arguments[i][key];
+          mixin = obj[key];
 
-          if (this[name] && mixin._oxInferior) {
+          if (this[key] && mixin && mixin._oxInferior) {
             continue;
           }
 
-          if (mixin instanceof Function && mixin._ox) {
+          if (mixin && mixin instanceof Function && mixin._ox) {
             for (transform in mixin._ox) {
               if (mixin._ox.hasOwnProperty(transform)) {
-                mixin._ox[transform](this, mixin, key);
+                mixin = mixin._ox[transform](this, mixin, key);
               }
             }
           }
@@ -85,7 +84,7 @@ OX.Base = {
       }
 
       // Prevents IE from clobbering toString
-      if (obj.toString !== Object.prototype.toString) {
+      if (obj && obj.toString !== Object.prototype.toString) {
         this.toString = obj.toString;
       }
     }

@@ -16,14 +16,14 @@ OXTest.StropheAdapter = new YAHOO.tool.TestCase({
   testQueueSize: function () {
     var Assert = YAHOO.util.Assert,
         empty = function () {}, id;
-    this.adapter.send("<test>", empty);
+    this.adapter.send("<test/>", empty);
     Assert.areSame(1, this.adapter._callbackQueue.length);
     id = this.conn.recentlyRegistered;
     this.conn.triggerEvent(id, OXTest.Packet.extendWithXML("<iq id=\"" + id + "\"/>").getNode());
     Assert.areSame(0, this.adapter._callbackQueue.length);
 
-    this.adapter.send("<test>", empty);
-    this.adapter.send("<test>", empty);
+    this.adapter.send("<test/>", empty);
+    this.adapter.send("<test/>", empty);
     id = this.conn.recentlyRegistered;
     this.conn.triggerEvent(id, OXTest.Packet.extendWithXML("<iq id=\"" + id + "\"/>").getNode());
     Assert.areSame(1, this.adapter._callbackQueue.length);
@@ -32,11 +32,11 @@ OXTest.StropheAdapter = new YAHOO.tool.TestCase({
   testQueueLimit: function () {
     var Assert = YAHOO.util.Assert,
         empty = function () {};
-    this.adapter.send("<test>", empty);
+    this.adapter.send("<test/>", empty);
 
     for (var i = 1; i < 125; i++) {
       Assert.areSame(i > 100 ? 100 : i, this.adapter._callbackQueue.length);
-      this.adapter.send("<test>", empty);
+      this.adapter.send("<test/>", empty);
     }
     Assert.areSame(100, this.adapter._callbackQueue.length);
   }

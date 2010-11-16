@@ -1,7 +1,7 @@
 OXTest.ActiveCalls = new YAHOO.tool.TestCase({
   name: 'ActiveCalls Tests',
 
-  eventXml: {
+  eventXML: {
     createdEvent: '<message from="pubsub.active-calls.xmpp.onsip.com" to="foo!example.onsip.com@dashboard.onsip.com" >'
                   + '  <event xmlns="http://jabber.org/protocol/pubsub#event">'
                   + '    <items node="/example.onsip.com/foo" >'
@@ -139,9 +139,9 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
   testCreatedEvent: function() {
     var Assert = YAHOO.util.Assert;
-    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.createdEvent);
-
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXML.createdEvent);
     var item = this.ActiveCalls.itemFromElement(element.doc);
+
     Assert.isObject(item,
                     'ActiveCalls.itemFromElement did not return an object.');
 
@@ -164,7 +164,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
   testCreatedWithReferEvent: function() {
     var Assert = YAHOO.util.Assert;
-    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.createdWithReferEvent);
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXML.createdWithReferEvent);
 
     var item = this.ActiveCalls.itemFromElement(element.doc);
 
@@ -174,7 +174,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
   testRequestedEvent: function() {
     var Assert = YAHOO.util.Assert;
-    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.requestedEvent);
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXML.requestedEvent);
 
     var item = this.ActiveCalls.itemFromElement(element.doc);
     Assert.isObject(item,
@@ -196,7 +196,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
   testConfirmedEvent: function() {
     var Assert = YAHOO.util.Assert;
-    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXml.confirmedEvent);
+    var element = OXTest.DOMParser.parse(OXTest.ActiveCalls.eventXML.confirmedEvent);
 
     var item = this.ActiveCalls.itemFromElement(element.doc);
     Assert.isObject(item,

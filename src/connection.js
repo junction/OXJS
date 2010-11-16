@@ -91,9 +91,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
       });
     }
 
-    if ($super instanceof Function) {
-      $super();
-    }
+    $super();
   }.around(),
 
   /**

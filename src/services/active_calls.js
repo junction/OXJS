@@ -102,7 +102,6 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
     }
 
     var childNodes = activeCallNode[0].childNodes;
-
     function getFirstNodeValue(node) {
       var child = node.firstChild;
       if (child && child.nodeValue === null && child.firstChild) {

@@ -460,10 +460,7 @@ OX.Mixin.Subscribable = (function () {
         this.connection.registerJIDHandler(uri.path, handler);
       }
 
-      if ($super instanceof Function) {
-        $super();
-      }
-
+      $super();
     }.around(),
 
     /**

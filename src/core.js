@@ -14,28 +14,28 @@ var OX = {
    * Prints a debug message to the console, if window.console exists.
    */
   debug: function () {
-    return window.console && window.console.debug && window.console.debug.apply(window.console, arguments);
+    return window.console && window.console.debug && window.console.debug.apply && window.console.debug.apply(window.console, arguments);
   },
 
   /**
    * Prints a log to the console, if window.console exists.
    */
   log: function () {
-    return window.console && window.console.log && window.console.log.apply(window.console, arguments);
+    return window.console && window.console.log && window.console.log.apply && window.console.log.apply(window.console, arguments);
   },
 
   /**
    * Prints a warning to the console, if window.console exists.
    */
   warn: function () {
-    return window.console && window.console.warn && window.console.warn.apply(window.console, arguments);
+    return window.console && window.console.warn && window.console.warn.apply && window.console.warn.apply(window.console, arguments);
   },
 
   /**
    * Prints an error to the console, if window.console exists.
    */
   error: function () {
-    return window.console && window.console.error && window.console.error.apply(window.console, arguments);
+    return window.console && window.console.error && window.console.error.apply && window.console.error.apply(window.console, arguments);
   },
 
   /**
