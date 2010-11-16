@@ -56,7 +56,7 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
    *
    * @returns {String} This XML element as XML text.
    */
-  convertToString: function () {
+  toString: function () {
     var ret = "";
     var attrs = [];
 
@@ -81,7 +81,7 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
 
     var children = this.children || [];
     for (var i = 0, len = children.length; i < len; i++) {
-      ret += this.children[i].convertToString();
+      ret += this.children[i].toString();
     }
 
     if (this.text) {

@@ -26,7 +26,7 @@ OXTest.Voicemail = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.areSame('xmpp:pubsub.voicemail.xmpp.onsip.com',
-                   this.Voicemail.pubSubURI.convertToString(),
+                   this.Voicemail.pubSubURI.toString(),
                    'Voicemail.pubSub URI is wrong.');
   },
 

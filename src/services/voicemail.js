@@ -149,7 +149,7 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
 
         iq.addChild(cmd.addChild(xData));
 
-        this.connection.send(iq.convertToString(), function (packet) {
+        this.connection.send(iq.toString(), function (packet) {
           if (!packet) {
             return;
           }
@@ -191,7 +191,7 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
 
         iq.addChild(cmd.addChild(xData));
 
-        this.connection.send(iq.convertToString(), function (packet) {
+        this.connection.send(iq.toString(), function (packet) {
           if (!packet) {
             return;
           }

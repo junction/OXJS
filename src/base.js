@@ -58,13 +58,14 @@ OX.Base = {
    * @see OX.Base.extend
    */
   mixin: function () {
-    var i, len, key, base, mixin,
+    var i, len, key, base, mixin, obj,
         /** @ignore */
         empty = function () {}, transform;
 
     for (i = 0, len = arguments.length; i < len; i++) {
-      for (key in arguments[i]) {
-        if (arguments[i].hasOwnProperty(key)) {
+      obj = arguments[i];
+      for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
           mixin = arguments[i][key];
 
           if (this[name] && mixin._oxInferior) {
@@ -81,6 +82,11 @@ OX.Base = {
 
           this[key] = mixin;
         }
+      }
+
+      // Prevents IE from clobbering toString
+      if (obj.toString !== Object.prototype.toString) {
+        this.toString = obj.toString;
       }
     }
 

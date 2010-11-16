@@ -133,7 +133,7 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.areSame('xmpp:pubsub.active-calls.xmpp.onsip.com',
-                   this.ActiveCalls.pubSubURI.convertToString(),
+                   this.ActiveCalls.pubSubURI.toString(),
                    'ActiveCalls.pubSubURI is wrong.');
   },
 

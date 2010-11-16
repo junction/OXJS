@@ -64,7 +64,7 @@ OX.Service.Auth = OX.Base.extend(OX.Mixin.EntityTime, /** @lends OX.Service.Auth
     }
     iq.addChild(cmd.addChild(xData));
 
-    this.connection.send(iq.convertToString(), function (packet) {
+    this.connection.send(iq.toString(), function (packet) {
       if (!packet) {
         return;
       }

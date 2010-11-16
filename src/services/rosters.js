@@ -42,7 +42,7 @@ OX.Service.Rosters = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service
 
     iq.addChild(cmd.addChild(xData));
 
-    this.connection.send(iq.convertToString(), function (packet) {
+    this.connection.send(iq.toString(), function (packet) {
       if (!packet) {
         return;
       }

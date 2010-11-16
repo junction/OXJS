@@ -140,7 +140,7 @@ OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
   /**
    * Convert URI object to string representation.
    */
-  convertToString: function () {
+  toString: function () {
     var authority = this.authority ? '//' + this.authority + '/' : '',
         query     = this.query     ? '?'  + this.query           : '',
         fragment  = this.fragment  ? '#'  + this.fragment        : '';

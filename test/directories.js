@@ -76,7 +76,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     Assert.areSame('xmpp:pubsub.directories.xmpp.onsip.com',
-                   this.Directories.pubSubURI.convertToString(),
+                   this.Directories.pubSubURI.toString(),
                    'Directories.pubSubURI is wrong.');
   },
 

@@ -52,8 +52,8 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       onSuccess: function (requestedURI, finalURI, subscriptions, packet) {
         successFlag = true;
 
-        Assert.areEqual('xmpp:pubsub@example.com', requestedURI.convertToString(), 'requestedURI is wrong');
-        Assert.areEqual("xmpp:pubsub@example.com", finalURI.convertToString(), "finalURI is wrong");
+        Assert.areEqual('xmpp:pubsub@example.com', requestedURI.toString(), 'requestedURI is wrong');
+        Assert.areEqual("xmpp:pubsub@example.com", finalURI.toString(), "finalURI is wrong");
 
         Assert.isArray(subscriptions, 'subscriptions is not an array');
         Assert.areEqual(4, subscriptions.length, 'subscriptions.length is wrong');
@@ -138,8 +138,8 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       onError: function(requestedURI, finalURI, packet) {
         errorFlag = true;
 
-        Assert.areEqual("xmpp:pubsub@example.com", requestedURI.convertToString(), "requestedURI is wrong");
-        Assert.areEqual("xmpp:pubsub@example.com", finalURI.convertToString(), "finalURI is wrong");
+        Assert.areEqual("xmpp:pubsub@example.com", requestedURI.toString(), "requestedURI is wrong");
+        Assert.areEqual("xmpp:pubsub@example.com", finalURI.toString(), "finalURI is wrong");
         Assert.isObject(packet, "packet is not an object");
       }
     });
@@ -172,10 +172,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         Assert.isArray(subscriptions, 'subscriptions is not an array');
         Assert.areEqual(2, subscriptions.length, 'subscriptions length is not two');
         Assert.areEqual('xmpp:pubsub@example.com?;node=princely_musings',
-                        requestedURI.convertToString(),
+                        requestedURI.toString(),
                         'requestedURI is incorrect');
         Assert.areEqual('xmpp:pubsub@example.com?;node=princely_musings',
-                        finalURI.convertToString(),
+                        finalURI.toString(),
                        'finalURI is incorrect');
       },
       onError: function(requestedURI, finalURI, packet) {
@@ -368,9 +368,9 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       requestedURI.convertToString(),
+                       requestedURI.toString(),
                        'requestedURI is not actual requested uri.');
-        Assert.areSame(requestedURI.convertToString(), finalURI.convertToString(),
+        Assert.areSame(requestedURI.toString(), finalURI.toString(),
                        'requested and final uri differ when successful.');
       },
 
@@ -434,9 +434,9 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         errorFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       requestedURI.convertToString(),
+                       requestedURI.toString(),
                        'requestedURI is not actual requested uri.');
-        Assert.areSame(requestedURI.convertToString(), finalURI.convertToString(),
+        Assert.areSame(requestedURI.toString(), finalURI.toString(),
                        'requested and final uri differ on error.');
       }
     });
@@ -457,7 +457,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       uri.convertToString(), 'uri is wrong.');
+                       uri.toString(), 'uri is wrong.');
       },
 
       onError: function () {
@@ -487,7 +487,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         errorFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       uri.convertToString(), 'uri is wrong.');
+                       uri.toString(), 'uri is wrong.');
       }
     });
 
@@ -542,7 +542,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var pendingFlag = false;
     this.Subscribable.registerHandler('onPending', function (uri) {
       pendingFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
                      'Requested URI for pending is wrong.');
     });
     this.Subscribable.subscribe('/');
@@ -560,7 +560,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var subscribedFlag = false;
     this.Subscribable.registerHandler('onSubscribed', function (uri) {
       subscribedFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
                      'Requested URI for subscribed is wrong.');
     });
     this.Subscribable.subscribe('/');
@@ -578,7 +578,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var unsubscribedFlag = false;
     this.Subscribable.registerHandler('onUnsubscribed', function (uri) {
       unsubscribedFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
                      'Requested URI for subscribed is wrong.');
     });
     this.Subscribable.subscribe('/');
@@ -626,7 +626,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var successFlag = false, subscribedFlag = false;
     this.Subscribable.registerHandler('onSubscribed', function (uri) {
       subscribedFlag = true;
-      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.convertToString(),
+      Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
                      'uri is not actual requested uri.');
     });
     this.conn.addResponse(OXTest.Packet.extendWithXML('<iq from="pubsub@example.com" to="mock@example.com" id="test"><pubsub xmlns="http://jabber.org/protocol/pubsub"><subscription jid="mock@example.com" subscription="subscribed"/></pubsub></iq>'));
@@ -697,10 +697,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         successFlag = true;
         Assert.isObject(packet, 'packet in handler is not an object.');
         Assert.areSame('xmpp:pubsub@example.com?;node=/',
-                       requestedURI.convertToString(),
+                       requestedURI.toString(),
                        'requestedURI is not actual requested uri.');
         Assert.areSame('xmpp:pubsub@example.com?;node=other-node',
-                       finalURI.convertToString(),
+                       finalURI.toString(),
                        'finalURI is not actual final uri.');
       },
 
@@ -867,10 +867,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     Assert.isObject(items[1].uri, "Item2 URI is not an OX.URI object");
 
     Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item1',
-                   items[0].uri.convertToString(),
+                   items[0].uri.toString(),
                    'Item1 URI has an incorrect value');
     Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item2',
-                   items[1].uri.convertToString(),
+                   items[1].uri.toString(),
                    'Item2 URI has an incorrect value');
 
     Assert.areSame(2, publishCount, 'Wrong number of items when publishing.');
@@ -894,7 +894,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.conn.fireEvent('message', packet);
     Assert.areSame(1, publishCount, 'Wrong number of items when publishing.');
     Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item1',
-                   items[0].uri.convertToString(),
+                   items[0].uri.toString(),
                    'Item1 URI has an incorrect value');
   },
 
@@ -906,7 +906,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       retractFlag = true;
       Assert.isObject(uri, 'URI in retract handler is not an object.');
       Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item',
-                     uri.convertToString(),
+                     uri.toString(),
                      'Retract item URI is wrong.');
     });
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><retract id="item"/></items></event></message>');
@@ -922,7 +922,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       retractFlag = true;
       Assert.isObject(uri, 'URI in retract handler is not an object.');
       Assert.areSame('xmpp:pubsub@example.com?;node=/;item=item',
-                     uri.convertToString(),
+                     uri.toString(),
                      'Retract item URI is wrong.');
     });
     var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><headers xmlns="http://jabber.org/protocol/shim"><header name="Collection">rootnode</header></headers><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><retract id="item"/></items></event></message>');
@@ -998,13 +998,13 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
         Assert.areSame('2009-11-23T23:28:22Z', items[1].publishTime, 'item.publishTime is incorrect');
 
         Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item1',
-                       items[0].uri.convertToString());
+                       items[0].uri.toString());
         Assert.areSame('xmpp:pubsub@example.com?;node=node1;item=item2',
-                       items[1].uri.convertToString());
+                       items[1].uri.toString());
         Assert.areSame('xmpp:pubsub@example.com?;node=node2;item=node2-item1',
-                       items[2].uri.convertToString());
+                       items[2].uri.toString());
         Assert.areSame('xmpp:pubsub@example.com?;node=node2;item=node2-item2',
-                       items[3].uri.convertToString());
+                       items[3].uri.toString());
       },
 
       onError: function (error) {

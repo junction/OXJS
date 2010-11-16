@@ -28,7 +28,7 @@ OX.Mixin.EntityTime = /** @lends OX.Mixin.EntityTime# */{
     iq.type('get');
     iq.addChild(time);
 
-    this.connection.send(iq.convertToString(), function (packet) {
+    this.connection.send(iq.toString(), function (packet) {
       if (packet.getType() === 'error' && callbacks.onError) {
         callbacks.onError(packet);
       } else if (callbacks.onSuccess) {

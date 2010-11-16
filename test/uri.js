@@ -11,7 +11,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
     Assert.areSame('test@foobar.com', uri.path);
     Assert.areSame('message;subject=test;body=foobar', uri.query);
     Assert.areSame('frag', uri.fragment);
-    Assert.areSame(uriString, uri.convertToString(),
+    Assert.areSame(uriString, uri.toString(),
                    'Unparse of parse did not produce the same string used to parse.');
   },
 
@@ -25,7 +25,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
     Assert.isUndefined(uri.authority);
     Assert.isUndefined(uri.query);
     Assert.isUndefined(uri.fragment);
-    Assert.areSame(uriString, uri.convertToString(),
+    Assert.areSame(uriString, uri.toString(),
                    'Unparse of parse did not produce the same string used to parse.');
   },
 
@@ -39,7 +39,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
     Assert.areSame('query', uri.query);
     Assert.isUndefined(uri.authority);
     Assert.isUndefined(uri.fragment);
-    Assert.areSame(uriString, uri.convertToString(),
+    Assert.areSame(uriString, uri.toString(),
                    'Unparse of parse did not produce the same string used to parse.');
   },
 
@@ -53,7 +53,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
     Assert.areSame('query', uri.query);
     Assert.areSame('frag', uri.fragment);
     Assert.isUndefined(uri.authority);
-    Assert.areSame(uriString, uri.convertToString(),
+    Assert.areSame(uriString, uri.toString(),
                    'Unparse of parse did not produce the same string used to parse.');
   },
 
@@ -67,7 +67,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
     Assert.areSame('enoch@example.com', uri.path);
     Assert.isUndefined(uri.query);
     Assert.isUndefined(uri.fragment);
-    Assert.areSame(uriString, uri.convertToString(),
+    Assert.areSame(uriString, uri.toString(),
                    'Unparse of parse did not produce the same string used to parse.');
   },
 
@@ -81,7 +81,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
     Assert.areSame('enoch@example.com', uri.path);
     Assert.areSame('message', uri.query);
     Assert.isUndefined(uri.fragment);
-    Assert.areSame(uriString, uri.convertToString(),
+    Assert.areSame(uriString, uri.toString(),
                    'Unparse of parse did not produce the same string used to parse.');
   },
 
@@ -89,7 +89,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     var uri = OX.URI.fromObject({path: 'foo@bar.com'});
-    Assert.areSame('xmpp:foo@bar.com', uri.convertToString());
+    Assert.areSame('xmpp:foo@bar.com', uri.toString());
   },
 
   testFromFullObject: function () {
@@ -101,7 +101,7 @@ OXTest.URI = new YAHOO.tool.TestCase({
                                  query:     'message;subject=Hi',
                                  fragment:  'baz'});
      Assert.areSame('xmpp://enoch@example.com/foo@bar.com?message;subject=Hi#baz',
-                   uri.convertToString());
+                   uri.toString());
   },
 
   testActionParse: function () {

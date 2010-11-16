@@ -346,7 +346,7 @@ OX.Mixin.Subscribable = (function () {
         },
         wrappedArgs = [subscription, options, callbacks];
 
-    this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
+    this.connection.send(iq.toString(), wrappedCb, wrappedArgs);
   }
 
   function doSubscribe(node, options, callbacks, origNode, redirectCount) {
@@ -371,7 +371,7 @@ OX.Mixin.Subscribable = (function () {
       subscriptionHandler.apply(that, arguments);
     };
 
-    this.connection.send(iq.convertToString(), cb,
+    this.connection.send(iq.toString(), cb,
                          [node, options, callbacks, origNode, redirectCount]);
   }
 
@@ -396,7 +396,7 @@ OX.Mixin.Subscribable = (function () {
         },
         wrappedArgs = [node, callbacks, origNode, redirectCount, strict];
 
-    this.connection.send(iq.convertToString(), wrappedCb, wrappedArgs);
+    this.connection.send(iq.toString(), wrappedCb, wrappedArgs);
   }
   /**#nocode-*/
 
@@ -586,7 +586,7 @@ OX.Mixin.Subscribable = (function () {
       var cb = function () {
         unsubscriptionHandler.apply(that, arguments);
       };
-      this.connection.send(iq.convertToString(), cb, [node, callbacks]);
+      this.connection.send(iq.toString(), cb, [node, callbacks]);
     },
 
     /**
@@ -620,7 +620,7 @@ OX.Mixin.Subscribable = (function () {
       var cb = function () {
         getItemsHandler.apply(that, arguments);
       };
-      this.connection.send(iq.convertToString(), cb, [callbacks]);
+      this.connection.send(iq.toString(), cb, [callbacks]);
     },
 
     /**

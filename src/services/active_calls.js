@@ -181,7 +181,7 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
 
     cb = cb || {};
 
-    this.connection.send(iq.convertToString(), function (packet) {
+    this.connection.send(iq.toString(), function (packet) {
       if (!packet) {
         return;
       }

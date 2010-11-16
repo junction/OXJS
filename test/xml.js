@@ -57,11 +57,11 @@ OXTest.XML = new YAHOO.tool.TestCase({
     Assert.areEqual('bar', createdElement.attr('foo'));
     Assert.areEqual('test', createdElement.name);
 
-    var doc = OXTest.DOMParser.parse(createdElement.convertToString());
+    var doc = OXTest.DOMParser.parse(createdElement.toString());
     Assert.areEqual('the text', doc.getPathValue('/test/child/text()'));
 
     var createdElement2 = typeOfElement.create(createdAttrs, createdChild);
-    Assert.areEqual(createdElement.convertToString(), createdElement2.convertToString());
+    Assert.areEqual(createdElement.toString(), createdElement2.toString());
   },
 
   testDemoXMLStructure: function() {
@@ -118,7 +118,7 @@ OXTest.XML = new YAHOO.tool.TestCase({
     //
     // test DOM structure xpath
     //
-    var doc = OXTest.DOMParser.parse(iq.convertToString());
+    var doc = OXTest.DOMParser.parse(iq.toString());
     Assert.areEqual(iq.to(),
                     doc.getPathValue('/iq/@to'),
                     "xpath not equal to iq.to()");
@@ -164,7 +164,7 @@ OXTest.XML = new YAHOO.tool.TestCase({
     //
     // test DOM structure xpath
     //
-    var doc = OXTest.DOMParser.parse(iq.convertToString());
+    var doc = OXTest.DOMParser.parse(iq.toString());
     Assert.areEqual(cmd.node(),
                     doc.getPathValue('/iq/cmd:command/@node'),
                     "xpath not equal to cmd.node()");
@@ -207,7 +207,7 @@ OXTest.XML = new YAHOO.tool.TestCase({
     //
     // test DOM structure xpath
     //
-    var doc = OXTest.DOMParser.parse(iq.convertToString());
+    var doc = OXTest.DOMParser.parse(iq.toString());
     Assert.areEqual(x.type(),
                     doc.getPathValue('/iq/cmd:command/x:x/@type'),
                     "xpath not equal to x.type()");

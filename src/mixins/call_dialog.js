@@ -43,7 +43,7 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
 
     iq.addChild(cmd.addChild(xData));
 
-    this.connection.send(iq.convertToString(), function (packet) {
+    this.connection.send(iq.toString(), function (packet) {
       if (!packet) {
         return;
       }
@@ -87,7 +87,7 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
 
     iq.addChild(cmd.addChild(xData));
 
-    this.connection.send(iq.convertToString(), function (packet) {
+    this.connection.send(iq.toString(), function (packet) {
       if (!packet) {
         return;
       }
@@ -130,7 +130,7 @@ OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
 
     iq.addChild(cmd.addChild(xData));
 
-    this.connection.send(iq.convertToString(), function (packet) {
+    this.connection.send(iq.toString(), function (packet) {
       if (!packet) {
         return;
       }
