@@ -20,13 +20,16 @@ src:	ox.js jslint
 jslint:
 	../frameworks/jslint/jslint ../ox.js
 
-doc:	$(DOCDIR)/index.html
+doc:	$(DOCDIR)/private/index.html $(DOCDIR)/public/index.html
 
 ox.js:	Makefile $(SRC)
 	cat $(SRC) > ../$@
 
-$(DOCDIR)/index.html: Makefile $(SRC)
-	$(JAVA) -jar $(JSDOCDIR)/jsrun.jar $(JSDOCDIR)/app/run.js -a -p -t=$(TEMPLATE) -d=$(DOCDIR) $(SRC)
+$(DOCDIR)/private/index.html: Makefile $(SRC)
+	$(JAVA) -jar $(JSDOCDIR)/jsrun.jar $(JSDOCDIR)/app/run.js --allfunctions --private -a -t=$(TEMPLATE) -d=$(DOCDIR)/private $(SRC)
+
+$(DOCDIR)/public/index.html: Makefile $(SRC)
+	$(JAVA) -jar $(JSDOCDIR)/jsrun.jar $(JSDOCDIR)/app/run.js -t=$(TEMPLATE) -d=$(DOCDIR)/public $(SRC)
 
 clean-doc:
 	rm -rf $(DOCDIR)
