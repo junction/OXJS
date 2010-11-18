@@ -16,6 +16,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                   + '          <to-tag/>'
                   + '          <branch/>'
                   + '          <call-setup-id/>'
+                  + '          <from-display/>'
+                  + '          <to-display/>'
                   + '        </active-call>'
                   + '      </item>'
                   + '    </items>'
@@ -39,6 +41,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                   + '          <to-tag/>'
                   + '          <branch/>'
                   + '          <call-setup-id>4eea2554</call-setup-id>'
+                  + '          <from-display/>'
+                  + '          <to-display/>'
                   + '        </active-call>'
                   + '      </item>'
                   + '    </items>'
@@ -62,6 +66,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                     + '          <to-tag/>'
                     + '          <branch>z9hG4bK7bb6.4c45a015.0</branch>'
                     + '          <call-setup-id/>'
+                    + '          <from-display/>'
+                    + '          <to-display/>'
                     + '        </active-call>'
                     + '      </item>'
                     + '    </items>'
@@ -85,6 +91,8 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
                     + '          <to-tag>as11173b9d</to-tag>'
                     + '          <branch>z9hG4bK7bb6.4c45a015.0</branch>'
                     + '          <call-setup-id/>'
+                    + '          <from-display/>'
+                    + '          <to-display/>'
                     + '        </active-call>'
                     + '      </item>'
                     + '    </items>'
@@ -347,6 +355,47 @@ OXTest.ActiveCalls = new YAHOO.tool.TestCase({
 
     Assert.isNotUndefined(this.ActiveCalls.Item.branch,
                           'ActiveCalls.Item.branch is undefined');
+  },
+
+  testFromAndToDisplay: function() {
+    var Assert = YAHOO.util.Assert;
+
+    Assert.isNotUndefined(this.ActiveCalls.Item.toDisplay,
+                          'ActiveCalls.Item.toDisplay is undefined');
+
+    Assert.isNotUndefined(this.ActiveCalls.Item.fromDisplay,
+                          'ActiveCalls.Item.fromDisplay is undefined');
+
+    var xml = '<message from="pubsub.active-calls.xmpp.onsip.com" to="foo!example.onsip.com@dashboard.onsip.com" >'
+                + '  <event xmlns="http://jabber.org/protocol/pubsub#event">'
+                + '    <items node="/example.onsip.com/foo" >'
+                + '      <item id="b5879e23d6a92cc11f01a29e466f7bd2" >'
+                + '        <active-call xmlns="onsip:active-calls" publish-time="2009-11-23T:328:22Z">'
+                + '          <dialog-state>confirmed</dialog-state>'
+                + '          <to-aor>foo@example.onsip.com</to-aor>'
+                + '          <call-id>ZDU0YTJhMWEzZWI3NWNmNmRkZTBhN2VmZmRmMGNkNGQ.</call-id>'
+                + '          <from-uri>sip:other@example.onsip.com</from-uri>'
+                + '          <to-uri>sip:foo@example.onsip.com</to-uri>'
+                + '          <from-tag>53498145</from-tag>'
+                + '          <to-tag>as11173b9d</to-tag>'
+                + '          <branch>z9hG4bK7bb6.4c45a015.0</branch>'
+                + '          <call-setup-id/>'
+                + '          <from-display>Bert</from-display>'
+                + '          <to-display>Ernie</to-display>'
+                + '        </active-call>'
+                + '      </item>'
+                + '    </items>'
+                + '  </event>'
+                + '  <headers xmlns="http://jabber.org/protocol/shim">'
+                + '    <header name="Collection" >/me/foo!example.onsip.com@dashboard.onsip.com</header>'
+                + '  </headers>'
+                + '</message>';
+
+    var element = OXTest.DOMParser.parse(xml);
+    var item = this.ActiveCalls.itemFromElement(element.doc);
+
+    Assert.areSame('Ernie', item.toDisplay, 'item.toDisplay is incorrect');
+    Assert.areSame('Bert', item.fromDisplay, 'item.fromDisplay is incorrect');
   }
 
 });
