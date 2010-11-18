@@ -134,6 +134,12 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
     /** The tag for the terminating leg of the call. */
     toTag: null,
 
+    /** Caller ID information for the caller */
+    fromDisplay: null,
+
+    /** Caller ID information for the callee */
+    toDisplay: null,
+
     /** The branch tag for this pre-dialog event. */
     branch: null,
 
@@ -235,6 +241,12 @@ OX.Services.ActiveCalls = OX.Base.extend(OX.Mixins.Subscribable, /** @lends OX.S
         break;
       case 'call-setup-id':
         attrs.callSetupID = node.firstChild && node.firstChild.nodeValue;
+        break;
+      case 'from-display':
+        attrs.fromDisplay = node.firstChild && node.firstChild.nodeValue;
+        break;
+      case 'to-display':
+        attrs.toDisplay = node.firstChild && node.firstChild.nodeValue;
         break;
       }
     }
