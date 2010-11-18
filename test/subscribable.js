@@ -413,11 +413,58 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
       }
     });
 
+
     Assert.isSubscribe(this.conn._data, 'pubsub@example.com', '/',
                        'mock@example.com',
                        {expire:             '2009-06-08T05:20:10.0708000Z',
                         subscription_depth: 'all',
                         subscription_type:  'items'});
+  },
+
+  testSubscribeWithReuseSubscription: function () {
+    var Assert = YAHOO.util.Assert;
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      "<iq type='result'\
+           from='pubsub@example.com'\
+           to='mock@example.com'\
+           id='subscriptions1'>\
+        <pubsub xmlns='http://jabber.org/protocol/pubsub'>\
+          <subscriptions>\
+            <subscription node='node1' jid='mock@example.com' subscription='subscribed'/>\
+            <subscription node='node2' jid='mock@example.com' subscription='subscribed' subid='abc-123'/>\
+            <subscription node='node5' jid='mock@example.com' subscription='unconfigured'/>\
+            <subscription node='node6' jid='mock@example.com' subscription='pending'/>\
+          </subscriptions>\
+        </pubsub>\
+      </iq>"));
+
+    var win = false, fail = false;
+    var options = { expire: new Date(2009, 5, 8, 1, 20, 10, 708),
+                    subscription_depth: 'all',
+                    subscription_type: 'items' };
+
+    this.Subscribable.subscribe('/', options, {
+      onSuccess: function () {
+        win = true;
+      },
+      onError: function () {
+        fail = true;
+      }
+    }, true);
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      '<iq from="pubsub@example.com"\
+           to="mock@example.com"\
+           id="test">\
+         <pubsub xmlns="http://jabber.org/protocol/pubsub">\
+           <subscription node="node1"\
+                         jid="mock@example.com"\
+                         subscription="subscribed"/>\
+         </pubsub>\
+       </iq>'));
+    
+    Assert.isTrue(win);
+    Assert.isFalse(fail);
   },
 
   testSubscribeError: function () {
