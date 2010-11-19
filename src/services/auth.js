@@ -36,41 +36,30 @@ OX.Service.Auth = OX.Base.extend(OX.Mixin.EntityTime, /** @lends OX.Service.Auth
    *
    * @param {String} address The SIP address for authentication.
    * @param {String} password The web password for the SIP address.
-   * @param {String} [jid] The JID to authorize for the SIP address. If unspecified, use the current JID from the underlying connection.
    * @param {Object} [callbacks] An object supplying functions for 'onSuccess', and 'onError'.
+   * @param {Object} [options]
+   *   @param {String} options.jid The JID to authorize for the SIP address. If unspecified, use the current JID from the underlying connection.
+   *   @param {String} options.authForAll Authorize this JID for all SIP addresses associated with it.
+
    * @returns {void}
    *
    * @example
-   *   ox.Auth.authorizePlain('sip@example.com', 'password', 'jid@example.com', {
+   *   ox.Auth.authorizePlain('sip@example.com', 'password', {
    *     onSuccess: function () {},
    *     onError:   function (error) {}
-   *   });
+   *   }, { jid: 'jid@example.com', authForAll: true });
    */
-  authorizePlain: function (address, password, jid, authForAll) {
+  authorizePlain: function (address, password, callbacks, options) {
     var iq    = OX.XML.XMPP.IQ.extend(),
         cmd   = OX.XML.XMPP.Command.extend(),
         xData = OX.XML.XMPP.XDataForm.extend(),
-        uri   = OX.Settings.URIs.command.authorizePlain;
+        uri   = OX.Settings.URIs.command.authorizePlain,
+        authForAll, jid;
 
-    var callbacks = {};
-    if (arguments.length > 0 &&
-        arguments[arguments.length - 1] &&
-        (arguments[arguments.length - 1].onSuccess || arguments[arguments.length - 1].onError)) {
-      callbacks = arguments[arguments.length - 1];
-
-      if (authForAll === callbacks) {
-        authForAll = null;
-      }
-      if (jid === callbacks) {
-        jid = null;
-      }
-      if (password === callbacks) {
-        password = null;
-      }
-      if (address === callbacks) {
-        address = null;
-      }
-    }
+    options = options || {};
+    callbacks = callbacks || {};
+    authForAll = !!options.authForAll;
+    jid = options.jid;
 
     iq.to(uri.path);
     iq.type('set');

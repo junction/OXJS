@@ -32,7 +32,7 @@ OXTest.Rosters = new YAHOO.tool.TestCase({
   testPushRosterGroupsWithJID: function () {
     var Assert = YAHOO.util.Assert;
 
-    this.Rosters.pushRosterGroups('enoch@jid-example.com');
+    this.Rosters.pushRosterGroups(null, { jid: 'enoch@jid-example.com' });
 
     Assert.isCommand(this.conn._data, 'commands.rosters.xmpp.onsip.com',
                      'push-roster-groups',

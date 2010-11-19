@@ -46,7 +46,7 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     this.Auth.authorizePlain('odysseus@sip-example.com', 'password',
-                             'odysseus@jid-example.com');
+                             null, { jid: 'odysseus@jid-example.com' });
 
     Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
                      'authorize-plain',
@@ -60,9 +60,10 @@ OXTest.Auth = new YAHOO.tool.TestCase({
     var Assert = YAHOO.util.Assert;
 
     this.Auth.authorizePlain('odysseus@sip-example.com',
-                             'password',
-                             'odysseus@jid-example.com',
-                             true);
+                             'password', null, {
+                               jid: 'odysseus@jid-example.com',
+                               authForAll: true
+                             });
 
     Assert.isCommand(this.conn._data, 'commands.auth.xmpp.onsip.com',
                      'authorize-plain',
@@ -142,13 +143,13 @@ OXTest.Auth = new YAHOO.tool.TestCase({
                                                       + '</field></x></command></iq>'));
 
     var isObject = false, successFlag = false, errorFlag = false;
-    this.Auth.authorizePlain('alice@example.com', 'password', null, true, {
+    this.Auth.authorizePlain('alice@example.com', 'password', {
       onSuccess: function (packet) {
         successFlag = true;
         Assert.isObject(packet, 'Packet should be an object');
       },
       onError:   function () { errorFlag   = true; }
-    });
+    }, { authForAll: true });
 
     Assert.isFalse(errorFlag, 'Got error trying to auth plain.');
     Assert.isTrue(successFlag, 'Was not successful trying to auth plain.');

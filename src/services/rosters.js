@@ -18,30 +18,30 @@ OX.Service.Rosters = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service
    * modify requests for any user's who have changed contact information, and
    * delete requests for any users who may have been deleted.
    *
-   * @param {String} [jid] The full JID to push roster groups to; if not provided, the JID in the IQ 'from' attribute will be assumed.
    * @param {Object} [callbacks] Callbacks with 'onSuccess' and 'onError'
    *   @param {Function} [callbacks.onSuccess] The success callback
    *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet recieved.
    *   @param {Function} [callbacks.onError] The error callback
    *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
+   * @param {Object} [options]
+   *   @param {String} options.jid The full JID to push roster groups to; if not provided, the JID in the IQ 'from' attribute will be assumed.
    * @returns {void}
    *
    * @example
-   * ox.Rosters.pushRosterGroups('jid@example.com', {
+   * ox.Rosters.pushRosterGroups({
    *   onSuccess: function () {},
    *   onError:   function (error) {}
-   * });
+   * }, { jid: 'jid@example.com' });
    */
-  pushRosterGroups: function (jid) {
+  pushRosterGroups: function (callbacks, options) {
     var iq    = OX.XML.XMPP.IQ.extend(),
         cmd   = OX.XML.XMPP.Command.extend(),
         xData = OX.XML.XMPP.XDataForm.extend(),
-        uri   = OX.Settings.URIs.command.pushRosterGroups;
+        uri   = OX.Settings.URIs.command.pushRosterGroups,
+        jid;
 
-    var callbacks = {};
-    if (arguments.length > 0 && arguments[arguments.length - 1]) {
-      callbacks = arguments[arguments.length - 1];
-    }
+    callbacks = callbacks || {};
+    jid = options && options.jid;
 
     iq.to(uri.path);
     iq.type('set');
