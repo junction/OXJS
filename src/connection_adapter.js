@@ -36,7 +36,10 @@ OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
    * The JID of this connection.
    * @returns {String} The JID provided by your BOSH library.
    */
-  jid: function () {},
+  jid: function () {
+    throw new OX.Error("You MUST override OX.ConnectionAdapter#jid " +
+                       "so it returns the JID of the BOSH connection.");
+  },
 
   /**
    * Send an XML string to the underlying connection.
@@ -48,7 +51,10 @@ OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
    *
    * @see OX.Connection#send
    */
-  send: function (xml, callback, args) {},
+  send: function (xml, callback, args) {
+    throw new OX.Error("You MUST override OX.ConnectionAdapter#send " +
+                       "so it will send XML over the BOSH connection.");
+  },
 
   /**
    * Registers an event handler.
@@ -60,7 +66,10 @@ OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
    * @see OX.ConnectionAdapter#unregisterHandler
    * @see OX.Connection#registerJIDHandler
    */
-  registerHandler: function (event, handler) {},
+  registerHandler: function (event, handler) {
+    throw new OX.Error("You MUST override OX.ConnectionAdapter#registerHandler " +
+                       "so it will handle events the BOSH connection recieves.");
+  },
 
   /**
    * Unregisters an event handler.
@@ -71,6 +80,9 @@ OX.ConnectionAdapter = OX.Base.extend(/** @lends OX.ConnectionAdapter# */{
    * @see OX.ConnectionAdapter#registerHandler
    * @see OX.Connection#unregisterJIDHandler
    */
-  unregisterHandler: function (event) {}
+  unregisterHandler: function (event) {
+    throw new OX.Error("You MUST override OX.ConnectionAdapter#unregisterHandler " +
+                       "so it will remove event handlers on the BOSH connection.");
+  }
 
 });

@@ -18,6 +18,19 @@ OXTest.ConnectionAdapter = new YAHOO.tool.TestCase({
     Assert.isFunction(OX.ConnectionAdapter.unregisterHandler,
                       'OX.ConnectionAdapter.unregisterHandler is not a function.');
 
+  },
+
+  testRequiredInterface: function () {
+    var Assert = YAHOO.util.Assert;
+    Assert.throws(OX.Error, OX.ConnectionAdapter.jid,
+                  'Calling jid() without overriding the function SHOULD throw an error');
+    Assert.throws(OX.Error, OX.ConnectionAdapter.send,
+                  'Calling send() without overriding the function SHOULD throw an error');
+    Assert.throws(OX.Error, OX.ConnectionAdapter.registerHandler,
+                  'Calling registerHandler() without overriding the function SHOULD throw an error');
+
+    Assert.throws(OX.Error, OX.ConnectionAdapter.unregisterHandler,
+                  'Calling unregisterHandler() without overriding the function SHOULD throw an error');
   }
 });
 
