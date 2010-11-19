@@ -1,3 +1,6 @@
+/**
+ * http://www.jslint.com/lint.html#options
+ */
 options = {
    devel: true,
    eqeqeq: true,
@@ -5,6 +8,7 @@ options = {
    undef: true,
    white: true,
    browser: true,
+   laxbreak: true,
    indent: 2,
    predef: ['Element', 'window', 'OX', 'ActiveXObject', 'DOMParser']
 };
