@@ -69,6 +69,30 @@ OXTest.Base = new YAHOO.tool.TestCase({
     Assert.areEqual('foo', foo.bar(), "'foo' was expected");
     Assert.areEqual('foobar', fooBar.bar(), "'foobar' was expected");
     Assert.areEqual('foobarbaz', fooBarBaz.bar(), "'foobarbaz' was expected");
+  },
+
+  testMixinUndefinedOrNullArguments: function() {
+    var Assert = YAHOO.util.Assert;
+    var foo = OX.Base.mixin.call({
+      name: "foo"
+    }, undefined);
+
+    Assert.areEqual("foo", foo.name, "foo should have a name 'foo'");
+
+    var bar = OX.Base.mixin.call({
+      name: "bar"
+    }, null);
+
+    Assert.areEqual("bar", bar.name, "bar should have a name 'bar'");
+  },
+
+  testMixinOverridesValues: function() {
+    var Assert = YAHOO.util.Assert;
+    var bart = OX.Base.mixin.call({
+      name: "Bart Simpson"
+    }, {name: "Bartolomeu"});
+
+    Assert.areEqual("Bartolomeu", bart.name, "bart should be 'Bartolomeu'");
   }
 
 });
