@@ -8,7 +8,18 @@
  */
 OX.Mixin.Subscribable = (function () {
   /**#nocode+*/
+  var MAX_REDIRECTS = 5,
+    cbDefault = {
+      onSuccess: function () {}.inferior(),
+      onError: function () {}.inferior()
+    },
+    doSubscribe; // fix circular ref for jslint
+
   function packetType(element) {
+    if (!element) {
+      return null;
+    }
+
     switch (element.tagName) {
     case 'subscription':
       return element.getAttribute('subscription');
@@ -18,7 +29,7 @@ OX.Mixin.Subscribable = (function () {
       }
       return 'publish';
     default:
-      return undefined;
+      return null;
     }
   }
 
@@ -68,6 +79,19 @@ OX.Mixin.Subscribable = (function () {
     }
 
     return rc;
+  }
+
+  function redirectURIFromPacket(packet) {
+    var e = packet && packet.getNode().getElementsByTagName('error')[0],
+      fChild = e && e.firstChild,
+      tName = fChild && fChild.tagName,
+      uri = fChild && fChild.firstChild && fChild.firstChild.nodeValue;
+
+    return packet
+      && packet.getType() === 'error'
+      && (tName === 'redirect' || tName === 'gone')
+      && uri
+      && OX.URI.parse(uri) || null;
   }
 
   function fireEvent(type, packet) {
@@ -168,7 +192,7 @@ OX.Mixin.Subscribable = (function () {
         }
 
         subscriptions.push({
-          node: subElements[i].getAttribute('node') || '/',
+          node: subElements[i].getAttribute('node'),
           jid: subElements[i].getAttribute('jid'),
           subscription: subElements[i].getAttribute('subscription'),
           subid: subElements[i].getAttribute('subid')
@@ -179,7 +203,7 @@ OX.Mixin.Subscribable = (function () {
     }
   }
 
-  function configureNodeHandler(packet, subscription, options, callbacks) {
+  function configureNodeSubscriptionHandler(packet, subscription, options, callbacks) {
     if (!packet) {
       return;
     }
@@ -194,48 +218,39 @@ OX.Mixin.Subscribable = (function () {
     }
   }
 
-  function subscriptionHandler(packet, node, options, callbacks,
-                               origNode, redirects) {
-    callbacks = callbacks || {};
-    redirects = redirects || 0;
-
+  function subscriptionHandler(packet, node, subOptions, callbacks, options) {
     if (!packet) {
       return;
     }
 
-    var finalURI = this.pubSubURI.extend({query: ';node=' + node}),
-        reqURI   = this.pubSubURI.extend({query: ';node=' + (origNode || node)});
-    if (packet.getType() === 'error') {
-      var error = packet.getNode().getElementsByTagName('error')[0];
-      if (redirects < 5 && error && error.firstChild &&
-          (error.firstChild.tagName === 'redirect' ||
-           error.firstChild.tagName === 'gone')) {
-        var uri;
-        if (window.ActiveXObject) {
-          // Browser is IE
-          uri = OX.URI.parse(error.firstChild.text);
-        } else {
-          uri = OX.URI.parse(error.firstChild.textContent);
-        }
-        var path    = uri.path,
-            newNode = uri.queryParam('node');
-        if (path && newNode) {
-          doSubscribe.call(this, newNode, options, callbacks,
-                           origNode, redirects + 1);
-        }
-      } else if (callbacks.onError) {
-        callbacks.onError(reqURI, finalURI, packet);
-      }
-    } else {
-      if (callbacks.onSuccess) {
-        callbacks.onSuccess(reqURI, finalURI, packet);
-      }
+    var that = this,
+      optDefaults = {
+        redirectCount: 0,
+        origURI: that.pubSubURI.extend({query: ';node=' + node}) // this will only be set the first time
+      },
+      redirectURI = redirectURIFromPacket(packet);
+
+    options = OX.Base.mixin.call(optDefaults, options, {
+      finalURI: that.pubSubURI.extend({query: ';node=' + node}) // this will be set every time
+    });
+
+    callbacks = OX.Base.mixin.call(callbacks, cbDefault);
+
+    if (packet.getType() === 'result') {
+      callbacks.onSuccess(options.origURI, options.finalURI, packet);
 
       var pubSub = packet.getNode().getElementsByTagName('pubsub')[0] || {},
           subscription = pubSub.firstChild;
-      if (subscription && subscription.tagName === 'subscription') {
-        fireEvent.call(this, packetType(subscription), packet);
-      }
+      fireEvent.call(this, packetType(subscription), packet);
+    } else if (options.redirectCount < MAX_REDIRECTS
+               && redirectURI
+               && redirectURI.path
+               && redirectURI.queryParam('node')) {
+
+      options.redirectCount += 1;
+      doSubscribe.call(this, redirectURI.queryParam('node'), subOptions, callbacks, options);
+    } else {
+      callbacks.onError(options.origURI, options.finalURI, packet);
     }
   }
 
@@ -304,7 +319,7 @@ OX.Mixin.Subscribable = (function () {
     }
   };
 
-  function objectToOptionsForm(options) {
+  function objectToSubscriptionOptionsForm(options) {
     var xData = OX.XML.XMPP.XDataForm.create({type: 'submit'}),
         opts  = OX.XML.Element.extend({name: 'options'}).create({}, xData);
 
@@ -323,7 +338,7 @@ OX.Mixin.Subscribable = (function () {
     return opts;
   }
 
-  function doConfigureNode(subscription, options, callbacks) {
+  function doConfigureNodeSubscription(subscription, subOptions, callbacks) {
     var iq = OX.XML.XMPP.IQ.extend(),
         pubsub = OX.XML.XMPP.PubSub.extend();
 
@@ -331,9 +346,7 @@ OX.Mixin.Subscribable = (function () {
     iq.type('set');
     iq.addChild(pubsub);
 
-    options = options || {};
-
-    var opts = objectToOptionsForm.call(this, options);
+    var opts = objectToSubscriptionOptionsForm.call(this, subOptions);
     opts.attr('node', subscription.node);
     opts.attr('jid', subscription.jid);
     opts.attr('subid', subscription.subid);
@@ -342,17 +355,16 @@ OX.Mixin.Subscribable = (function () {
 
     var that = this;
     var wrappedCb = function () {
-          configureNodeHandler.apply(that, arguments);
+          configureNodeSubscriptionHandler.apply(that, arguments);
         },
-        wrappedArgs = [subscription, options, callbacks];
+        wrappedArgs = [subscription, subOptions, callbacks];
 
     this.connection.send(iq.toString(), wrappedCb, wrappedArgs);
   }
 
-  function doSubscribe(node, options, callbacks, origNode, redirectCount) {
+  doSubscribe = function (node, subOptions, callbacks) {
     var iq        = OX.XML.XMPP.IQ.extend(),
-        pubsub    = OX.XML.Element.extend({name:  'pubsub',
-                                       xmlns: 'http://jabber.org/protocol/pubsub'}),
+        pubsub    = OX.XML.XMPP.PubSub.extend(),
         subscribe = OX.XML.Element.extend({name: 'subscribe'});
 
     iq.to(this.pubSubURI.path);
@@ -360,8 +372,9 @@ OX.Mixin.Subscribable = (function () {
     subscribe.attr('node', node);
     subscribe.attr('jid', this.connection.getJID());
     pubsub.addChild(subscribe);
-    if (options) {
-      var opts = objectToOptionsForm.call(this, options);
+
+    if (subOptions) {
+      var opts = objectToSubscriptionOptionsForm.call(this, subOptions);
       pubsub.addChild(opts);
     }
     iq.addChild(pubsub);
@@ -371,9 +384,8 @@ OX.Mixin.Subscribable = (function () {
       subscriptionHandler.apply(that, arguments);
     };
 
-    this.connection.send(iq.toString(), cb,
-                         [node, options, callbacks, origNode, redirectCount]);
-  }
+    this.connection.send(iq.toString(), cb, [node, subOptions, callbacks]);
+  };
 
   function doGetSubcriptions(node, callbacks, origNode, redirectCount, strict) {
     var iq = OX.XML.XMPP.IQ.extend(),
@@ -470,7 +482,6 @@ OX.Mixin.Subscribable = (function () {
      *
      * @see <a href="http://xmpp.org/extensions/xep-0060.html#entity-subscriptions">XEP: 0060 - Entity Subscriptions</a>
      *
-     * @param {String} [node] The node name to request subscriptions on. Omitting the node name implies all nodes
      * @param {Object} callbacks an object supplying functions for 'onSuccess' and 'onError'
      *   @param {Function} callbacks.onSuccess The success callback.
      *     @param {OX.URI} callbacks.onSuccess.requestedURI The URI you requested.
@@ -481,14 +492,16 @@ OX.Mixin.Subscribable = (function () {
      *     @param {OX.URI} callbacks.onError.requestedURI The URI you requested.
      *     @param {OX.URI} callbacks.onError.finalURI The redirected URI that your requested URI maps to.
      *     @param {OX.PacketAdapter} callbacks.onError.packet The packet recieved.
-     * @param {Boolean} [strictJIDMatch] Only apply callbacks to subscriptions that match the exact JID as the current connection.
+     * @param {Object} [options]
+     *   @param {String} options.node The node name to request subscriptions on. Omitting the node name implies all nodes
+     *   @param {Boolean} options.strict Only apply callbacks to subscriptions that match the exact JID as the current connection.
      * This will NOT match a bare JID to a full JID.
      *
      * @example
-     *   service.getSubscriptions('/', {
+     *   service.getSubscriptions({
      *     onSuccess: function (requestedURI, finalURI, subscriptions, packet) {},
      *     onError: function (requestedURI, finalURI, packet)
-     *   });
+     *   }, {node: '/'});
      *
      * @example
      *   service.getSubscriptions({
@@ -496,30 +509,27 @@ OX.Mixin.Subscribable = (function () {
      *     onError: function (requestedURI, finalURI, packet)
      *   });
      */
-    getSubscriptions: function (node, callbacks, strictJIDMatch) {
-      if (arguments.length === 1) {
-        callbacks = arguments[0];
-        node = undefined;
-        strictJIDMatch = undefined;
-      } else if (arguments.length === 2 &&
-                 (arguments[0].hasOwnProperty('onSucess') || arguments[0].hasOwnProperty('onError'))) {
-        callbacks = arguments[0];
-        strictJIDMatch = arguments[1];
-        node = undefined;
-      }
+    getSubscriptions: function (callbacks, options) {
+      options = options || {};
 
-      doGetSubcriptions.call(this, node, callbacks, node, 0, strictJIDMatch);
+      var node = options.node,
+        strict = options.strict;
+
+      doGetSubcriptions.call(this, node, callbacks, node, 0, strict);
     },
 
-    configureNode: function (subscription, options, callbacks) {
-      doConfigureNode.apply(this, arguments);
+    /**
+     * @see http://xmpp.org/extensions/xep-0060.html#subscriber-configure-submit
+     */
+    configureNodeSubscription: function (subscription, subOptions, callbacks) {
+      doConfigureNodeSubscription.apply(this, arguments);
     },
 
     /**
      * Subscribe to a nade.
      *
      * @param {String} node The node ID to subscribe to.
-     * @param {Object} [options] Subscription options.
+     * @param {Object} [subOptions] Subscription options
      * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'.
      *   @param {Function} [callbacks.onSuccess] The success callback.
      *     @param {OX.URI} [callbacks.onSuccess.requestedURI] The URI you requested.
@@ -527,26 +537,18 @@ OX.Mixin.Subscribable = (function () {
      *   @param {Function} [callbacks.onError] The error callback.
      *     @param {OX.URI} [callbacks.onError.requestedURI] The URI you requested.
      *     @param {OX.URI} [callbacks.onError.finalURI] The redirected URI that your requested URI maps to.
-     * 
-     * @example
-     *   service.subscribe('/', {
-     *     onSuccess: function (requestedURI, finalURI) {},
-     *     onError:   function (requestedURI, finalURI) {}
-     *   });
      *
-     *   var options = {expires: new Date()};
-     *   service.subscribe('/', options, {
+     * @example
+     *   var subOptions = {expires: new Date()};
+     *   service.subscribe('/', subOptions, {
      *     onSuccess: function (requestedURI, finalURI) {},
      *     onError:   function (requestedURI, finalURI) {}
      *   });
      */
-    subscribe: function (node, options, callbacks) {
-      if (arguments.length === 2) {
-        callbacks = options;
-        options   = undefined;
-      }
+    subscribe: function (node, subOptions, callbacks) {
+      subOptions = subOptions || {};
 
-      doSubscribe.call(this, node, options, callbacks, node, 0);
+      doSubscribe.call(this, node, subOptions, callbacks);
     },
 
     /**
