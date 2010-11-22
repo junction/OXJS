@@ -91,30 +91,30 @@ OX.Mixin.Subscribable = (function () {
            uri && OX.URI.parse(uri) || null;
   }
 
-  function pubSubPacketHandler(actions, packet, node, options, self) {
+  function pubSubPacketHandler(actions, packet, node, options, that) {
     if (!packet) {
       return;
     }
-    self = self || this;
+    that = that || this;
     var optDefaults = {
       redirectCount: 0,
-      origURI: node ? self.pubSubURI.extend({query: ';node=' + node}): self.pubSubURI // this will only be set the first time
+      origURI: node ? that.pubSubURI.extend({query: ';node=' + node}): that.pubSubURI // this will only be set the first time
     }, redirectURI = redirectURIFromPacket(packet);
 
     options = OX.Base.mixin.call(optDefaults, options, {
-      finalURI: node ? self.pubSubURI.extend({query: ';node=' + node}): self.pubSubURI // this will be set every time
+      finalURI: node ? that.pubSubURI.extend({query: ';node=' + node}): that.pubSubURI // this will be set every time
     });
 
     if (packet.getType() === 'result') {
-      actions.result.call(self, packet, node, options);
+      actions.result.call(that, packet, node, options);
     } else if (options.redirectCount < MAX_REDIRECTS &&
                redirectURI && redirectURI.path &&
                redirectURI.queryParam('node')) {
 
       options.redirectCount += 1;
-      actions.redirect.call(self, packet, redirectURI.queryParam('node'), options);
+      actions.redirect.call(that, packet, redirectURI.queryParam('node'), options);
     } else {
-      actions.error.call(self, packet, node, options);
+      actions.error.call(that, packet, node, options);
     }
   }
 

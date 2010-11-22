@@ -62,9 +62,9 @@ OX.Base.mixin.call(Function.prototype, /** @scope Function.prototype */{
     var empty = function () {},
     slice = Array.prototype.slice,
     /** @ignore */
-    bind = function (lambda, self) {
+    bind = function (lambda, that) {
       return function () {
-        return lambda.apply(self, arguments);
+        return lambda.apply(that, arguments);
       };
     };
 
