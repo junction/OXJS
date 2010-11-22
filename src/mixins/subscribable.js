@@ -183,7 +183,7 @@ OX.Mixin.Subscribable = (function () {
     fireEvent.call(this, packetType(event.firstChild), packet);
   }
 
-  function getSubscriptionsHandler(packet, callbacks, node, options) {
+  function getSubscriptionsHandler(packet, node, callbacks, options) {
     callbacks = OX.Base.mixin.call(callbacks, cbDefault);
 
     pubSubPacketHandler({
@@ -335,6 +335,22 @@ OX.Mixin.Subscribable = (function () {
     return opts;
   }
 
+  function doReuseSubscriptionsOrSubscribe(node, subOptions, callbacks) {
+    var that = this;
+    doGetSubscriptions.call(this, node, {
+      onSuccess: function (reqURI, finalURI, subscriptions) {
+        if (subscriptions.length > 0) {
+          console.log(subscriptions[0], subscriptions[0].node);
+          subscriptions[0].node = node;
+          doConfigureNodeSubscription.call(that, subscriptions[0], subOptions, callbacks);
+        } else {
+          doSubscribe.call(that, node, subOptions, callbacks);
+        }
+      },
+      onError: callbacks.onError
+    }, { strict: true });
+  }
+
   doConfigureNodeSubscription = function (subscription, subOptions, callbacks, options) {
     var iq = OX.XML.XMPP.IQ.extend(),
         pubsub = OX.XML.XMPP.PubSub.extend();
@@ -383,7 +399,7 @@ OX.Mixin.Subscribable = (function () {
     this.connection.send(iq.toString(), cb, [node, subOptions, callbacks, options]);
   };
 
-  doGetSubscriptions = function (callbacks, node, options) {
+  doGetSubscriptions = function (node, callbacks, options) {
     var iq = OX.XML.XMPP.IQ.extend(),
         pub = OX.XML.XMPP.PubSub.extend(),
         sub = OX.XML.Element.extend({name: 'subscriptions'});
@@ -544,6 +560,8 @@ OX.Mixin.Subscribable = (function () {
      *     @param {OX.URI} [callbacks.onError.requestedURI] The URI you requested.
      *     @param {OX.URI} [callbacks.onError.finalURI] The redirected URI that your requested URI maps to.
      *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet that contains the error.
+     * @param {Object} [options] Optional arguments.
+     *   @param {Boolean} [options.reuseSubscriptions] Tells subscribe to lookup subscriptions on the requested node, then reuse any if they exist. If none exist, it will create a new subscription.
      *
      * @example
      *   var subOptions = {expires: new Date()};
@@ -552,10 +570,13 @@ OX.Mixin.Subscribable = (function () {
      *     onError:   function (requestedURI, finalURI) {}
      *   });
      */
-    subscribe: function (node, subOptions, callbacks) {
-      subOptions = subOptions || {};
-
-      doSubscribe.call(this, node, subOptions, callbacks);
+    subscribe: function (node, subOptions, callbacks, options) {
+      options = options || {};
+      if (options.reuseSubscriptions) {
+        doReuseSubscriptionsOrSubscribe.call(this, node, subOptions, callbacks);
+      } else {
+        doSubscribe.call(this, node, subOptions, callbacks, options);
+      }
     },
 
     /**
