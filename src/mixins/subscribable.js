@@ -560,19 +560,17 @@ OX.Mixin.Subscribable = (function () {
 
       var that = this;
       if (options.reuseSubscriptions) {
-        var tmpOpts = {
-          strict: true,
-          node: node
-        };
-
         this.getSubscriptions({
-          onSuccess: function(requestedURI, finalURI, subs, packet) {
+          onSuccess: function (requestedURI, finalURI, subs, packet) {
             var resubscribed = false,
-              finalNode = finalURI.queryParam('node');
+                finalNode = finalURI.queryParam('node');
 
-            for (var i=0,l=subs.length;i<l;i++) {
-              if (subs[i].subscription == 'subscribed' && subs[i].node == finalNode) {
-                that.configureNodeSubscription(subs[i],subOptions,callbacks);
+            for (var i = 0, len = subs.length; i < len; i++) {
+              if (subs[i].subscription === 'subscribed' &&
+                  subs[i].node === finalNode) {
+                that.configureNodeSubscription(subs[i], subOptions, callbacks, {
+                  origURI: requestedURI
+                });
                 resubscribed = true;
                 break;
               }
@@ -580,11 +578,11 @@ OX.Mixin.Subscribable = (function () {
 
             if (!resubscribed) {
               options.reuseSubscriptions = false;
-              that.subscribe(node,subOptions,callbacks,options);
+              that.subscribe(node, subOptions, callbacks, options);
             }
           },
           onError: callbacks.onError
-        },tmpOpts);
+        }, { strict: true, node: node });
       } else {
         doSubscribe.call(this, node, subOptions, callbacks, options);
       }

@@ -531,7 +531,8 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.conn.addResponse(OXTest.Packet.extendWithXML(
       '<iq from="pubsub@example.com"\
            to="mock@example.com"\
-           id="test" type="result">\
+           id="test"\
+           type="result">\
          <pubsub xmlns="http://jabber.org/protocol/pubsub">\
            <subscription node="princely_musings"\
                          jid="mock@example.com"\
@@ -546,9 +547,11 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                     subscription_type: 'items' };
 
     this.Subscribable.subscribe('princely_musings', options, {
-      onSuccess: function () {
-        Assert.areEqual(arguments[0], 'princely_musings', 'princely_musings is orig node');
-        Assert.areEqual(arguments[1], 'princely_musings', 'princely_musings is final node');
+      onSuccess: function (origURI, finalURI, packet) {
+        Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is orig node');
+        Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is final node');
         Assert.areEqual(arguments.length, 3, 'arguments.length should be 3');
         win = true;
       },
@@ -571,10 +574,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
            id='subscriptions1'>\
         <pubsub xmlns='http://jabber.org/protocol/pubsub'>\
           <subscriptions>\
-            <subscription node='other-node' jid='mock@example.com' subscription='subscribed' subid='abc'/>\
-            <subscription node='other-node' jid='mock@example.com' subscription='subscribed' subid='123'/>\
-            <subscription node='other-node' jid='mock@example.com' subscription='unconfigured'/>\
-            <subscription node='other-node' jid='mock@example.com' subscription='pending'/>\
+            <subscription node='princely_musings' jid='mock@example.com' subscription='unconfigured'/>\
+            <subscription node='princely_musings' jid='mock@example.com' subscription='pending'/>\
+            <subscription node='princely_musings' jid='mock@example.com' subscription='subscribed' subid='abc'/>\
+            <subscription node='princely_musings' jid='mock@example.com' subscription='subscribed' subid='123'/>\
           </subscriptions>\
         </pubsub>\
       </iq>"));
@@ -582,9 +585,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.conn.addResponse(OXTest.Packet.extendWithXML(
       '<iq from="pubsub@example.com"\
            to="mock@example.com"\
-           id="test">\
+           id="test"\
+           type="result">\
          <pubsub xmlns="http://jabber.org/protocol/pubsub">\
-           <subscription node="node1"\
+           <subscription node="princely_musings"\
                          jid="mock@example.com"\
                          subscription="subscribed"/>\
          </pubsub>\
@@ -596,16 +600,21 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                     subscription_depth: 'all',
                     subscription_type: 'items' };
 
-    this.Subscribable.subscribe('other-node', options, {
-      onSuccess: function () {
-        Assert.areEqual(arguments[0], 'other-node', 'other-node is orig node');
-        Assert.areEqual(arguments[1], 'other-node', 'other-node is final node');
+    this.Subscribable.subscribe('princely_musings', options, {
+      onSuccess: function (origURI, finalURI, packet) {
+        Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is orig node');
+        Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is final node');
+        Assert.areEqual(arguments.length, 3, 'arguments.length should be 3');
         win = true;
       },
       onError: function () {
         fail = true;
       }
     }, { reuseSubscriptions: true });
+
+    Assert.isConfigure(this.conn._data, 'pubsub@example.com', 'princely_musings', 'mock@example.com', 'abc', options);
 
     Assert.isTrue(win);
     Assert.isFalse(fail);
@@ -640,9 +649,10 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     this.conn.addResponse(OXTest.Packet.extendWithXML(
       '<iq from="pubsub@example.com"\
            to="mock@example.com"\
-           id="test">\
+           id="test"\
+           type="result">\
          <pubsub xmlns="http://jabber.org/protocol/pubsub">\
-           <subscription node="node1"\
+           <subscription node="other-node"\
                          jid="mock@example.com"\
                          subscription="subscribed"/>\
          </pubsub>\
@@ -655,15 +665,186 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
                     subscription_type: 'items' };
 
     this.Subscribable.subscribe('/', options, {
-      onSuccess: function () {
-        Assert.areEqual(arguments[0], '/', '/ is orig node');
-        Assert.areEqual(arguments[1], 'other-node', 'other-node is final node');
+      onSuccess: function (origURI, finalURI) {
+        console.log(arguments);
+        Assert.areEqual(origURI.queryParam('node'), '/',
+                        '/ is orig node');
+        Assert.areEqual(finalURI.queryParam('node'), 'other-node',
+                        'other-node is final node');
+        Assert.areEqual(arguments.length, 3, 'arguments.length should be 3');
         win = true;
       },
       onError: function () {
         fail = true;
       }
     }, { reuseSubscriptions: true });
+
+    Assert.isTrue(win);
+    Assert.isFalse(fail);
+  },
+
+  testSubscribeWithReuseWithStrictJIDs: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      "<iq type='result'\
+           from='pubsub@example.com'\
+           to='mock@example.com'\
+           id='subscriptions1'>\
+        <pubsub xmlns='http://jabber.org/protocol/pubsub'>\
+          <subscriptions>\
+            <subscription node='princely_musings' jid='mock@example.com/le-petit-prince' subscription='subscribed' subid='abc'/>\
+            <subscription node='princely_musings' jid='mock@example.com/prince-igor' subscription='subscribed' subid='123'/>\
+            <subscription node='princely_musings' jid='mock@example.com' subscription='pending'/>\
+            <subscription node='princely_musings' jid='mock@example.com' subscription='subscribed' subid='456'/>\
+          </subscriptions>\
+        </pubsub>\
+      </iq>"));
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      '<iq from="pubsub@example.com"\
+           to="mock@example.com"\
+           id="test"\
+           type="result">\
+         <pubsub xmlns="http://jabber.org/protocol/pubsub">\
+           <subscription node="princely_musings"\
+                         jid="mock@example.com"\
+                         subscription="subscribed"/>\
+         </pubsub>\
+       </iq>'));
+
+
+    var win = false, fail = false;
+    var options = { expire: new Date(2009, 5, 8, 1, 20, 10, 708),
+                    subscription_depth: 'all',
+                    subscription_type: 'items' };
+
+    this.Subscribable.subscribe('princely_musings', options, {
+      onSuccess: function (origURI, finalURI) {
+        console.log(arguments);
+        Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is orig node');
+        Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is final node');
+        Assert.areEqual(arguments.length, 3, 'arguments.length should be 3');
+        win = true;
+      },
+      onError: function () {
+        fail = true;
+      }
+    }, { reuseSubscriptions: true });
+
+    Assert.isConfigure(this.conn._data, 'pubsub@example.com', 'princely_musings', 'mock@example.com', '456', options);
+
+    Assert.isTrue(win);
+    Assert.isFalse(fail);
+  },
+
+  testNoValidSubscriptionsAvailableOnReuseSubscriptions: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      "<iq type='result'\
+           from='pubsub@example.com'\
+           to='mock@example.com'\
+           id='subscriptions1'>\
+        <pubsub xmlns='http://jabber.org/protocol/pubsub'>\
+          <subscriptions>\
+            <subscription node='princely_musings' jid='mock@example.com/le-petit-prince' subscription='subscribed' subid='abc'/>\
+            <subscription node='princely_musings' jid='mock@example.com/prince-igor' subscription='subscribed' subid='123'/>\
+            <subscription node='princely_musings' jid='mock@example.com' subscription='pending'/>\
+          </subscriptions>\
+        </pubsub>\
+      </iq>"));
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      '<iq from="pubsub@example.com"\
+           to="mock@example.com"\
+           id="test"\
+           type="result">\
+         <pubsub xmlns="http://jabber.org/protocol/pubsub">\
+           <subscription node="princely_musings"\
+                         jid="mock@example.com"\
+                         subscription="subscribed"/>\
+         </pubsub>\
+       </iq>'));
+
+
+    var win = false, fail = false;
+    var options = { expire: new Date(2009, 5, 8, 1, 20, 10, 708),
+                    subscription_depth: 'all',
+                    subscription_type: 'items' };
+
+    this.Subscribable.subscribe('princely_musings', options, {
+      onSuccess: function (origURI, finalURI) {
+        console.log(arguments);
+        Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is orig node');
+        Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is final node');
+        Assert.areEqual(arguments.length, 3, 'arguments.length should be 3');
+        win = true;
+      },
+      onError: function () {
+        fail = true;
+      }
+    }, { reuseSubscriptions: true });
+
+    Assert.isSubscribe(this.conn._data, 'pubsub@example.com',
+                       'princely_musings', 'mock@example.com');
+
+    Assert.isTrue(win);
+    Assert.isFalse(fail);
+  },
+
+  testNoSubscriptionsAvailableOnReuseSubscriptions: function () {
+    var Assert = YAHOO.util.Assert;
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      "<iq type='result'\
+           from='pubsub@example.com'\
+           to='mock@example.com'\
+           id='subscriptions1'>\
+        <pubsub xmlns='http://jabber.org/protocol/pubsub'>\
+          <subscriptions/>\
+        </pubsub>\
+      </iq>"));
+
+    this.conn.addResponse(OXTest.Packet.extendWithXML(
+      '<iq from="pubsub@example.com"\
+           to="mock@example.com"\
+           id="test"\
+           type="result">\
+         <pubsub xmlns="http://jabber.org/protocol/pubsub">\
+           <subscription node="princely_musings"\
+                         jid="mock@example.com"\
+                         subscription="subscribed"/>\
+         </pubsub>\
+       </iq>'));
+
+
+    var win = false, fail = false;
+    var options = { expire: new Date(2009, 5, 8, 1, 20, 10, 708),
+                    subscription_depth: 'all',
+                    subscription_type: 'items' };
+
+    this.Subscribable.subscribe('princely_musings', options, {
+      onSuccess: function (origURI, finalURI) {
+        console.log(arguments);
+        Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is orig node');
+        Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
+                        'princely_musings is final node');
+        Assert.areEqual(arguments.length, 3, 'arguments.length should be 3');
+        win = true;
+      },
+      onError: function () {
+        fail = true;
+      }
+    }, { reuseSubscriptions: true });
+
+    Assert.isSubscribe(this.conn._data, 'pubsub@example.com',
+                       'princely_musings', 'mock@example.com');
 
     Assert.isTrue(win);
     Assert.isFalse(fail);
