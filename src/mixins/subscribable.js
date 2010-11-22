@@ -335,22 +335,6 @@ OX.Mixin.Subscribable = (function () {
     return opts;
   }
 
-  function doReuseSubscriptionsOrSubscribe(node, subOptions, callbacks) {
-    var that = this;
-    doGetSubscriptions.call(this, node, {
-      onSuccess: function (reqURI, finalURI, subscriptions) {
-        if (subscriptions.length > 0) {
-          console.log(subscriptions[0], subscriptions[0].node);
-          subscriptions[0].node = node;
-          doConfigureNodeSubscription.call(that, subscriptions[0], subOptions, callbacks);
-        } else {
-          doSubscribe.call(that, node, subOptions, callbacks);
-        }
-      },
-      onError: callbacks.onError
-    }, { strict: true });
-  }
-
   doConfigureNodeSubscription = function (subscription, subOptions, callbacks, options) {
     var iq = OX.XML.XMPP.IQ.extend(),
         pubsub = OX.XML.XMPP.PubSub.extend();
@@ -572,8 +556,35 @@ OX.Mixin.Subscribable = (function () {
      */
     subscribe: function (node, subOptions, callbacks, options) {
       options = options || {};
+      callbacks = callbacks || {};
+
+      var that = this;
       if (options.reuseSubscriptions) {
-        doReuseSubscriptionsOrSubscribe.call(this, node, subOptions, callbacks);
+        var tmpOpts = {
+          strict: true,
+          node: node
+        };
+
+        this.getSubscriptions({
+          onSuccess: function(requestedURI, finalURI, subs, packet) {
+            var resubscribed = false,
+              finalNode = finalURI.queryParam('node');
+
+            for (var i=0,l=subs.length;i<l;i++) {
+              if (subs[i].subscription == 'subscribed' && subs[i].node == finalNode) {
+                that.configureNodeSubscription(subs[i],subOptions,callbacks);
+                resubscribed = true;
+                break;
+              }
+            }
+
+            if (!resubscribed) {
+              options.reuseSubscriptions = false;
+              that.subscribe(node,subOptions,callbacks,options);
+            }
+          },
+          onError: callbacks.onError
+        },tmpOpts);
       } else {
         doSubscribe.call(this, node, subOptions, callbacks, options);
       }
