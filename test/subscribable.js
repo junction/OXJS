@@ -666,7 +666,6 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     this.Subscribable.subscribe('/', options, {
       onSuccess: function (origURI, finalURI) {
-        console.log(arguments);
         Assert.areEqual(origURI.queryParam('node'), '/',
                         '/ is orig node');
         Assert.areEqual(finalURI.queryParam('node'), 'other-node',
@@ -721,7 +720,6 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     this.Subscribable.subscribe('princely_musings', options, {
       onSuccess: function (origURI, finalURI) {
-        console.log(arguments);
         Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
                         'princely_musings is orig node');
         Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
@@ -777,7 +775,6 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     this.Subscribable.subscribe('princely_musings', options, {
       onSuccess: function (origURI, finalURI) {
-        console.log(arguments);
         Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
                         'princely_musings is orig node');
         Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
@@ -830,7 +827,6 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     this.Subscribable.subscribe('princely_musings', options, {
       onSuccess: function (origURI, finalURI) {
-        console.log(arguments);
         Assert.areEqual(origURI.queryParam('node'), 'princely_musings',
                         'princely_musings is orig node');
         Assert.areEqual(finalURI.queryParam('node'), 'princely_musings',
