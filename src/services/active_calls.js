@@ -101,10 +101,15 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
      * a call based on whether or not the call has been answered (confirmed).
      * This is a convenience funtion to make the correct API call based
      * upon the dialog state of the current this object.
+     *
+     * @param {Object} [callbacks] An object supplying functions for 'onSuccess' and 'onError'.
+     *   @param {Function} [callbacks.onSuccess] The success callback.
+     *   @param {Function} [callbacks.onError] The error callback.
+     *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet received.
      * @returns {void}
      */
-    hangup: function () {
-      return this.isConfirmed() ? this.terminate() : this.cancel();
+    hangup: function (callbacks) {
+      return this.isConfirmed() ? this.terminate(callbacks) : this.cancel(callbacks);
     }
 
   }),
