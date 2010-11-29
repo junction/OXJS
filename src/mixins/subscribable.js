@@ -8,11 +8,21 @@
  */
 OX.Mixin.Subscribable = (function () {
   /**#nocode+*/
-  var MAX_REDIRECTS = 5,
+  var MAX_REDIRECTS = 5, ELEMENT_NODE = 1,
     cbDefault = {
       onSuccess: function () {}.inferior(),
       onError: function () {}.inferior()
     }, doSubscribe, doGetSubscriptions, doConfigureNodeSubscription; // fix circular ref for jslint
+
+  function getFirstElementChild(el) {
+    var nodeType = ELEMENT_NODE;
+    for (var i = 0, l = el.childNodes.length; i < l; i++) {
+      if (el.childNodes[i].nodeType === nodeType) {
+        return el.childNodes[i];
+      }
+    }
+    return null;
+  }
 
   function packetType(element) {
     if (!element) {
@@ -23,7 +33,7 @@ OX.Mixin.Subscribable = (function () {
     case 'subscription':
       return element.getAttribute('subscription');
     case 'items':
-      if (element.firstChild.tagName === 'retract') {
+      if (getFirstElementChild(element).tagName === 'retract') {
         return 'retract';
       }
       return 'publish';
@@ -35,13 +45,13 @@ OX.Mixin.Subscribable = (function () {
   function convertItems(document) {
     function itemURI(itemID, node) {
       var from  = document.getAttribute('from'),
-          items = document.firstChild.firstChild;
+          items = getFirstElementChild(getFirstElementChild(document));
 
       return OX.URI.fromObject({path: from,
                                 query: ';node=' + node + ';item=' + itemID});
     }
     function getPublishTime(element) {
-      var firstChild  = element.firstChild,
+      var firstChild  = getFirstElementChild(element),
           publishTime = firstChild && firstChild.getAttribute('publish-time');
 
       return publishTime;
@@ -82,7 +92,7 @@ OX.Mixin.Subscribable = (function () {
 
   function redirectURIFromPacket(packet) {
     var e = packet && packet.getNode().getElementsByTagName('error')[0],
-        fChild = e && e.firstChild,
+        fChild = e && getFirstElementChild(e),
         tName = fChild && fChild.tagName,
         uri = fChild && fChild.firstChild && fChild.firstChild.nodeValue;
 
@@ -122,7 +132,7 @@ OX.Mixin.Subscribable = (function () {
     function subscriptionURI() {
       var elt    = packet.getNode(),
           from   = elt.getAttribute('from'),
-          sub    = elt.firstChild.firstChild,
+          sub    = getFirstElementChild(getFirstElementChild(elt)),
           node   = sub.getAttribute('node') || '/';
 
       return OX.URI.fromObject({path:   from, query: ';node=' + node});
@@ -133,7 +143,7 @@ OX.Mixin.Subscribable = (function () {
           from   = elt.getAttribute('from'),
           items  = elt.getElementsByTagName('items')[0],
           node   = items.getAttribute('node') || '/',
-          itemID = items.firstChild.getAttribute('id');
+          itemID = getFirstElementChild(items).getAttribute('id');
 
       return OX.URI.fromObject({path:  from,
                                 query: ';node=' + node + ';item=' + itemID});
@@ -180,7 +190,7 @@ OX.Mixin.Subscribable = (function () {
       return;
     }
 
-    fireEvent.call(this, packetType(event.firstChild), packet);
+    fireEvent.call(this, packetType(getFirstElementChild(event)), packet);
   }
 
   function getSubscriptionsHandler(packet, node, callbacks, options) {
@@ -238,7 +248,7 @@ OX.Mixin.Subscribable = (function () {
       result: function (packet, node, options) {
         callbacks.onSuccess(options.origURI, options.finalURI, packet);
         var pubSub = packet.getNode().getElementsByTagName('pubsub')[0] || {},
-            subscription = pubSub.firstChild;
+            subscription = getFirstElementChild(pubSub);
 
         fireEvent.call(this, packetType(subscription), packet);
       },
@@ -548,7 +558,7 @@ OX.Mixin.Subscribable = (function () {
      *   @param {Boolean} [options.reuseSubscriptions] Tells subscribe to lookup subscriptions on the requested node, then reuse any if they exist. If none exist, it will create a new subscription.
      *
      * @example
-     *   var subOptions = {expires: new Date()};
+     *   var subOptions = {expire: new Date()};
      *   service.subscribe('/', subOptions, {
      *     onSuccess: function (requestedURI, finalURI) {},
      *     onError:   function (requestedURI, finalURI) {}

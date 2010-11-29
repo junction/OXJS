@@ -1368,7 +1368,7 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
   testPublishHandler: function () {
     var Assert = YAHOO.util.Assert;
 
-    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="/"><item id="item1"><foo publish-time="2009-11-23T23:28:22Z">bar</foo></item><item id="item2"><foo publish-time="2009-11-23T23:28:22Z">baz</foo></item></items></event></message>');
+    var packet = OXTest.Packet.extendWithXML('<message from="pubsub@example.com" to="mock@example.com"> <event xmlns="http://jabber.org/protocol/pubsub#event"> <items node="/"><item id="item1"><foo publish-time="2009-11-23T23:28:22Z">bar</foo></item><item id="item2"><foo publish-time="2009-11-23T23:28:22Z">baz</foo></item></items></event></message>');
 
     var publishCount = 0,
         items = [];

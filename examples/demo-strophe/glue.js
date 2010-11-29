@@ -151,6 +151,10 @@ DemoApp.OX = OX.Base.extend({
     var node = _getFormValue(formID, 'node');
 
     this.ox.ActiveCalls.subscribe(node, {
+      subscription_depth: 2,
+      subscription_type: 'items',
+      expire: new Date(new Date().getTime() + 3600 * 1000)
+    }, {
       onSuccess: function (reqURI, finalURI, packet) {
         console.log('called onSuccess for subscription to:' +
                     finalURI.toString());
