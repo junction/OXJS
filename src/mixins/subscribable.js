@@ -153,32 +153,32 @@ OX.Mixin.Subscribable = (function () {
     case 'subscribed':
       if (this._subscriptionHandlers.onSubscribed) {
         var subscribedURI = subscriptionURI();
-        this._subscriptionHandlers.onSubscribed(subscribedURI);
+        this._subscriptionHandlers.onSubscribed(subscribedURI, packet);
       }
       break;
     case 'pending':
       if (this._subscriptionHandlers.onPending) {
         var pendingURI = subscriptionURI();
-        this._subscriptionHandlers.onPending(pendingURI);
+        this._subscriptionHandlers.onPending(pendingURI, packet);
       }
       break;
     case 'none':
       if (this._subscriptionHandlers.onUnsubscribed) {
         var unsubscribedURI = subscriptionURI();
-        this._subscriptionHandlers.onUnsubscribed(unsubscribedURI);
+        this._subscriptionHandlers.onUnsubscribed(unsubscribedURI, packet);
       }
       break;
     case 'publish':
       if (this._subscriptionHandlers.onPublish) {
         var items = convertItems.call(this, packet.getNode());
         for (var i = 0, len = items.length; i < len; i++) {
-          this._subscriptionHandlers.onPublish(items[i]);
+          this._subscriptionHandlers.onPublish(items[i], packet);
         }
       }
       break;
     case 'retract':
       if (this._subscriptionHandlers.onRetract) {
-        this._subscriptionHandlers.onRetract(retractURI());
+        this._subscriptionHandlers.onRetract(retractURI(), packet);
       }
       break;
     }
@@ -715,6 +715,7 @@ OX.Mixin.Subscribable = (function () {
        * notification.
        *
        * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
+       * @param {OX.Packet} packet The packet that caused the 'onPending' event.
        */
       onPending: function (uri) {},
 
@@ -723,6 +724,7 @@ OX.Mixin.Subscribable = (function () {
        * This handler is called when we get a completed subscription.
        *
        * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
+       * @param {OX.Packet} packet The packet that caused the 'onSubscribed' event.
        */
       onSubscribed: function (uri) {},
 
@@ -731,6 +733,7 @@ OX.Mixin.Subscribable = (function () {
        * This handler is called when we our subscription is removed.
        *
        * @param {OX.URI.Base} uri The node we were unsubscribed from.
+       * @param {OX.Packet} packet The packet that causded the 'onUnsubscribed' event.
        */
       onUnsubscribed: function (uri) {},
 
@@ -739,6 +742,7 @@ OX.Mixin.Subscribable = (function () {
        * This handler is called when an item is published.
        *
        * @param {OX.Item} item The published item.
+       * @param {OX.Packet} packet The packet that caused the 'onRetract' event.
        */
       onPublish: function (item) {},
 
@@ -747,6 +751,7 @@ OX.Mixin.Subscribable = (function () {
        * This handler is called when an item is retracted.
        *
        * @param {OX.URI.Base} uri The URI of the retracted item.
+       * @param {OX.Packet} packet The packet that caused the 'onRetract' event.
        */
       onRetract: function (uri) {}
     }
