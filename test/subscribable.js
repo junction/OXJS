@@ -991,10 +991,12 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
 
     var subscribedFlag = false;
     this.Subscribable.registerHandler('onSubscribed', function (uri) {
+      Assert.areSame('foo', this.toString(),
+                     '"this" should be the same as "foo"');
       subscribedFlag = true;
       Assert.areSame('xmpp:pubsub@example.com?;node=/', uri.toString(),
                      'Requested URI for subscribed is wrong.');
-    });
+    }, 'foo');
     this.Subscribable.subscribe('/');
 
     this.conn.fireEvent('message', packet);

@@ -45,6 +45,7 @@ OXTest.Connection = new YAHOO.tool.TestCase({
     var handlerFired = false;
     var handler = function (packet) {
       handlerFired = true;
+      Assert.areSame('foo', this.toString());
       Assert.areSame('jill@example.com', packet.getFrom());
       Assert.areSame('jack@example.com', packet.getTo());
     };
@@ -52,7 +53,7 @@ OXTest.Connection = new YAHOO.tool.TestCase({
     Assert.isFunction(this.ox.registerJIDHandler,
                       'registerJIDHandler is not a function.');
 
-    this.ox.registerJIDHandler('jill@example.com', handler);
+    this.ox.registerJIDHandler('jill@example.com', handler, 'foo');
 
     var packet = OXTest.Packet.extendWithXML('<message from="jill@example.com" to="jack@example.com"><event xmlns="http://jabber.org/protocol/pubsub#event"><items node="musings"><item id="1"></item></items></event></message>');
     this.conn.fireEvent('message', packet);

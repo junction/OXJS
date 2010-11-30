@@ -674,12 +674,16 @@ OX.Mixin.Subscribable = (function () {
      *
      * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onUnsubscribed', 'onPublish' or 'onRetract'.
      * @param {Function} handler A function which accepts one argument, which is the packet response.
+     * @param {Object} [target] The object to apply as the value 'this' in the function.
      *
      * @example
      *   service.registerHandler('onPublish', function (item) {});
      */
-    registerHandler: function (event, handler) {
-      this._subscriptionHandlers[event] = handler;
+    registerHandler: function (event, handler, target) {
+      this._subscriptionHandlers[event] = function () {
+        target = target || this;
+        handler.apply(target, arguments);
+      };
     },
 
     /**

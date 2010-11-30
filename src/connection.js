@@ -135,6 +135,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    *
    * @param {String} jid The jid who's events we listen to.
    * @param {Function} handler Function of one argument: the message packet received.
+   * @param {Object} [target] The optional target to associate 'this' with.
    * @returns {OX.Connection} The receiver.
    * @example
    *   var ox = OX.Connection.extend({ connectionAdapter: bosh });
@@ -145,8 +146,11 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
    * @see OX.Connection#registerJIDHandler
    * @see OX.ConnectionAdapter#registerHandler
    */
-  registerJIDHandler: function (jid, handler) {
-    this.jidHandlers[jid] = handler;
+  registerJIDHandler: function (jid, handler, target) {
+    this.jidHandlers[jid] = function () {
+      target = target || this;
+      return handler.apply(target, arguments);
+    };
     return this;
   },
 
