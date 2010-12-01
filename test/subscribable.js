@@ -663,12 +663,11 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     var options = { expire: new Date(2009, 5, 8, 1, 20, 10, 708),
                     subscription_depth: 'all',
                     subscription_type: 'items' };
-
     this.Subscribable.subscribe('/', options, {
-      onSuccess: function (origURI, finalURI) {
-        Assert.areEqual(origURI.queryParam('node'), '/',
+      onSuccess: function (origURI, finalURI, packet) {
+        Assert.areEqual('/', origURI.queryParam('node'),
                         '/ is orig node');
-        Assert.areEqual(finalURI.queryParam('node'), 'other-node',
+        Assert.areEqual('other-node', finalURI.queryParam('node'),
                         'other-node is final node');
         Assert.areEqual(arguments.length, 3, 'arguments.length should be 3');
         win = true;

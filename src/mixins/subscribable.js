@@ -500,6 +500,7 @@ OX.Mixin.Subscribable = (function () {
      * @param {Object} [options]
      *   @param {String} options.node The node name to request subscriptions on. Omitting the node name implies all nodes
      *   @param {Boolean} options.strict Only apply callbacks to subscriptions that match the exact JID as the current connection.
+     * @returns {void}
      * This will NOT match a bare JID to a full JID.
      *
      * @example
@@ -522,7 +523,7 @@ OX.Mixin.Subscribable = (function () {
     /**
      * Configure a subscription with the subscription options.
      *
-     * @param {OX.Subscriptions} subscription The subscription to configure.
+     * @param {OX.Subscription} subscription The subscription to configure.
      * @param {Object} [subOptions] Subscription options
      * @param {Object} [callbacks] an object supplying functions for 'onSuccess', and 'onError'.
      *   @param {Function} [callbacks.onSuccess] The success callback.
@@ -533,6 +534,7 @@ OX.Mixin.Subscribable = (function () {
      *     @param {OX.URI} [callbacks.onError.requestedURI] The URI you requested.
      *     @param {OX.URI} [callbacks.onError.finalURI] The redirected URI that your requested URI maps to.
      *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet that contains the error.
+     * @returns {void}
      *
      * @see <a href="http://xmpp.org/extensions/xep-0060.html#subscriber-configure-submit">XEP-0060: Subscriber Configuration</a>
      */
@@ -541,7 +543,7 @@ OX.Mixin.Subscribable = (function () {
     },
 
     /**
-     * Subscribe to a nade.
+     * Subscribe to a node.
      *
      * @param {String} node The node ID to subscribe to.
      * @param {Object} [subOptions] Subscription options
@@ -556,6 +558,7 @@ OX.Mixin.Subscribable = (function () {
      *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The packet that contains the error.
      * @param {Object} [options] Optional arguments.
      *   @param {Boolean} [options.reuseSubscriptions] Tells subscribe to lookup subscriptions on the requested node, then reuse any if they exist. If none exist, it will create a new subscription.
+     * @returns {void}
      *
      * @example
      *   var subOptions = {expire: new Date()};
@@ -577,7 +580,7 @@ OX.Mixin.Subscribable = (function () {
 
             for (var i = 0, len = subs.length; i < len; i++) {
               if (subs[i].subscription === 'subscribed') {
-                subs[i].node = node; // Node is not set when specifying a node.
+                subs[i].node = finalURI.queryParam('node'); // Node is not set when specifying a node.
                 that.configureNodeSubscription(subs[i], subOptions, callbacks, {
                   origURI: requestedURI
                 });
@@ -607,6 +610,7 @@ OX.Mixin.Subscribable = (function () {
      *     @param {OX.URI} [callbacks.onSuccess.uri] The URI you unsubscribed from.
      *   @param {Function} [callbacks.onError] The error callback.
      *     @param {OX.URI} [callbacks.onSuccess.uri] The URI you failed to unsubscribe from.
+     * @returns {void}
      *
      * @example
      *   service.unsubscribe('/', {
@@ -642,6 +646,7 @@ OX.Mixin.Subscribable = (function () {
      *     @param {OX.Item[]} [callbacks.onSuccess.items] The items on the PubSub node.
      *   @param {Function} [callbacks.onError] The error callback.
      *     @param {OX.PacketAdapter} [callbacks.onSuccess.packet] The recieved packet.
+     * @returns {void}
      *
      * @example
      *   service.getItems('/', {
@@ -675,7 +680,7 @@ OX.Mixin.Subscribable = (function () {
      * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onUnsubscribed', 'onPublish' or 'onRetract'.
      * @param {Function} handler A function which accepts one argument, which is the packet response.
      * @param {Object} [target] The object to apply as the value 'this' in the function.
-     *
+     * @returns {void}
      * @example
      *   service.registerHandler('onPublish', function (item) {});
      */
@@ -690,6 +695,7 @@ OX.Mixin.Subscribable = (function () {
      * Unregisters an event handler.
      *
      * @param {String} event One of the strings 'onPending', 'onSubscribed', 'onUnsubscribed', 'onPublish' or 'onRetract'.
+     * @returns {void}
      *
      * @example
      *   service.unregisterHandler('onPublish', handlerFunction);
@@ -701,58 +707,71 @@ OX.Mixin.Subscribable = (function () {
      * Turn a packet into an item for this service. By default, this
      * does nothing. You must override this within the object being
      * extended for useful behavior.
+     * @param {OX.PacketAdapter} packet The incoming packet to transform to an {@link OX.Item}
+     * @returns {OX.Item} The XML as an OX Item.
      */
     itemFromPacket: function (packet) {},
+
+    /**
+     * This handler is called when we get a pending subscription
+     * notification.
+     * @name OX.Mixin.Subscribable#onPending
+     * @event
+     * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
+     * @param {OX.PacketAdapter} packet The packet that caused the 'onPending' event.
+     * @returns {void}
+     */
+
+    /**
+     * This handler is called when we get a completed subscription.
+     * @name OX.Mixin.Subscribable#onSubscribed
+     * @event
+     * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
+     * @param {OX.PacketAdapter} packet The packet that caused the 'onSubscribed' event.
+     * @returns {void}
+     */
+
+    /**
+     * This handler is called when we our subscription is removed.
+     * @name OX.Mixin.Subscribable#onUnsubscribed
+     * @event
+     * @param {OX.URI.Base} uri The node we were unsubscribed from.
+     * @param {OX.PacketAdapter} packet The packet that causded the 'onUnsubscribed' event.
+     * @returns {void}
+     */
+
+    /**
+     * This handler is called when an item is published.
+     * @name OX.Mixin.Subscribable#onPublish
+     * @event
+     * @param {OX.Item} item The published item.
+     * @param {OX.PacketAdapter} packet The packet that caused the 'onRetract' event.
+     * @returns {void}
+     */
+
+    /**
+     * This handler is called when an item is retracted.
+     * @name OX.Mixin.Subscribable#onRetract
+     * @event
+     * @param {OX.URI.Base} uri The URI of the retracted item.
+     * @param {OX.PacketAdapter} packet The packet that caused the 'onRetract' event.
+     * @returns {void}
+     */
 
     /**
      * @private
      * Handlers for various subscription related events.
      */
     _subscriptionHandlers: {
-      /**
-       * @private
-       * This handler is called when we get a pending subscription
-       * notification.
-       *
-       * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
-       * @param {OX.Packet} packet The packet that caused the 'onPending' event.
-       */
+
       onPending: function (uri) {},
 
-      /**
-       * @private
-       * This handler is called when we get a completed subscription.
-       *
-       * @param {OX.URI.Base} uri The URI of the subscription request, after redirects.
-       * @param {OX.Packet} packet The packet that caused the 'onSubscribed' event.
-       */
       onSubscribed: function (uri) {},
 
-      /**
-       * @private
-       * This handler is called when we our subscription is removed.
-       *
-       * @param {OX.URI.Base} uri The node we were unsubscribed from.
-       * @param {OX.Packet} packet The packet that causded the 'onUnsubscribed' event.
-       */
       onUnsubscribed: function (uri) {},
 
-      /**
-       * @private
-       * This handler is called when an item is published.
-       *
-       * @param {OX.Item} item The published item.
-       * @param {OX.Packet} packet The packet that caused the 'onRetract' event.
-       */
       onPublish: function (item) {},
 
-      /**
-       * @private
-       * This handler is called when an item is retracted.
-       *
-       * @param {OX.URI.Base} uri The URI of the retracted item.
-       * @param {OX.Packet} packet The packet that caused the 'onRetract' event.
-       */
       onRetract: function (uri) {}
     }
   };
