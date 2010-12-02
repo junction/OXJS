@@ -1,6 +1,6 @@
 /* default.css */
 body {
-	font: 12px "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+	font: 12px "Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
   margin: 0;
   padding-left: 20px;
   padding-right: 20px;
@@ -21,14 +21,50 @@ hr {
 	border: none 0;
 	border-top: 1px solid #bbb;
 	height: 1px;
+  -webkit-box-shadow: rgba(255, 255, 255, 1) 0 0px 2px;
+  -moz-box-shadow: rgba(255, 255, 255, 1) 0 1px 1px;
+  box-shadow: rgba(255, 255, 255, 1) 0 1px 1px;
+}
+
+pre {
+  font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
+	padding: 8px;
+  margin-left: 20px;
+  display: inline-block;
+  background-color: #333;
+  background-color: rgba(20, 20, 20, 0.85);
+  -webkit-box-shadow: inset rgba(0, 0, 0, 0.4) 1px 1px 8px,
+                      inset rgba(0, 0, 0, 0.4) -1px -1px 8px;
+  -moz-box-shadow: inset rgba(0, 0, 0, 0.4) 1px 1px 8px,
+                   inset rgba(0, 0, 0, 0.4) -1px -1px 8px;
+  box-shadow: inset rgba(0, 0, 0, 0.4) 1px 1px 8px,
+              inset rgba(0, 0, 0, 0.4) -1px -1px 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  color: white;
 }
 
 code {
+  font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
 	display: block;
 	padding: 8px;
-  background-color: #222;
+  word-wrap: normal;
+  background-color: #333;
+  background-color: rgba(20, 20, 20, 0.85);
+  -webkit-box-shadow: inset rgba(0, 0, 0, 0.4) 1px 1px 8px,
+                      inset rgba(0, 0, 0, 0.4) -1px -1px 8px;
+  -moz-box-shadow: inset rgba(0, 0, 0, 0.4) 1px 1px 8px,
+                   inset rgba(0, 0, 0, 0.4) -1px -1px 8px;
+  box-shadow: inset rgba(0, 0, 0, 0.4) 1px 1px 8px,
+              inset rgba(0, 0, 0, 0.4) -1px -1px 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+
+  border: 1px solid #333;
   color: white;
-	border: 1px solid #000;
   padding-top: 16px;
   padding-bottom: 16px;
 }
@@ -42,11 +78,11 @@ code {
 }
 
 .single-line-comment {
-  color: #ddd;
+  color: #D23737;
 }
 
 .comment {
-  color: #89D30;
+  color: #89D300;
 }
 
 .keyword {
@@ -71,11 +107,23 @@ code {
 
 #index {
 	float: left;
-	width: 190px;
+	width: 210px;
 	position: absolute;
 	left: 20px;
-  background-color: #eef;
-  border: 1px solid #999;
+  -webkit-box-shadow: inset rgba(200, 200, 200, 0.15) 1px 1px 1px,
+                      inset rgba(0, 0, 0, 0.15) -1px -1px 1px;
+  -moz-box-shadow: inset rgba(200, 200, 200, 0.15) 1px 1px 1px,
+                   inset rgba(0, 0, 0, 0.15) -1px -1px 1px;
+  box-shadow:  inset rgba(200, 200, 200, 0.15) 1px 1px 1px,
+               inset rgba(0, 0, 0, 0.15) -1px -1px 1px;
+
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+
+  background-color: rgba(200, 200, 200, 0.3);
+
+  text-shadow: 0 1px 0 #FFFFFF;
 	padding: 8px;
 }
 
@@ -84,12 +132,24 @@ code {
 }
 
 #content-body {
-  margin-left: 230px;
+  margin-left: 250px;
 }
 
 table.class-definitions {
   border-spacing: 0px 0px;
-  border: 1px solid #999;
+  -webkit-box-shadow: inset rgba(200, 200, 200, 0.15) 1px 1px 1px,
+                      inset rgba(0, 0, 0, 0.15) -1px -1px 1px;
+  -moz-box-shadow: inset rgba(200, 200, 200, 0.15) 1px 1px 1px,
+                   inset rgba(0, 0, 0, 0.15) -1px -1px 1px;
+  box-shadow:  inset rgba(200, 200, 200, 0.15) 1px 1px 1px,
+               inset rgba(0, 0, 0, 0.15) -1px -1px 1px;
+
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+
+  background-color: rgba(200, 200, 200, 0.3);
+  text-shadow: 0 1px 0 #FFFFFF;
   border-bottom: none;
   margin-bottom: 2em;
   min-width: 600px;
@@ -104,13 +164,12 @@ td.label {
 }
 
 table.class-definitions td {
-  border-bottom: 1px solid #999;
   padding: 0.5em;
   border-collapse: collapse;
 }
 
-table.class-definitions .even {
-  background-color: #eef;
+table.class-definitions .odd td {
+  border-top: 1px solid #bbb;
 }
 
 .classList {
@@ -148,6 +207,9 @@ caption, div.sectionTitle
 
 a {
   color: blue;
+  font-weight: bold;
+  text-decoration: none;
+  text-shadow: 0 1px 0 rgb(255, 255, 255);
 }
 
 a:visited {
@@ -155,17 +217,18 @@ a:visited {
 }
 
 h2 a, a#back {
-  text-decoration: none;
   padding: 2px;
 }
 
-h2 a:hover, a#back:hover {
+h2 a:hover {
   background-color: blue;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
   color: white;
 }
 
-h2 a:visited:hover, a#back:hover {
+h2 a:visited:hover {
   background-color: rgb(85, 26, 139);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
   color: white;
 }
 
@@ -241,9 +304,24 @@ ul.inheritsList
 /*	font-style: italic; */
 }
 
+.light a {
+  font-weight: normal;
+  text-decoration: underline;
+}
+
 .fineprint
 {
 	text-align: right;
 	font-size: 10px;
   padding-bottom: 10px;
+}
+
+.centered {
+  text-align: center;
+  margin: 0px auto;
+}
+
+.fill {
+  width: 100%;
+  display: block;
 }

@@ -7,7 +7,7 @@
  * address and a password to the Auth component.</p>
  *
  * @extends OX.Base
- * @requires A connection property inherited from an {@link OX.Connection}.
+ * @requires A 'connectionAdapter' property inherited from an {@link OX.Connection}.
  * @see <a href="http://wiki.onsip.com/docs/Auth_Component">Auth Component</a>
  */
 OX.Service.Auth = OX.Base.extend(OX.Mixin.EntityTime, /** @lends OX.Service.Auth */{

@@ -27,6 +27,11 @@ OXTest.Subscribable = new YAHOO.tool.TestCase({
     delete this.Subscribable;
   },
 
+  testItemFromElementThrowsError: function () {
+    var Assert = YAHOO.util.Assert;
+    Assert.throws(OX.Error, OX.Mixin.Subscribable.itemFromElement);
+  },
+
   testGetSubscriptions: function() {
     var Assert = YAHOO.util.Assert,
         ObjAssert = YAHOO.util.ObjectAssert;

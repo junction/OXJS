@@ -7,7 +7,7 @@
  *
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
- * @requires connection property inherited from an {@link OX.Connection}.
+ * @requires A 'connectionAdapter' property inherited from an {@link OX.Connection}.
  * @see <a href="http://wiki.onsip.com/docs/Voicemail_Pubsub">Voicemail PubSub</a>
  */
 OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
@@ -229,8 +229,9 @@ OX.Service.Voicemail = OX.Base.extend(OX.Mixin.Subscribable, function () {
       labels: null
     }),
 
-    /**
-     * Returns an OX.Service.Voicemail.Item or OX.Service.Voicemail.LabelItem from an XML Document.
+    /** @private
+     * Returns an {@link OX.Service.Voicemail.Item} or {@link OX.Service.Voicemail.LabelItem}
+     * from an XML Document.
      * This method should be called once for each item to be constructed.
      * If a DOMElement contains more than one item node, only the first
      * item node will be returned as an OX.Service.Voicemail.Item

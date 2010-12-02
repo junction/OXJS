@@ -1,10 +1,13 @@
 /**
  * @namespace
  * Subscribable mixin.
+ * Something's subscribable if it communicates with a JID that supports
+ * <a href="http://xmpp.org/extensions/xep-0060.html">XEP-0060: Publish-Subscribe</a>.
  *
- * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
- * @requires pubSubURI The URI of the PubSub service.
- * @requires itemFromPacket A function which takes a packet argument and returns an item.
+ * @requires A 'connectionAdapter' property which is an {@link OX.ConnectionAdapter} object on receiving object.
+ * @requires A 'pubSub' property that's the URI of the PubSub service.
+ * @requires An implementation of 'itemFromElement' which takes an Node or Element and returns an item.
+ * @see <a href="http://xmpp.org/extensions/xep-0060.html">XEP-0060: Publish-Subscribe</a>
  */
 OX.Mixin.Subscribable = (function () {
   /**#nocode+*/
@@ -703,14 +706,17 @@ OX.Mixin.Subscribable = (function () {
     unregisterHandler: function (event) {
     },
 
-    /**
+    /** @private
      * Turn a packet into an item for this service. By default, this
      * does nothing. You must override this within the object being
      * extended for useful behavior.
-     * @param {OX.PacketAdapter} packet The incoming packet to transform to an {@link OX.Item}
+     * @param {Element|Node} element The incoming element to transform to an {@link OX.Item}
      * @returns {OX.Item} The XML as an OX Item.
      */
-    itemFromPacket: function (packet) {},
+    itemFromElement: function (element) {
+      throw new OX.Error("You MUST override OX.Subscribable#itemFromElement " +
+                         "so it returns an OX.Item.");
+    },
 
     /**
      * This handler is called when we get a pending subscription

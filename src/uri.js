@@ -64,6 +64,7 @@ OX.URI = OX.Base.extend(/** @lends OX.URI */{
  * @extends OX.Base
  */
 OX.URI.Base = OX.Base.extend(/** @lends OX.URI.Base# */{
+
   /**
    * The URI scheme.
    *

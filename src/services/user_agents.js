@@ -6,7 +6,7 @@
  *
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
- * @requires connection property inherited from an {@link OX.Connection}.
+ * @requires A 'connectionAdapter' property inherited from an {@link OX.Connection}.
  * @see <a href="http://wiki.onsip.com/docs/User-Agent_Pubsub">UserAgent PubSub</a>
  */
 OX.Service.UserAgents = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service.UserAgents */{
@@ -38,11 +38,11 @@ OX.Service.UserAgents = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Serv
     time: null
   }),
 
-  /**
-   * Returns an OX.Service.UserAgents.Item from an XML Document.
+  /** @private
+   * Returns an {@link OX.Service.UserAgents.Item} from an XML Document.
    * This method should be called once for each item to be constructed.
    * If a DOMElement contains more than one item node, only the first
-   * item node will be returned as an OX.Service.UserAgents.Item
+   * item node will be returned as an {@link OX.Service.UserAgents.Item}
    *
    * @param {Element|Node} element The DOM Element or Node to parse into a {@link OX.Service.UserAgents.Item}
    * @returns {OX.Service.UserAgents.Item} The item created from the element passed in.

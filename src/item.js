@@ -1,6 +1,8 @@
 /**
  * @namespace
  * Item abstract object.
+ * URIs on Items are derived from
+ * <a href="http://xmpp.org/extensions/xep-0147.html">XEP-0147: XMPP URI Scheme Query Components</a>.
  *
  * Service items inherit from this one.
  * @extends OX.Base

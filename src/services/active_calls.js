@@ -15,7 +15,7 @@
  *
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
- * @requires A connection property inherited from an {@link OX.Connection}.
+ * @requires A 'connectionAdapter' property inherited from an {@link OX.Connection}.
  * @requires Authentication to interact with PubSub via {@link OX.Service.Auth}.
  * @see <a href="http://wiki.onsip.com/docs/Active-Calls_Pubsub">ActiveCalls PubSub</a>
  * @see <a href="http://wiki.onsip.com/docs/Active-Calls_Component">ActiveCalls Component</a>
@@ -69,6 +69,11 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
     callSetupID: null,
 
     /**
+     * <p>When calls are created, the call's origination will be from
+     * Junction Network's Call-Setup Server.</p>
+     *
+     * <p>This lets you know if the call is from the call-setup
+     * server or not</p>
      * @returns {Boolean} Whether the call was from the callSetupID.
      */
     isFromCallSetup: function () {
@@ -114,11 +119,11 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
 
   }),
 
-  /**
-   * Returns an OX.Service.ActiveCalls.Item from an XML Document.
+  /** @private
+   * Returns an {@link OX.Service.ActiveCalls.Item} from an XML Document.
    * This method should be called once for each item to be constructed.
-   * If a DOMElement contains more than one item node, only the first
-   * item node will be returned as an OX.Service.ActiveCalls.Item
+   * If a DOM Element contains more than one item node, only the first
+   * item node will be returned as an {@link OX.Service.ActiveCalls.Item}
    *
    * @param {Element|Node} element The DOM Element or Node to parse into a {@link OX.Service.ActiveCalls.Item}
    * @returns {OX.Service.ActiveCalls.Item} item
@@ -194,11 +199,17 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
   },
 
   /**
-   * Create a new call. Note that an 'onSuccess' does <b>NOT</b> mean that call you requested
-   * has started, rather it means the XMPP API has handled your IQ (Info Query) stanza.
-   * In this case, 'onSuccess' is more of an acknowledgement rather than a notification
-   * of a successful call being created. You need to monitor ActiveCalls in PubSub to
-   * be notified when a call is actually created.
+   * <p>Create a new call. Note that an 'onSuccess' does <b>NOT</b> mean that call you requested
+   * has started, rather it means the XMPP API has handled your IQ (Info Query) stanza and sent the
+   * SIP message to kick off the call.</p>
+   *
+   * <p>You need to monitor ActiveCalls in PubSub to be notified when a call is actually created.</p>
+   *
+   * <p>The 'callSetupID' <b>MUST</b> conform to the following regular expression for it to be valid:
+   * <pre>/[a-z0-9]{8}/</pre></p>
+   *
+   * <p>In addition, the 'to' and 'from' parameters should be in the 'sip' schema
+   * to make SIP calls (which means calls should be prefixed by 'sip:').</p>
    *
    * @param {String} to the SIP address to terminate the call at
    * @param {String} from the SIP address to originate the call from
@@ -210,11 +221,14 @@ OX.Service.ActiveCalls = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
    *     @param {OX.PacketAdapter} [callbacks.onError.packet] The packet recieved.
    * @returns {void}
    * @example
-   *   // Have Paul call John.
-   *   ox.ActiveCalls.create('sip:john@example.com', 'sip:paul@example.com', 'foobar');
+   *   // Assuming the organization is apple.onsip.com that you Authenticated for,
+   *   // and the users existed, these should be valid.
    *
-   *   // Have John call 1-800-801-3381.
-   *   ox.ActiveCalls.create('sip:18008013381@example.com', 'sip:george@example.com', 'foobaz');
+   *   // Have Paul call John.
+   *   ox.ActiveCalls.create('sip:john@apple.onsip.com', 'sip:paul@apple.onsip.com', 'drrobert');
+   *
+   *   // Have George call 1-800-801-3381.
+   *   ox.ActiveCalls.create('sip:18008013381@apple.onsip.com', 'sip:george@apple.onsip.com', 'longlong');
    */
   create: function (to, from, callSetupID, cb) {
     var uri   = OX.Settings.URIs.command.createCall,

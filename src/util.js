@@ -29,14 +29,14 @@ OX.Base.mixin.call(Function.prototype, /** @scope Function.prototype */{
   },
 
   /**
-   * Provides access to the overridden base function.
+   * <p>Provides access to the overridden base function.
    * If there is no base function to override, the first
    * argument to the function will be an empty function
-   * that returns nothing.
+   * that returns nothing.</p>
    *
-   * The first argument passed in is the base function,
+   * <p>The first argument passed in is the base function,
    * bound to the correct scope (so you don't need to
-   * call apply/call).
+   * call apply/call).</p>
    *
    * @example
    *   var foo = OX.Base.extend({

@@ -1,17 +1,19 @@
 /**
  * @namespace
- * The core namespace for OX. OX is the official OnSIP XMPP-API JavaScript Library.
- * For documentation concerning the OnSIP XMPP-API itself,
- * visit the <a href="http://wiki.onsip.com/docs/XMPP_API">wiki</a>.
- * @version 1.1.0
+ * <p>The core namespace for OX. OX is the official OnSIP XMPP-API JavaScript Library.</p>
+ *
+ * <p>For documentation concerning the OnSIP XMPP-API itself,
+ * visit the <a href="http://wiki.onsip.com/docs/XMPP_API">wiki</a>.</p>
+ * @version 1.1.1
  */
 var OX = {
 
   /**
-   * The version number for OX in the schema of major.minor.patch
+   * The version number for OX in the schema of:
+   *  major.minor.patch
    * @type {String}
    */
-  VERSION: '1.1.0',
+  VERSION: '1.1.1',
 
   /**
    * Prints a debug message to the console, if window.console exists.
@@ -76,14 +78,21 @@ var OX = {
  * instantiated from an {@link OX.Connection}.</p>
  * <p>To do actions on a given OnSIP PubSub Service, use {@link OX.Mixin.Subscribable}
  * methods to subscribe, unsubscribe, and get the items the service
- * provides if it's a PubSub service. PubSub services include
- * {@link OX.Service.ActiveCalls}, {@link OX.Service.Directories},
- * {@link OX.Service.UserAgents}, and {@link OX.Service.Voicemail}.</p>
+ * provides if it's a PubSub service. PubSub services include:</p>
+ * <ul>
+ *   <li>{@link OX.Service.ActiveCalls}</li>
+ *   <li>{@link OX.Service.Directories}</li>
+ *   <li>{@link OX.Service.UserAgents}</li>
+ *   <li>{@link OX.Service.Voicemail}</li>
+ * </ul>
  *
  * <p>For OnSIP Component services, there are calls on the Service
- * for using the Ad-Hoc commands. Component services include
- * {@link OX.Service.ActiveCalls}, {@link OX.Service.Auth}, and
- * {@link OX.Service.Rosters}.</p>
+ * for using the Ad-Hoc commands. Component services include:
+ * <ul>
+ *   <li>{@link OX.Service.ActiveCalls}</li>
+ *   <li>{@link OX.Service.Auth}</li>
+ *   <li>{@link OX.Service.Rosters}.</li>
+ * </ul>
  *
  * <p>For more information about the OnSIP XMPP API services, take a look
  * at the developer documentation.</p>

@@ -4,9 +4,9 @@
  *
  * An instance of this object MUST be supplied to the OX.Connection
  * instance. This object is to be defined by consumers of the API as
- * an adapter to the XMPP connection library that is being used. See
- * the example for using the OX.ConnectionAdapter with the JSJaC XMPP
- * library.
+ * an adapter to the XMPP connection library that is being used.
+ * The example below shows a sample implementation for the
+ * OX.ConnectionAdapter using the <a href="http://blog.jwchat.org/jsjac/">JSJaC</a> XMPP library.
  *
  * @example
  *   var conn = new JSJaCConnection({ httpbase: '/http-bind/' });

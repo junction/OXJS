@@ -2,10 +2,10 @@
  * @namespace
  * CallDialog mixin.
  *
- * @requires connection A property which is an {@link OX.ConnectionAdapter} object on receiving object.
- * @requires callID property on receiving object.
- * @requires fromTag property on receiving object.
- * @requires toTag property on receiving object.
+ * @requires A 'connectionAdapter' property which is an {@link OX.ConnectionAdapter} object on receiving object.
+ * @requires A 'callID' property on receiving object.
+ * @requires A 'fromTag' property on receiving object.
+ * @requires A 'toTag' property on receiving object.
  */
 OX.Mixin.CallDialog = /** @lends OX.Mixin.CallDialog# */{
   /**

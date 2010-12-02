@@ -1,6 +1,7 @@
 /**
  * @class
- * Provides a Connection Adapter for the BOSH library Strophe.
+ * Provides a Connection Adapter for the BOSH library
+ * <a href="http://code.stanziq.com/strophe">Strophe</a>.
  * The adapter tries to deal with possible memory leaks due to unanswered
  * IQs, having a max queue size of handlers. You should be able to plug-and-play
  * with this adapter and Strophe like the following example:
@@ -13,6 +14,7 @@
  *     })
  *   });
  * @extends OX.ConnectionAdapter
+ * @requires A slot named "connection" with an instance of Strophe.Connection provided.
  */
 OX.StropheAdapter = OX.ConnectionAdapter.extend(
   /** @lends OX.StropheAdapter# */{
@@ -25,14 +27,14 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
   _callbackQueue: [],
 
   /**
-   * The maximum allowable size for the callback queue.
+   * <p>The maximum allowable size for the callback queue.
    * When it reaches the maximum size, it will warn you about it,
    * and begin removing stale handlers, assuming that they will never be called.
-   * This exists as a catch for memory leaks. Change this value to meet your needs.
+   * This exists as a catch for memory leaks. Change this value to meet your needs.</p>
    *
-   * You <i>will</i> be warned when this quota is reached.
+   * <p>You <i>will</i> be warned when this quota is reached.
    * Make sure that you aren't throwing away any live messages
-   * if you want to keep the MAX_QUEUE_SIZE where it is.
+   * if you want to keep the MAX_QUEUE_SIZE where it is.</p>
    */
   MAX_QUEUE_SIZE: 100,
 

@@ -141,6 +141,7 @@ OX.XML.XMPP = {};
  * Generic XMPP stanza.
  *
  * @extends OX.XML.Element
+ * @see <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas">XMPP Core: Stanzas</a>
  */
 OX.XML.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XML.XMPP.Stanza# */{
 
@@ -170,6 +171,7 @@ OX.XML.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XML.XMPP.Stanza# */{
  * XMPP IQ (Info Query) stanza.
  *
  * @extends OX.XML.XMPP.Stanza
+ * @see <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas">XMPP Core: Stanzas</a>
  */
 OX.XML.XMPP.IQ = OX.XML.XMPP.Stanza.extend(/** @lends OX.XML.XMPP.IQ# */{
 
@@ -178,6 +180,7 @@ OX.XML.XMPP.IQ = OX.XML.XMPP.Stanza.extend(/** @lends OX.XML.XMPP.IQ# */{
 
   /**
    * The 'type' attribute of the stanza.
+   * One of 'get', 'set' 'result', or 'error'.
    *
    * @param {String} [value] The value to set the 'type' attribute.
    * @returns {String} The value of the 'type' attribute.
@@ -192,6 +195,7 @@ OX.XML.XMPP.IQ = OX.XML.XMPP.Stanza.extend(/** @lends OX.XML.XMPP.IQ# */{
  * XMPP PubSub Element
  *
  * @extends OX.XML.Element
+ * @see <a href="http://xmpp.org/extensions/xep-0060.html#schemas-pubsub">XEP-0060: Publish Subscribe</a>
  */
 OX.XML.XMPP.PubSub = OX.XML.Element.extend(/** @lends OX.XML.XMPP.PubSub# */{
   /** The PubSub tag name */
@@ -205,6 +209,7 @@ OX.XML.XMPP.PubSub = OX.XML.Element.extend(/** @lends OX.XML.XMPP.PubSub# */{
  * XMPP Message stanza.
  *
  * @extends OX.XML.XMPP.Stanza
+ * @see <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas">XMPP Core: Stanzas</a>
  */
 OX.XML.XMPP.Message = OX.XML.XMPP.Stanza.extend(/** @lends OX.XML.XMPP.Message# */{
   /** The Message tag name */

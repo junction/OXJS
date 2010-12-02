@@ -1,12 +1,12 @@
 /**
  * @class
- * Base object for OXJS. All other objects inherit from this one.
+ * <p>Base object for OXJS. All other objects inherit from this one.
  * This provides object inheritance much like Douglas Crockford's
  * <a href="http://javascript.crockford.com/prototypal.html">Prototypal
- * Inheritance in JavaScript</a> with a few modifications of our own.
+ * Inheritance in JavaScript</a> with a few modifications of our own.</p>
  *
- * This framework uses Object templates rather than classes to provide
- * inheritance.
+ * <p>This framework uses Object templates rather than classes to provide
+ * inheritance.</p>
  */
 OX.Base = {
 

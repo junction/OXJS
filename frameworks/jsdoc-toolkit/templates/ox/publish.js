@@ -62,11 +62,20 @@ function highlightBlock(block) {
 
     if (match === null || match.length === 0) continue;
     res.push(block.slice(idx, match.index));
-    res.push('<span class="');
-    res.push(match.css);
-    res.push('">');
-    res.push(match.value);
-    res.push("</span>");
+    if (match.css === "single-line-comment") {
+      res.push('<span class="');
+      res.push(match.css);
+      res.push('">');
+      res.push('//');
+      res.push("</span>");
+      res.push(match.value.slice(2));
+    } else {
+      res.push('<span class="');
+      res.push(match.css);
+      res.push('">');
+      res.push(match.value);
+      res.push("</span>");
+    }
     idx = match.index + match.length;
   }
   res.push(block.slice(idx));

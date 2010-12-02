@@ -1,12 +1,12 @@
 /**
  * @class
- * Connection object to use for all OXJS connections.
+ * <p>Connection object to use for all OXJS connections.
  * The connection MUST have a valid connectionAdapter to function.
- * The Connection object is the core API for OXJS.
+ * The Connection object is the core API for OXJS.</p>
  *
- * The Connection assumes that the consumer understands when
+ * <p>The Connection assumes that the consumer understands when
  * to make calls (when the connection is established). This allows
- * you to configure OX at read-time, rather than at run-time.
+ * you to configure OX at read-time, rather than at run-time.</p>
  *
  * @example
  *   var bosh = new Strophe.Connection('/http-bind/');
@@ -36,10 +36,12 @@
  * @property {OX.Service.Directories} Directories A usable instance of the Directories service.
  * @property {OX.Service.Preferences} Preferences A usable instance of the Preferences service (not implemented).
  * @property {OX.Service.RecentCalls} RecentCalls A usable instance of the RecentCalls service (not implemented).
+ * @requires A 'connectionAdapter' property that extends {@link OX.ConnectionAdapter}.
  */
 OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
 
   /**
+   * @private
    * Map of instance names to instance objects.
    * They are instantiated on extend time when a
    * connectionAdapter is provided.
@@ -56,6 +58,7 @@ OX.Connection = OX.Base.extend(/** @lends OX.Connection# */{
   },
 
   /**
+   * @private
    * Map of jids to event handler functions. Used when message events
    * are received from the connection.
    *

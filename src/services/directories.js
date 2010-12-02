@@ -12,7 +12,7 @@
  * <p>Please note that subscribing to '/' will redirect your subscription request to '/me/jid'.</p>
  * @extends OX.Base
  * @extends OX.Mixin.Subscribable
- * @requires connection property inherited from an {@link OX.Connection}.
+ * @requires A 'connectionAdapter' property inherited from an {@link OX.Connection}.
  * @see <a href="http://wiki.onsip.com/docs/Directories_Pubsub">Directories PubSub</a>
  */
 OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Service.Directories */{
@@ -72,11 +72,13 @@ OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
     name: null
   }),
 
-  /**
-   * Returns the appropriate OX.Service.Directories.Item (AliasItem or EntityItem) from an XML Document.
+  /** @private
+   * Returns the appropriate {@link OX.Service.Directories.Item}
+   * ({@link OX.Service.Directories.AliasItem} or {@link OX.Service.Directories.EntityItem})
+   * from an XML Document.
    * This method should be called once for each item to be constructed.
    * If a DOMElement contains more than one item node, only the first
-   * item node will be returned as an OX.Service.Directories.Item
+   * item node will be returned as an {@link OX.Service.Directories.Item}
    *
    * @param {Element|Node} element The DOM Element or Node to parse into a {@link OX.Service.Directories.Item}
    * @returns {OX.Service.ActiveCalls.Item} The item.

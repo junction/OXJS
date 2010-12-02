@@ -5,7 +5,7 @@
  * that advises an XMPP Client what to do with the user's Roster
  * (adding, modifying, and deleting entities).</p>
  * @extends OX.Base
- * @requires connection property inherited from an {@link OX.Connection}.
+ * @requires A 'connectionAdapter' property inherited from an {@link OX.Connection}.
  * @see <a href="http://wiki.onsip.com/docs/Rosters_Component">Rosters Component</a>
  * @see <a href="http://xmpp.org/extensions/xep-0144.html">XEP-0144: Roster Item Exchange</a>
  */
