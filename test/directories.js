@@ -94,6 +94,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     var item = this.Directories.itemFromElement(element.doc);
 
     Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
+    Assert.isFunction(item.id, 'item should have a function id.');
 
     Assert.areSame('sip:hiro@example.onsip.com', item.sipURI, 'sipURI is incorrect');
     Assert.areSame('Hiro Protagonist', item.name, 'name is incorrect');
@@ -105,6 +106,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
 
     var item = this.Directories.itemFromElement(element.doc);
     Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
+    Assert.isFunction(item.id, 'item should have a function id.');
 
     Assert.isObject(item.xmppURI, 'item xmppURI is not an object');
     Assert.areSame('sip:7002@example.onsip.com', item.sipURI, 'sipURI is incorrect');

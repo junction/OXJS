@@ -475,7 +475,7 @@ OX.Mixin.Subscribable = (function () {
         var handler = function () {
           jidHandler.apply(that, arguments);
         };
-        this.connection.registerJIDHandler(uri.path, handler);
+        this.connection.registerJIDHandler(uri.path, handler, this.connection);
       }
 
       $super();

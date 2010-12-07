@@ -51,7 +51,7 @@ OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
    * An alias for a contact.
    * @extends OX.Service.Directories.Item
    */
-  AliasItem: OX.Service.Directories.extend(/** @lends OX.Service.Directories.AliasItem# */{
+  AliasItem: OX.Service.Directories.Item.extend(/** @lends OX.Service.Directories.AliasItem# */{
     /**
      * The XMPP URI of the alias.
      * @type {OX.URI}
