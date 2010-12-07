@@ -30,7 +30,7 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
   Item: OX.Item.extend(/** @lends OX.Service.Directories.Item# */{
     /**
      * The SIP URI of the entry.
-     * @type {OX.URI}
+     * @type {String}
      */
     sipURI: null,
 
