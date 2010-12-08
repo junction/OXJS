@@ -11,7 +11,7 @@
  * @example
  *   var conn = new JSJaCConnection({ httpbase: '/http-bind/' });
  *   var adapter = OX.ConnectionAdapter.extend({
- *     jid: conn.jid,
+ *     jid: function () { return conn.fulljid; },
  *
  *     registerHandler: function (event, handler) {
  *       return conn.registerHandler(event, handler);
