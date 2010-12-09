@@ -95,7 +95,7 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
           continue;
         }
 
-        attrs.push(name + '="' + val + '"');
+        attrs.push(name + '="' + this.escapeXML(val.toString()) + '"');
       }
     }
 
