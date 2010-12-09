@@ -16,6 +16,21 @@ OXTest.XML = new YAHOO.tool.TestCase({
     delete this.iqDoc;
   },
 
+  testEscapeXML: function () {
+    var Assert = YAHOO.util.Assert;
+    Assert.areEqual('&lt;&gt;&quot;&apos;&amp;',
+                    OX.XML.Element.escapeXML('<>"\'&'));
+  },
+
+  testEscapedCharacters: function () {
+    var Assert = YAHOO.util.Assert;
+    var test = OX.XML.Element.extend({name: 'test'});
+    test.text = '<>"\'&';
+
+    var doc = OXTest.DOMParser.parse(test.convertToString()).doc;
+    Assert.areSame('<>"\'&', doc.firstChild.firstChild.nodeValue);
+  },
+
   testXMLNamespaces: function() {
     var Assert = YAHOO.util.Assert;
 
