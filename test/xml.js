@@ -22,13 +22,22 @@ OXTest.XML = new YAHOO.tool.TestCase({
                     OX.XML.Element.escapeXML('<>"\'&'));
   },
 
-  testEscapedCharacters: function () {
+  testEscapedText: function () {
     var Assert = YAHOO.util.Assert;
     var test = OX.XML.Element.extend({name: 'test'});
     test.text = '<>"\'&';
 
     var doc = OXTest.DOMParser.parse(test.convertToString()).doc;
     Assert.areSame('<>"\'&', doc.firstChild.firstChild.nodeValue);
+  },
+
+  testEscapedText: function () {
+    var Assert = YAHOO.util.Assert;
+    var test = OX.XML.Element.extend({name: 'test'});
+    test.attr('hello', '<>"\'&');
+
+    var doc = OXTest.DOMParser.parse(test.convertToString()).doc;
+    Assert.areSame('<>"\'&', doc.firstChild.getAttribute('hello'));
   },
 
   testXMLNamespaces: function() {
