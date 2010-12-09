@@ -54,6 +54,28 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
   },
 
   /**
+   * @function
+   * Escape XML characters to prevent parser errors.
+   *
+   * @param {String} string The string to escape.
+   * @returns {String} The escaped string.
+   */
+  escapeXML: (function () {
+    var character = {
+      '"': '&quot;',
+      "'": '&apos;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '&': '&amp;'
+    }, re = /[<>&"']/g;
+    return function (str) {
+      return str.replace(re, function (c) {
+        return character[c];
+      });
+    };
+  }()),
+
+  /**
    * Return an XML string representation of this element.
    *
    * @returns {String} This XML element as XML text.
@@ -87,7 +109,7 @@ OX.XML.Element = OX.Base.extend(/** @lends OX.XML.Element# */{
     }
 
     if (this.text) {
-      ret += this.text;
+      ret += this.escapeXML(this.text.toString());
     }
 
     ret += "</" + this.name + ">";
