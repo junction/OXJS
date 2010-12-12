@@ -1,7 +1,29 @@
-<a href="../" class="centered fill">All Classes</a>
-<hr/>
-<ul class="classList">
-	<for each="thisClass" in="data">
-	<li>{! output += new Link().toClass(thisClass.alias); !}</li>
-	</for>
-</ul>
+<span class="banner">Class Index<img class="handle" src="{+ Link.base + 'static/dot.gif' +}" onmousedown="beginResize()" /></span>
+<span class="class-list">{+generateClassTree(data)+}</span>
+<script type="text/javascript">
+function beginResize(e) {
+  document.addEventListener('mousemove', resize, true);
+  document.addEventListener('mouseup', endResize, true);
+}
+
+function resize(e) {
+  var index = document.getElementById('index'),
+      content = document.getElementById('content'),
+      x = (e.pageX || e.clientX) + 7;
+
+  if (x <= 225) {
+    x = 225;
+  } else if (x >= 400) {
+    x = 400;
+  }
+  index.setAttribute('style', 'width: ' + x + "px");
+  content.setAttribute('style', 'left: ' + x + "px");
+
+  e.returnValue = false;
+  return false;
+}
+
+function endResize(e) {
+  document.removeEventListener('mousemove', resize, true);
+}
+</script>

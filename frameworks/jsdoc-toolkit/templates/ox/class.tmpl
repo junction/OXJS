@@ -12,24 +12,27 @@
     return highlightBlock(block);
   };
 
+  function makeCodeBlock(block) {
+	  return "<code>" + highlight(block) + "</code>"
+  }
+
 !}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset={+IO.encoding+}" />
-		<meta name="generator" content="JsDoc Toolkit" />
-		{! Link.base = "../"; /* all generated links will be relative to this */ !}
-		<title>JsDoc Reference - {+data.alias+}</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset={+IO.encoding+}" />
+  <meta name="generator" content="JsDoc Toolkit" />
 
-		<style type="text/css">
-			{+include("static/default.css")+}
-		</style>
-	</head>
+	<title>JsDoc Reference - {+data.alias+}</title>
+	{! Link.base = "../"; /* all generated links will be relative to this */ !}
+  <link rel="stylesheet" type="text/css" href="../static/default.css"></link>
+  <link rel="stylesheet" type="text/css" href="../static/doc.css"></link>
+</head>
 
-	<body>
-<!-- ============================== class title ============================ -->     <div id="header">
-			<h1>
+<body class="doc">
+  {+include("static/header.html")+}
+  <div id="module">
+		<h1>
 				{!
 					var classType = "";
 					
@@ -46,42 +49,34 @@
 					else {
 						classType += "Class ";
 					}
-				!}
-				{+classType+}{+data.alias+}
-			</h1>
-      </div>
-      <table class="class-definitions">
-				<if test="data.augments.length">
-        <tr class="{+nextRowClass()+}">
-          <td class="label">Extends:</td><td>
-					{+
-						data.augments
-						.sort()
-						.map(
-							function($) { return new Link().toSymbol($); }
-						)
-						.join(", ")
-					+}</td></tr>
-				</if>
-    		<if test="!data.isBuiltin()">{# isn't defined in any file #}
-	  			<tr class="{+nextRowClass()+}">
-            <td class="label">Defined in:</td>
-            <td>{+new Link().toSrc(data.srcFile)+}</td>
-          </tr>
-  			</if>
-      </table>
-
-  	<div id="content-body">
-		<div id="index">
-			{+publish.classesIndex+}
-		</div>
+			!}
+		  {+classType+}{+data.alias+}
+    </h1>
+    <if test="!data.isBuiltin()">{# isn't defined in any file #}
+      <span class="src">{+new Link().toSrc(data.srcFile)+}</span>
+    </if>
+  </div>
+	<div id="index">
+		{+publish.classesIndex+}
+	</div>
+  <div id="content">
 
 <!-- ============================== class summary ========================== -->
-    <if test="data.classDesc.length">
+    <if test="data.classDesc.length || data.augments.length">
       <h1 class="title">Overview</h1>
+      <if test="data.classDesc.length">
 			<p class="description">
 				{+resolveLinks(data.classDesc)+}
 			</p>
+      </if>
+      <if test="data.augments.length">
+				<dl class="detailList">
+				<dt class="heading">Extends:</dt>
+				<for each="item" in="data.augments">
+				<dt>{+ new Link().toSymbol(item) +}</dt>
+				</for>
+				</dl>
+      </if>
 			<if test="data.see.length">
 				<dl class="detailList">
 				<dt class="heading">See:</dt>
@@ -112,7 +107,7 @@
 			</if>
 			<if test="data.example.length">
 			<for each="example" in="data.example">
-			<p class="code"><code>{+highlight(example)+}</code></p>
+			<p class="code">{+makeCodeBlock(example)+}</p>
 			</for>
 			</if>
 			<if test="data.version.length">
@@ -153,15 +148,20 @@
 
 <!-- ============================== properties summary ===================== -->
 			<if test="data.properties.length">
-				{! var ownProperties = data.properties.filter(function($){return $.memberOf == data.alias && !$.isNamespace}).sort(makeSortby("name")); !}
+				{! var ownProperties = data.properties.filter(function($){return $.memberOf == data.alias && !$.isNamespace}).sort(makeSortby("name"));
+					 var borrowedMembers = data.properties.filter(function($) {return $.memberOf != data.alias});
+          !}
+        <if test="ownProperties.length || borrowedMembers.length">
+          <h1 class="title">Field Summary</h1>
+        </if>
 				<if test="ownProperties.length">
-        <h1 class="title">Field Summary</h1>
           <table>
 					<for each="member" in="ownProperties">
 						<tr class="nameDescription">
               <td class="fixedFont right">+</td>
               <td class="fixedFont">
-                <if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b></td>
+                {+new Link().toSymbol(member.alias).withText(member.name)+}
+              </td>
             </tr>
 					</for>
           </table>
@@ -170,8 +170,6 @@
 				<if test="data.inheritsFrom.length">
 				<dl class="inheritsList">
 				{!
-					var borrowedMembers = data.properties.filter(function($) {return $.memberOf != data.alias});
-					
 					var contributers = [];
 					borrowedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
 					for (var i = 0, l = contributers.length; i < l; i++) {
@@ -198,14 +196,18 @@
 
 <!-- ============================== methods summary ======================== -->
 			<if test="data.methods.length">
-				{! var ownMethods = data.methods.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
-				<if test="ownMethods.length">
+				{! var ownMethods = data.methods.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name"));
+					 var borrowedMembers = data.methods.filter(function($) {return $.memberOf != data.alias});
+          !}
+				<if test="ownMethods.length || borrowedMembers.length">
         <h1 class="title">Method Summary</h1>
+        </if>
+				<if test="ownMethods.length">
           <table>
 					<for each="member" in="ownMethods">
 						<tr class="nameDescription">
-              <td><span class="fixedFont"><if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if>
-              <b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b>{+makeSignature(member.params)+}</td>
+              <td><span class="fixedFont">
+              + <b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b>{+makeSignature(member.params)+}</td>
             </tr>
 					</for>
           </table>
@@ -214,7 +216,6 @@
 				<if test="data.inheritsFrom.length">
 				<dl class="inheritsList">
 				{!
-					var borrowedMembers = data.methods.filter(function($) {return $.memberOf != data.alias});
 					var contributers = [];
 					borrowedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
 					for (var i = 0, l = contributers.length; i < l; i++) {
@@ -241,14 +242,18 @@
 			</if>
 <!-- ============================== events summary ======================== -->
 			<if test="data.events.length">
-				{! var ownEvents = data.events.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name")); !}
-				<if test="ownEvents.length">
+				{! var ownEvents = data.events.filter(function($){return $.memberOf == data.alias  && !$.isNamespace}).sort(makeSortby("name"));
+           var borrowedMembers = data.events.filter(function($) {return $.memberOf != data.alias});
+        !}
+				<if test="ownEvents.length || borrowedMembers.length">
         <h1 class="title">Event Summary</h2>
+        </if>
+				<if test="ownEvents.length">
           <table>
 					<for each="member" in="ownEvents">
 						<tr class="nameDescription">
-              <td><span class="fixedFont"><if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if>
-              <b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b>{+makeSignature(member.params)+}</td>
+              <td><span class="fixedFont">
+              + <b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b>{+makeSignature(member.params)+}</td>
             </tr>
 					</for>
           </table>
@@ -257,7 +262,6 @@
 				<if test="data.inheritsFrom.length">
 				<dl class="inheritsList">
 				{!
-					var borrowedMembers = data.events.filter(function($) {return $.memberOf != data.alias});
 					var contributers = [];
 					borrowedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
 					for (var i = 0, l = contributers.length; i < l; i++) {
@@ -289,7 +293,7 @@
 				<for each="member" in="ownProperties">
           <div>
              <a name="{+Link.symbolNameToLinkName(member)+}"> </a>
-             <h3><if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if>{+member.name+}</h3>
+             <h3><if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if> <if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+member.name+}</b></h3>
 					</div>
 					<div class="description">
 						{+resolveLinks(member.desc)+}
@@ -297,7 +301,7 @@
 					
 					<if test="member.example.length">
 					<for each="example" in="member.example">
-					<span class="code"><code>{+highlight(example)+}</code></span>
+          <p class="code">{+makeCodeBlock(example)+}</p>
 					</for>
 					</if>
 
@@ -332,10 +336,6 @@
 							</dl>
 						</if>
 
-             <div class="signature">
-               + <if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if> <if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name+}</b></h3>
-             </div>
-
 						<if test="member.srcFile != data.srcFile">
 							<br />
 							<i>Defined in: </i> {+new Link().toSrc(member.srcFile)+}.
@@ -354,11 +354,16 @@
 					<a name="{+Link.symbolNameToLinkName(member)+}"> </a>
           <div>
              <a name="{+Link.symbolNameToLinkName(member)+}"> </a>
-             <h3><if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if>{+member.name+}{+makeSignature(member.params)+}</h3>
+             <h3><if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if> <if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+member.name+}</b>{+makeSignature(member.params)+}</h3>
 
-             <div class="signature">
-               + <if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if> <if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name+}</b>{+makeSignature(member.params)+}
-             </div><br/>
+             <div class="description">
+               <if test="member.desc">
+  				       <dt>{+resolveLinks(member.desc)+}</dd><br/>
+               </if>
+						   <if test="member.author"><br/>
+                 <i>Author: </i>{+member.author+}.
+               </if>
+             </div>
 
 						<if test="member.params.length">
 							<dl class="detailList">
@@ -414,10 +419,6 @@
 							</for>
 							</dl>
 						</if>
-             <div class="description">
-				     {+resolveLinks(member.desc)+}
-						 <if test="member.author"><br /><i>Author: </i>{+member.author+}.</if>
-             </div>
 
 						<if test="member.see.length">
 							<dl class="detailList">
@@ -432,7 +433,7 @@
 					</div>
 					<if test="member.example.length">
 					<for each="example" in="member.example">
-					<p class="code"><code>{+highlight(example)+}</code></p>
+					<p class="code">{+makeCodeBlock(example)+}</p>
 					</for>
 					</if>
 				 <if test="member.srcFile != data.srcFile">
@@ -451,11 +452,7 @@
 					<a name="{+Link.symbolNameToLinkName(member)+}"> </a>
           <div>
              <a name="{+Link.symbolNameToLinkName(member)+}"> </a>
-             <h3><if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if>{+member.name+}{+makeSignature(member.params)+}</h3>
-
-             <div class="signature">
-               + <if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if> <if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name+}</b>{+makeSignature(member.params)+}
-             </div><br/>
+             <h3><if test="member.type"><span class="light">({+new Link().toSymbol(member.type)+})</span></if> <if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+member.name+}</b>{+makeSignature(member.params)+}</h3>
 
 						<if test="member.params.length">
 							<dl class="detailList">
@@ -529,7 +526,7 @@
 					</div>
 					<if test="member.example.length">
 					<for each="example" in="member.example">
-					<p class="code"><code>{+highlight(example)+}</code></p>
+					<p class="code">{+makeCodeBlock(example)+}</p>
 					</for>
 					</if>
 				 <if test="member.srcFile != data.srcFile">

@@ -14,7 +14,7 @@ The only requirement is having [V8](http://code.google.com/p/v8/) or [SpiderMonk
 
 Overview
 --------
-This library is NOT a client side BOSH implementation.  It, wraps a BOSH connection to facilitate the process of subscribing to the OnSIPP XMPP pubsub services and making the OnSIP specific adhoc command calls.
+This library is NOT a client side BOSH implementation. Instead, it wraps a BOSH connection to facilitate the process of subscribing to the OnSIP XMPP pubsub services and making the OnSIP specific adhoc command calls.
 
 
       +-------------------------------------+
