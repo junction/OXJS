@@ -4,16 +4,15 @@
  *
  * <p>For documentation concerning the OnSIP XMPP-API itself,
  * visit the <a href="http://wiki.onsip.com/docs/XMPP_API">wiki</a>.</p>
- * @version 1.1.1
+ * @version 2.0.1
  */
 var OX = {
 
   /**
-   * The version number for OX in the schema of:
-   *  major.minor.patch
+   * The version number for OX using <a href="http://semver.org">Semantic Versioning</a>.
    * @type {String}
    */
-  VERSION: '1.1.1',
+  VERSION: '2.0.1',
 
   /**
    * Prints a debug message to the console, if window.console exists.
