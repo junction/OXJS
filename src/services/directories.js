@@ -128,9 +128,13 @@ OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
         attrs.xmppURI = OX.URI.parse(value);
         break;
       case 'link':
-        attrs.related = attrs.related || [];
-        attrs.related.push(OX.URI.parse(childNode.getAttribute('href')));
-        break;
+        if (childNode.getAttribute('rel') === 'related') {
+          attrs.related = attrs.related || [];
+          attrs.related.push(OX.URI.parse(childNode.getAttribute('href')));
+        } else {
+          OX.Log.warn('Links with rel="' + childNode.getAttribute('rel') + '" are not supported.');
+        }
+        break;      
       case 'primary':
         attrs.isPrimary = true;
         break;
