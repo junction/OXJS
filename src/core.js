@@ -10,9 +10,9 @@ var OX = {
 
   /**
    * The version number for OX using <a href="http://semver.org">Semantic Versioning</a>.
-   * @type {String}
+   * @type String
    */
-  VERSION: '2.0.1',
+  VERSION: '2.1.1',
 
   /**
    * Prints a debug message to the console, if window.console exists.

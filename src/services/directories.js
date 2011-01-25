@@ -30,7 +30,7 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
   Item: OX.Item.extend(/** @lends OX.Service.Directories.Item# */{
     /**
      * The SIP URI of the entry.
-     * @type {String}
+     * @type String
      */
     sipURI: null,
 
@@ -54,7 +54,7 @@ OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
   AliasItem: OX.Service.Directories.Item.extend(/** @lends OX.Service.Directories.AliasItem# */{
     /**
      * The XMPP URI of the alias.
-     * @type {OX.URI}
+     * @type OX.URI
      */
     xmppURI: null
   }),
@@ -67,7 +67,7 @@ OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
   EntityItem: OX.Service.Directories.Item.extend(/** @lends OX.Service.Directories.EntityItem# */{
     /**
      * The name of the entity.
-     * @type {OX.URI}
+     * @type OX.URI
      */
     name: null
   }),

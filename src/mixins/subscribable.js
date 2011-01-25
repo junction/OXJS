@@ -431,7 +431,7 @@ OX.Mixin.Subscribable = (function () {
    * @field
    * @description
    * The optional node that the subscription is on.
-   * @type {String}
+   * @type String
    */
 
   /**
@@ -439,7 +439,7 @@ OX.Mixin.Subscribable = (function () {
    * @field
    * @description
    * The required JID that the subscription is on.
-   * @type {String}
+   * @type String
    */
 
   /**
@@ -448,7 +448,7 @@ OX.Mixin.Subscribable = (function () {
    * @description
    * The optional subscription state of the subscription.
    * One of 'none', 'pending', 'subscribed', or 'unconfigured'.
-   * @type {String}
+   * @type String
    */
 
   /**
@@ -456,7 +456,7 @@ OX.Mixin.Subscribable = (function () {
    * @field
    * @description
    * The optional subscription id.
-   * @type {String}
+   * @type String
    */
 
   return /** @lends OX.Mixin.Subscribable# */{
