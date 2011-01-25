@@ -35,6 +35,18 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
     sipURI: null,
 
     /**
+     * The related SIP addresses.
+     * @type Array
+     */
+    related: null,
+
+    /**
+     * Whether or not the directory entry is the primary address.
+     * @type Boolean
+     */
+    isPrimary: false,
+
+    /**
      * The ID of the item.
      * @returns {String} The item attribute of the URI query.
      */
@@ -114,6 +126,13 @@ OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
         break;
       case 'xmpp-uri':
         attrs.xmppURI = OX.URI.parse(value);
+        break;
+      case 'link':
+        attrs.related = attrs.related || [];
+        attrs.related.push(OX.URI.parse(childNode.getAttribute('href')));
+        break;
+      case 'primary':
+        attrs.isPrimary = true;
         break;
       case 'name':
         attrs.name = value;
