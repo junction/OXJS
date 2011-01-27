@@ -35,8 +35,8 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
     sipURI: null,
 
     /**
-     * The related SIP addresses.
-     * @type Array
+     * The related SIP address.
+     * @type OX.URI
      */
     related: null,
 
@@ -129,14 +129,10 @@ OX.Service.Directories.mixin(/** @lends OX.Service.Directories */{
         break;
       case 'link':
         if (childNode.getAttribute('rel') === 'related') {
-          attrs.related = attrs.related || [];
-          attrs.related.push(OX.URI.parse(childNode.getAttribute('href')));
+          attrs.related = OX.URI.parse(childNode.getAttribute('href'));
         } else {
           OX.Log.warn('Links with rel="' + childNode.getAttribute('rel') + '" are not supported.');
         }
-        break;      
-      case 'primary':
-        attrs.isPrimary = true;
         break;
       case 'name':
         attrs.name = value;

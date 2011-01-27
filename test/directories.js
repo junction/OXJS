@@ -10,8 +10,6 @@ OXTest.Directories = new YAHOO.tool.TestCase({
           + '<sip-uri>sip:hiro@example.onsip.com</sip-uri>'
           + '<name>Hiro Protagonist</name>'
           + '<link rel="related" href="xmpp:pubsub.directories.xmpp.onsip.com?node=/example.onsip.com/user;item=hiro_1"/>'
-          + '<link rel="related" href="xmpp:pubsub.directories.xmpp.onsip.com?node=/example.onsip.com/user;item=hiro_2"/>'
-          + '<primary/>'
           + '</entity>'
           + '</item>'
           + '</items>'
@@ -115,7 +113,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     Assert.areSame('sip:7002@example.onsip.com', item.sipURI, 'sipURI is incorrect');
   },
 
-  testRelatedItems: function () {
+  testRelatedItem: function () {
     var Assert = YAHOO.util.Assert,
         element = OXTest.DOMParser.parse(OXTest.Directories.itemXML.user);
 
@@ -124,24 +122,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
     Assert.isArray(item.related, 'item should have related SIP addresses.');
 
     var related = item.related;
-    Assert.areSame(2, item.related.length, 'there should be 2 related SIP addresses');
-    for (var i = 0; i < related.length; i++) {
-      Assert.isObject(related[i], 'related items should be an object.');
-    }
-  },
-
-  testIsPrimary: function () {
-    var Assert = YAHOO.util.Assert,
-        element = OXTest.DOMParser.parse(OXTest.Directories.itemXML.aliasExtension);
-
-    var item = this.Directories.itemFromElement(element.doc);
-    Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
-    Assert.isFalse(item.isPrimary, 'item should not be a primary.');
-
-    element = OXTest.DOMParser.parse(OXTest.Directories.itemXML.user);
-    item = this.Directories.itemFromElement(element.doc);
-    Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
-    Assert.isTrue(item.isPrimary, 'item should be a primary.');
+    Assert.isObject(item.related, 'related item should be an object.');
   }
 
 });
