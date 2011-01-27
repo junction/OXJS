@@ -41,12 +41,6 @@ OX.Service.Directories = OX.Base.extend(OX.Mixin.Subscribable, /** @lends OX.Ser
     related: null,
 
     /**
-     * Whether or not the directory entry is the primary address.
-     * @type Boolean
-     */
-    isPrimary: false,
-
-    /**
      * The ID of the item.
      * @returns {String} The item attribute of the URI query.
      */
