@@ -77,6 +77,7 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
       } catch (e) {
         OX.error('Error in OX handler: ' + handler +
                  '; Error: ' + e + '; response stanza: ' + stanza);
+        throw e;
       }
       return true;
     };
@@ -164,13 +165,6 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
           newArgs.push(args[i]);
         }
 
-        try {
-          callback.apply(this, newArgs);
-        } catch (e) {
-          OX.error('Error in OX handler: ' + callback +
-                   '; Error: ' + e + '; response stanza: ' + stanza);
-        }
-
         // Remove from the callback queue
         for (i = 0, len = queue.length; i < len; i++) {
           if (queue[i].toString() === event) {
@@ -182,6 +176,14 @@ OX.StropheAdapter = OX.ConnectionAdapter.extend(
         }
 
         delete that._callbacks[event];
+
+        try {
+          callback.apply(this, newArgs);
+        } catch (e) {
+          OX.error('Error in OX handler: ' + callback +
+                   '; Error: ' + e + '; response stanza: ' + stanza);
+          throw e;
+        }
 
         return false;
       };
