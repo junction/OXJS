@@ -72,6 +72,45 @@ body.doc {
   padding-left: 10px;
 }
 
+
+.doc #header #status {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.doc p {
+  line-height: 1.5em !important;
+  margin: 1em 0px !important;
+}
+
+.doc #header #status span {
+  position: relative;
+  display: inline-block;
+  zoom: 1; *display: inline; _height: 30px; /* IE Hack */
+  width: 8px;
+  height: 8px;
+  -moz-box-shadow: 0px 0px 10px #000,
+                   inset rgba(0, 0, 0, 0.6) 0px 0px 2px;
+  -webkit-box-shadow: 0px 0px 10px #000,
+                      inset rgba(0, 0, 0, 0.6) 0px 0px 2px;
+  box-shadow: 0px 0px 10px #000,
+              inset rgba(0, 0, 0, 0.6) 0px 0px 2px;
+
+  background-color: #FFF;
+  -moz-border-radius: 4px;
+  -webkit-border-4adius: 4px;
+  border-radius: 4px;
+}
+
+.doc #header #status span.pass {
+  background-color: #89DB30;
+}
+
+.doc #header #status span.fail {
+  background-color: #D23737;
+}
+
 .doc #module {
   position: absolute;
   z-index: 4;
@@ -175,15 +214,23 @@ body.doc {
 }
 
 .doc #content h1 {
-  font-size: 1.6em;
-  font-weight: normal;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #666;
+  border-bottom: 1px solid #999;
+  font-size: 175%;
+  margin-top: 1.3em !important;
+}
+
+.doc #content h2 {
+  font-size: 150%;
+  margin-top: 1.3em !important;
 }
 
 .doc #content h3 {
-  font-size: 1.3em;
-  font-weight: normal;
+  margin-top: 1em !important;
+}
+
+.doc #content ul li {
+  margin-top: .5em;
+  margin-bottom: .5em;
 }
 
 .doc .fineprint {
@@ -210,62 +257,67 @@ body.doc {
   padding-right: 15px;
 }
 
+.doc code {
+  display: inline;
+  font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
+  background: ghostWhite;
+  border: 1px solid #DEDEDE;
+  font-size: 12px;
+  padding: 0px 0.2em;
+}
+
 .doc .code {
+	display: block;
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-left: 4px solid #888;
+}
+
+.doc .code code {
+	display: block;
+	padding: 16px;
+  border: 0;
+
   font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
   word-wrap: normal;
   background-color: #222;
 
-  border-left: 4px solid #888;
   color: white;
-	padding: 8px;
-  margin-left: 20px;
-  margin-right: 20px;
   line-height: 130%;
+}
+
+.doc .status-bar {
+  padding: 5px;
+
+  background-color: #CCC;
+  background: -webkit-gradient(
+    linear, left bottom, left top, color-stop(0, #BBB), color-stop(0.7, #DDD)
+  );
+  background: -moz-linear-gradient(
+    center bottom, #BBB 0%, #DDD 70%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#BBBBBB');
+  border-bottom: 1px solid #888;
+
+  text-shadow: #EEE 0px 1px 0px;  
+}
+
+.doc .console {
+	padding: 8px;
+  font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
+  word-wrap: normal;
+  background-color: #222;
   color: white;
+  line-height: 130%;
 }
 
-.doc code {
-	display: block;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  position: relative;
-}
-
-.doc code a {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 8px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 8px;
-  box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 8px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-
-  background-color: rgba(0, 0, 0, .8);
-  border: 1px solid #888;
-
-  color: white;
-  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.7),
-               0px 1px 0px rgba(255, 255, 255, 0.3);
-
-  -webkit-transition: opacity 0.25 linear;
-  -moz-transition: opacity 0.25 linear;
-}
-
-.doc code a:active {
-  -webkit-box-shadow: rgba(255, 255, 255, 0.4) 1px 1px 8px;
-  -moz-box-shadow: rgba(255, 255, 255, 0.4) 1px 1px 8px;
-  box-shadow: rgba(255, 255, 255, 0.4) 1px 1px 8px;
-}
-
-.doc code.inactive a {
-  opacity: 0;
-}
-
-.doc code.active a {
-  opacity: 1;
+.doc #content .status-bar a {
+  display: block;
+  padding-left: 3px;
+  text-decoration: none;
 }
 
 .doc .string {
