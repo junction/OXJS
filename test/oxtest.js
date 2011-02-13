@@ -72,6 +72,7 @@ OXTest.DOMParser = OX.Base.extend({
   },
 
   prefixMap: {
+    client: 'jabber:client',
     cmd: 'http://jabber.org/protocol/commands',
     x:   'jabber:x:data',
     ps:  'http://jabber.org/protocol/pubsub'
@@ -185,20 +186,20 @@ YAHOO.util.Assert.isCommand = function (xml, jid, node, fields) {
   var doc = OXTest.DOMParser.parse(xml);
 
   this.areSame('set',
-               doc.getPathValue('/iq/@type'),
+               doc.getPathValue('/client:iq/@type'),
                'command iq is not type set.');
   this.areSame(jid,
-               doc.getPathValue('/iq/@to'),
+               doc.getPathValue('/client:iq/@to'),
                'command iq is sent to wrong jid.');
   this.areSame(node,
-               doc.getPathValue('/iq/cmd:command/@node'),
+               doc.getPathValue('/client:iq/cmd:command/@node'),
                'command node is wrong.');
   this.areSame('submit',
-               doc.getPathValue('/iq/cmd:command/x:x/@type'),
+               doc.getPathValue('/client:iq/cmd:command/x:x/@type'),
                'command xform type is wrong.');
 
   for (var f in fields) if (fields.hasOwnProperty(f)) {
-    var path = '/iq/cmd:command/x:x/x:field[@var="' + f + '"]/x:value/text()';
+    var path = '/client:iq/cmd:command/x:x/x:field[@var="' + f + '"]/x:value/text()';
 
     this.areSame(fields[f], doc.getPathValue(path),
                    'field value for ' + f + ' is wrong.');
@@ -208,13 +209,13 @@ YAHOO.util.Assert.isCommand = function (xml, jid, node, fields) {
 YAHOO.util.Assert.isConfigure = function (xml, to, node, subscriberJID, subid, options) {
   var doc = OXTest.DOMParser.parse(xml);
 
-  this.areSame('set', doc.getPathValue('/iq/@type'), 'configure iq type is not set');
-  this.areSame(to, doc.getPathValue('/iq/@to'), 'configure iq to is incorrect');
+  this.areSame('set', doc.getPathValue('/client:iq/@type'), 'configure iq type is not set');
+  this.areSame(to, doc.getPathValue('/client:iq/@to'), 'configure iq to is incorrect');
 
-  this.areSame(node, doc.getPathValue('/iq/ps:pubsub/ps:options/@node'), 'node is incorrect');
-  this.areSame(subscriberJID, doc.getPathValue('/iq/ps:pubsub/ps:options/@jid'), 'subscriber jid is incorrect');
+  this.areSame(node, doc.getPathValue('/client:iq/ps:pubsub/ps:options/@node'), 'node is incorrect');
+  this.areSame(subscriberJID, doc.getPathValue('/client:iq/ps:pubsub/ps:options/@jid'), 'subscriber jid is incorrect');
 
-  var path = '/iq/ps:pubsub/ps:options/@subid';
+  var path = '/client:iq/ps:pubsub/ps:options/@subid';
   this.areSame(subid, doc.getPathValue(path),
                'Option value for subid is wrong.');
 
@@ -224,29 +225,29 @@ YAHOO.util.Assert.isSubscribe = function (xml, jid, node, ourJID, options) {
   var doc = OXTest.DOMParser.parse(xml);
 
   this.areSame('set',
-               doc.getPathValue('/iq/@type'),
+               doc.getPathValue('/client:iq/@type'),
                'subscribe iq is not type set.');
   this.areSame(jid,
-               doc.getPathValue('/iq/@to'),
+               doc.getPathValue('/client:iq/@to'),
                'subscribe iq is sent to wrong jid.');
   this.areSame(node,
-               doc.getPathValue('/iq/ps:pubsub/ps:subscribe/@node'),
+               doc.getPathValue('/client:iq/ps:pubsub/ps:subscribe/@node'),
                'subscribe node is wrong');
   this.areSame(ourJID,
-               doc.getPathValue('/iq/ps:pubsub/ps:subscribe/@jid'),
+               doc.getPathValue('/client:iq/ps:pubsub/ps:subscribe/@jid'),
                'subscribe jid is wrong');
 
   if (options) {
     this.areSame('submit',
-                 doc.getPathValue('/iq/ps:pubsub/ps:options/x:x/@type'),
+                 doc.getPathValue('/client:iq/ps:pubsub/ps:options/x:x/@type'),
                  'options xform type is wrong.');
 
     this.areSame('http://jabber.org/protocol/pubsub#subscribe_options',
-                 doc.getPathValue('/iq/ps:pubsub/ps:options/x:x/x:field[@var="FORM_TYPE"]/x:value/text()'),
+                 doc.getPathValue('/client:iq/ps:pubsub/ps:options/x:x/x:field[@var="FORM_TYPE"]/x:value/text()'),
                  'options xform FORM_TYPE is wrong.');
 
     for (var o in options) if (options.hasOwnProperty(o)) {
-      var path = '/iq/ps:pubsub/ps:options/x:x/x:field[@var="pubsub#' + o + '"]/x:value/text()';
+      var path = '/client:iq/ps:pubsub/ps:options/x:x/x:field[@var="pubsub#' + o + '"]/x:value/text()';
 
       this.areSame(options[o], doc.getPathValue(path),
                    'Option value for ' + o + ' is wrong.');
@@ -258,16 +259,16 @@ YAHOO.util.Assert.isUnsubscribe = function (xml, jid, node, ourJID) {
   var doc = OXTest.DOMParser.parse(xml);
 
   this.areSame('set',
-               doc.getPathValue('/iq/@type'),
+               doc.getPathValue('/client:iq/@type'),
                'unsubscribe iq is not type set.');
   this.areSame(jid,
-               doc.getPathValue('/iq/@to'),
+               doc.getPathValue('/client:iq/@to'),
                'unsubscribe iq is sent to wrong jid.');
   this.areSame(node,
-               doc.getPathValue('/iq/ps:pubsub/ps:unsubscribe/@node'),
+               doc.getPathValue('/client:iq/ps:pubsub/ps:unsubscribe/@node'),
                'unsubscribe node is wrong');
   this.areSame(ourJID,
-               doc.getPathValue('/iq/ps:pubsub/ps:unsubscribe/@jid'),
+               doc.getPathValue('/client:iq/ps:pubsub/ps:unsubscribe/@jid'),
                'unsubscribe jid is wrong');
 };
 
@@ -275,13 +276,13 @@ YAHOO.util.Assert.isGetItems = function (xml, jid, node) {
   var doc = OXTest.DOMParser.parse(xml);
 
   this.areSame('get',
-               doc.getPathValue('/iq/@type'),
+               doc.getPathValue('/client:iq/@type'),
                'get items iq is not type get.');
   this.areSame(jid,
-               doc.getPathValue('/iq/@to'),
+               doc.getPathValue('/client:iq/@to'),
                'get items iq is sent to wrong jid.');
   this.areSame(node,
-               doc.getPathValue('/iq/ps:pubsub/ps:items/@node'),
+               doc.getPathValue('/client:iq/ps:pubsub/ps:items/@node'),
                'get items node is wrong');
 };
 

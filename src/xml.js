@@ -166,6 +166,7 @@ OX.XML.XMPP = {};
  * @see <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas">XMPP Core: Stanzas</a>
  */
 OX.XML.XMPP.Stanza = OX.XML.Element.extend(/** @lends OX.XML.XMPP.Stanza# */{
+  xmlns: "jabber:client",
 
   /**
    * The 'to' attribute of the stanza.
