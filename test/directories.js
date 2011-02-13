@@ -119,7 +119,7 @@ OXTest.Directories = new YAHOO.tool.TestCase({
 
     var item = this.Directories.itemFromElement(element.doc);
     Assert.isObject(item, 'Directories.itemFromElement did not return an object.');
-    Assert.isArray(item.related, 'item should have related SIP addresses.');
+    Assert.isObject(item.related, 'item should have a related SIP address.');
 
     var related = item.related;
     Assert.isObject(item.related, 'related item should be an object.');
