@@ -54,17 +54,20 @@ OXTest.ConnectionMock = OX.ConnectionAdapter.extend({
 OXTest.DOMParser = OX.Base.extend({
   parser: function () {
     var parser;
-    try
-    {
+    try {
       // Internet Explorer does not use the DOMParser
       parser = new ActiveXObject("Microsoft.XMLDOM");
       parser.async = "false";
-      parser.setProperty("SelectionLanguage","XPath");
-      parser.setProperty("SelectionNamespaces",
-                         "xmlns:cmd='http://jabber.org/protocol/commands' xmlns:x='jabber:x:data' xmlns:ps='http://jabber.org/protocol/pubsub'");
-    }
-    catch(e)
-    {
+      parser.setProperty("SelectionLanguage", "XPath");
+      var namespaces = "";
+      for (var key in this.prefixMap) {
+        if (this.prefixMap.hasOwnProperty(key)) {
+          namespaces += "xmlns:" + key + "='" + this.prefixMap[key] + "' ";
+        }
+      }
+
+      parser.setProperty("SelectionNamespaces", namespaces.slice(0, -1));
+    } catch (e) {
       // Using FF or Safari
       parser = new DOMParser();
     }
