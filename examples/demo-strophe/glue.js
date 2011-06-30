@@ -31,6 +31,12 @@
  *      ProxyPass /http-bind https://my.onsip.com/http-bind
  *      ProxyPassReverse /http-bind http://my.onsip.com/http-bind
  *
+ *  To run this Demo application you'll need to point your root web
+ *  folder to the root directory of your OXJS download.
+ *  For instance :
+ *      http://localhost/OXJS/examples/demo-strophe/index.html
+ *  You can access API documentation via
+ *      http://localhost/OXJS/doc/public/index.html
  *
  *  Gotchas:
  *  --------
@@ -50,7 +56,11 @@
  *      b. You need to authorize yourself (This must be done every hour)
  *      c. You need to subscribe. (Use the flag `reuseSubscriptions`
  *         to ensure that you don't reach the upper bounds of the maximum
- *         number of subscriptions your client has)
+ *         number of subscriptions your client has). Not setting this
+ *         flag would require you, the developer, to manage your user agent's
+ *         subscriptions using calls `OX.Service.ActiveCalls.subscribe` for
+ *         new subscriptions and `OX.Service.ActiveCalls.configureNodeSubscription`
+ *         if the subscription already exists and needs to be refreshed.
  *
  *    - There is one callback handler that's registered for `onPublish`
  *      events which includes states signifying incoming, answered, created calls.
@@ -190,20 +200,20 @@ DemoApp.OX = OX.Base.extend({
    * following event handlers.
    *
    * `onPublish` - This callback function will receive a single argument (i.e. item).
-   *  That argument will provide a property called 'dialogState' with the following
+   *  That argument will provide a property called `dialogState` with the following
    *  states:
-   *   `created`   - This is the outgoing call
-   *   `requested` - This is an incoming call
-   *   `confirmed` - Connection is established
+   *      `created`   - This is the outgoing call
+   *      `requested` - This is an incoming call
+   *      `confirmed` - Connection is established
    *  (NOTE: call termination is not part of these dialog states)
    *
    * `onRetract` - The event fired on termination of the call.
-   *   It provides a single argument (i.e. itemURI)
+   *      It provides a single argument (i.e. itemURI)
    *
    * `onSubscribed`   - When a user agent has successfully subscribed.
    * `onUnsubscribed` - When a user agent has successfully unsubscribed.
    * `onPending`      - An event notification that is triggered prior to
-   *                      a user agent (un-)successfully subscribing.
+   *                    a user agent (un-)successfully subscribing.
    */
   init: function () {
     this.ox.ActiveCalls.registerHandler('onPublish',
@@ -224,6 +234,8 @@ DemoApp.OX = OX.Base.extend({
    * Authorization expires every hour and must be renewed.
    * This authorize function would therefore have to be
    * called on a timely interval followed by `subscribe`.
+   * (OX.Service.ActiveCalls.subscribe or
+   *  OX.Service.ActiveCalls.configureNodeSubsription)
    */
   authorize: function (formID) {
     var sip = _getFormValue(formID, 'sip-address'),
@@ -265,7 +277,7 @@ DemoApp.OX = OX.Base.extend({
   },
 
   /**
-   * This function illustrates how to setup a phone call.
+   * This function illustrates how to setup a call.
    *
    * It requires a valid `from` / `to` URI prefixed with 'sip:'
    * For example:
@@ -332,9 +344,9 @@ DemoApp.OX = OX.Base.extend({
   /**
    * This callback function was reigstered for the `onPublish` event handler
    * Event fired when the `dialogState` of the phone call transitions to:
-   *  `created`   : outgoing call created
-   *  `requested` : incoming call
-   *  `confirmed` : phone connection is established
+   *     `created`   : outgoing call created
+   *     `requested` : incoming call
+   *     `confirmed` : phone connection is established
    */
   _handleActiveCallPublish: function (item) {
     console.log('handling an item publish');
@@ -388,7 +400,7 @@ DemoApp.OX = OX.Base.extend({
   },
 
   /**
-   *
+   * Manage Rosters (or Buddy Lists)
    */
   pushRosterGroups: function (formID) {
     var jid = null;
