@@ -1,4 +1,59 @@
-/*globals DemoApp Strophe $ */
+/**
+ *  Introduction:
+ *  -------------
+ *  glue.js is a sample application that spotlights OXJS, a javascript SDK developed by Junction Networks.
+ *  OX was implemented for the purpose of abstracting the low level XMPP messaging used
+ *  for real-time events. In this light, developers could focus entirely on the
+ *  business requirements of their application.
+ *
+ *  Use OXJS if you need to build a web application that features real-time call events.
+ *  Use the sample code in glue.js to guide you in your development using OX against
+ *  Junction's XMPP based API.
+ *  glue.js will illustrate how to :
+ *  - Make a phone call
+ *  - Retrieve notifications of call states (i.e. 'call answered',
+ *   'call hung-up or terminated', 'outgoing call created')
+ *  - Manage your Roster
+ *
+ *
+ *  Getting Started:
+ *  ----------------
+ *  In order to work around Same Origin Policy issues, add the following
+ *  snipped to your Apache config file
+ *
+ *  SSLProxyEngine on
+ *  ProxyPass /http-bind https://my.onsip.com/http-bind
+ *  ProxyPassReverse /http-bind http://my.onsip.com/http-bind
+ *
+ *
+ *  Gotchas:
+ *  --------
+ *  There are some nuances to working with Junction's XMPP API that are worth a mention.
+ *
+ *  - The create call (__OX.Service.ActiveCalls.create__) functionality is an adhoc
+ *    command that is fairly atomic.  It doesn't require callback handlers or
+ *    authorization as is the case for call-event notifications.
+ *
+ *  - In order to be notified of call events (e.g. call answered, call hungup, call created),
+ *    3 steps need to be taken in the development of the application.
+ *
+ *    a. You need to register callback handlers for these asynchronous events.
+ *    b. You need to authorize yourself (This must be done every hour)
+ *    c. You need to subscribe. (If a subscription exists, call configureNodeSubscription,
+ *       otherwise call subscribe)
+ *
+ *  - There is one callback handler that's registered for __onPublish__ events which includes
+ *    states signifying 'incoming calls', 'calls answered', and 'calls created'.
+ *    There is a separate call handler, __onRetract__, for calls terminated.
+ *
+ *  - Calling __OX.Service.ActiveCalls.create__ (in OX) or callCreate (in this Demo)
+ *    will effectively ring your phone as part of the call setup process.  When you
+ *    answer your phone, OnSIP will then dial out to its intended caller.  The XMPP API will
+ *    fire an event that calls the appropriate registered handler.
+ *
+ */
+
+/* globals DemoApp Strophe $ */
 DemoApp = {};
 
 function htmlEnc(str) {
@@ -8,6 +63,32 @@ function htmlEnc(str) {
             .split(/>/).join("&gt;");
 }
 
+function logMessage(xml, outbound) {
+  var sent = (!!outbound) ? 'outbound' : 'inbound',
+      msg  = "<div class='msg %s'>" + htmlEnc(xml) + "</div>";
+  if (window.console && window.console.debug) {
+    console.debug('(' + sent + ') - ' + xml);
+  }
+  msg = msg.replace(/%s/, sent);
+  $('#message_pane_inner').append(msg);
+  $('#message_pane_inner :last').get(0).scrollIntoView();
+}
+
+function _getFormValue(formID, inputName) {
+  return $('form#' + formID + ' input[name=' + inputName + ']').val();
+}
+
+function _addOutput(selector, msg) {
+  $(selector).append("<li>" + msg + "</li>");
+}
+
+/**
+ * Strophe callback function
+ *
+ * @param status connection status
+ *
+ * @see <a href="http://strophe.im/strophejs/">Strophe JS</a>
+ */
 function handleStatusChanged(status) {
   switch (status) {
   case Strophe.Status.CONNECTED:
@@ -25,27 +106,26 @@ function handleStatusChanged(status) {
   }
 }
 
-function logMessage(xml, outbound) {
-  var sent = (!!outbound) ? 'outbound' : 'inbound',
-      msg  = "<div class='msg %s'>" + htmlEnc(xml) + "</div>";
-  console.debug('(' + sent + ') - ' + xml);
-  msg = msg.replace(/%s/, sent);
-  $('#message_pane_inner').append(msg);
-  $('#message_pane_inner :last').get(0).scrollIntoView();
-}
-
-function _getFormValue(formID, inputName) {
-  return $('form#' + formID + ' input[name=' + inputName + ']').val();
-}
-
-function _addOutput(selector, msg) {
-  $(selector).append("<li>" + msg + "</li>");
-}
-
+/**
+ * OX relies on an underlying XMPP library to
+ * negotiate the network layer transactions, but it
+ * stays agnostic to any specific library.
+ *
+ * In this case we're using Strophe as our underlying
+ * library that transacts XMPP messages stanzas across the network.
+ *
+ * @see <a href="http://strophe.im/strophejs/">Strophe JS</a>
+ */
 DemoApp.Strophe = OX.Base.extend({
 
+  /**
+   * Construct the connection
+   */
   bosh: new Strophe.Connection('/http-bind/'),
 
+  /**
+   * Connect requires OnSIP username & password
+   */
   doLogin: function (aForm) {
     $('err').html('');
 
@@ -54,6 +134,9 @@ DemoApp.Strophe = OX.Base.extend({
     this.bosh.connect(jid, pass, handleStatusChanged);
   },
 
+  /**
+   * Disconnect
+   */
   quit: function () {
     this.bosh.send($pres({type: 'unavailable'}).tree());
     this.bosh.disconnect();
@@ -62,6 +145,11 @@ DemoApp.Strophe = OX.Base.extend({
     $('#logged_in_pane').hide();
   },
 
+  /**
+   * Show the XMPP message stanzas that
+   * are being sent and received by
+   * this Demo client
+   */
   init: function () {
     this.bosh.rawInput  = function (data) { logMessage(data, false); };
     this.bosh.rawOutput = function (data) { logMessage(data, true);  };
@@ -70,19 +158,43 @@ DemoApp.Strophe = OX.Base.extend({
   pageDidLoad: function () {
     this.bosh.addHandler(DemoApp.OX._handleRostersIq, 'http://jabber.org/protocol/rosterx', 'iq', 'set', null, null);
     this.bosh.addHandler(DemoApp.OX._handleEjabberdIq, 'jabber:iq:roster', 'iq', 'set', null, null);
-    this.bosh.addHandler(DemoApp.OX._handleEjabberdIq, 'jabber:client', 'iq', 'result', null, null);    
+    this.bosh.addHandler(DemoApp.OX._handleEjabberdIq, 'jabber:client', 'iq', 'result', null, null);
   }
 });
 
 
 DemoApp.OX = OX.Base.extend({
 
+  /**
+   * We wrap our bosh (in this case Strophe) connection in a ConnectionAdapter
+   * and pass the adapter to OX.
+   */
   ox: OX.Connection.extend({
     connectionAdapter: OX.StropheAdapter.extend({
       connection: DemoApp.Strophe.bosh
     })
   }),
 
+  /**
+   * To work with real-time call events, we must register the
+   * following event handlers.
+   *
+   * __onPublish__ - This callback function will receive a single argument (i.e. item).
+   *  That argument will provide a property called 'dialogState' with the following
+   *  states:
+   *   _created_   - This is the outgoing call
+   *   _requested_ - This is an incoming call
+   *   _confirmed_ - Connection is established
+   *  (NOTE: call termination is not part of these dialog states)
+   *
+   * __onRetract__ - The event fired on termination of the call.
+   *   It provides a single argument (i.e. itemURI)
+   *
+   * __onSubscribed__   - When a user agent has successfully subscribed.
+   * __onUnsubscribed__ - When a user agent has successfully unsubscribed.
+   * __onPending__      - An event notification that is triggered prior to
+   *                      a user agent (un-)successfully subscribing.
+   */
   init: function () {
     this.ox.ActiveCalls.registerHandler('onPublish',
                                         this._handleActiveCallPublish);
@@ -96,6 +208,13 @@ DemoApp.OX = OX.Base.extend({
                                         this._handleActiveCallUnsubscribe);
   },
 
+  /**
+   * The user must successfully _authorize_ in order to
+   * receive event notifications from the XMPP API.
+   * Authorization expires every hour and must be renewed.
+   * This authorize function would therefore have to be
+   * called on a timely interval followed by __subscribe__.
+   */
   authorize: function (formID) {
     var sip = _getFormValue(formID, 'sip-address'),
         pw  = _getFormValue(formID, 'password'),
@@ -117,6 +236,11 @@ DemoApp.OX = OX.Base.extend({
     return false;
   },
 
+  /**
+   * Generates a random string of characters to make up the callSetupID.
+   * This ID will be passed back through the __onPublish__ event when
+   * the phone call is created.
+   */
   createCallSetupID: function () {
     var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
         length = 8,
@@ -130,6 +254,15 @@ DemoApp.OX = OX.Base.extend({
     return ret;
   },
 
+  /**
+   * This function illustrates how to setup a phone call.
+   *
+   * It requires a valid _from_ / _to_ URI prefixed with 'sip:'
+   * For example:
+   *
+   * sip:john@example.onsip.com
+   * sip:17328586651@example.onsip.com
+   */
   createCall: function (formID) {
     var to   = _getFormValue(formID, 'to'),
         from = _getFormValue(formID, 'from');
@@ -147,6 +280,16 @@ DemoApp.OX = OX.Base.extend({
     return false;
   },
 
+  /**
+   * A common pitful is to call OX.Base.ActiveCalls.subscribe
+   * consecutively after each authorization call.
+   *
+   * The proper workflow after a successful authorization, however,
+   * would be to retrieve existing subscriptions, then finding the
+   * existing resource subscription, and executing
+   * __OX.Service.ActiveCalls.configureNodeSubscription__
+   * rather then __OX.Service.ActiveCalls.subscribe__
+   */
   subscribeActiveCalls: function (formID) {
     var node = _getFormValue(formID, 'node');
 
@@ -167,11 +310,22 @@ DemoApp.OX = OX.Base.extend({
     });
   },
 
+  /**
+   * This callback function was registered for the __onRetract__ event handler.
+   * Event fired when a phone call is terminated
+   */
   _handleActiveCallRetract: function (itemURI) {
     var itemID = itemURI.queryParam('item').replace(/(^.*\:)/, '').replace('.', '');
     $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID).parent().remove();
   },
 
+  /**
+   * This callback function was reigstered for the __onPublish__ event handler
+   * Event fired when the __dialogState__ of the phone call transitions to:
+   * _created_   : outgoing phone call created
+   * _requested_ : incoming phone call
+   * _confirmed_ : phone connection is established
+   */
   _handleActiveCallPublish: function (item) {
     console.log('handling an item publish');
     var itemID = item.callID.replace('.', '');
@@ -195,23 +349,37 @@ DemoApp.OX = OX.Base.extend({
     });
   },
 
+  /**
+   * This callback function was registered to receive
+   * notification when the agent subscribed successfully.
+   * It's one of several steps necessary to receive event notifications.
+   */
   _handleActiveCallSubscribe: function (uri) {
     console.log('handling an asynchronous subscription message');
     console.log(uri);
     _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', uri.toString());
   },
 
+  /**
+   * To __unsubscribe__ from event notifications
+   */
   _handleActiveCallUnsubscribe: function (uri) {
     console.log('handling an asynchronous unsubscription message');
     console.log(uri);
     _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', uri.toString());
   },
 
+  /**
+   * The __subscription__ is in a pending state
+   */
   _handleActiveCallPending: function (uri) {
     console.log('handling a pending response');
     console.log(uri);
   },
 
+  /**
+   * 
+   */
   pushRosterGroups: function (formID) {
     var jid = null;
     this.ox.Rosters.pushRosterGroups(jid, {
