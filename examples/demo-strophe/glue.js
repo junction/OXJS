@@ -58,9 +58,9 @@
  *         to ensure that you don't reach the upper bounds of the maximum
  *         number of subscriptions your client has). Not setting this
  *         flag would require you, the developer, to manage your user agent's
- *         subscriptions using calls `OX.Service.ActiveCalls.subscribe` for
- *         new subscriptions and `OX.Service.ActiveCalls.configureNodeSubscription`
- *         if the subscription already exists and needs to be refreshed.
+ *         subscriptions using function `OX.Service.ActiveCalls.subscribe` for
+ *         new subscriptions or `OX.Service.ActiveCalls.configureNodeSubscription`
+ *         if the subscription already exists and needs to be renewed.
  *
  *    - There is one callback handler that's registered for `onPublish`
  *      events which includes states signifying incoming, answered, created calls.
@@ -115,6 +115,9 @@ function handleStatusChanged(status) {
     $('#logged_out_pane').hide();
     $('#logged_in_pane').show();
     $('#err').html('');
+    $('#authorize-plain input[name=jid]').val(DemoApp.Strophe.bosh.jid);
+    $('.pubsub input[name=node]').val('/me/' + _getFormValue('login','username'));
+    $('.commands input[name=sip-address]').val(_getFormValue('login','username'));
     $('#logged_in_as').text(DemoApp.Strophe.bosh.jid);
     DemoApp.Strophe.bosh.send($pres().tree());
     break;
@@ -189,6 +192,7 @@ DemoApp.OX = OX.Base.extend({
    * We wrap our bosh (in this case Strophe) connection in a ConnectionAdapter
    * and pass the adapter to OX.
    */
+
   ox: OX.Connection.extend({
     connectionAdapter: OX.StropheAdapter.extend({
       connection: DemoApp.Strophe.bosh
@@ -314,9 +318,9 @@ DemoApp.OX = OX.Base.extend({
    */
   subscribeActiveCalls: function (formID) {
     var node = _getFormValue(formID, 'node');
-
+    var that = this;
     this.ox.ActiveCalls.subscribe(node, {
-      subscription_depth: 2,
+      subscription_depth: 'all',
       subscription_type: 'items',
       expire: new Date(new Date().getTime() + 3600 * 1000)
     }, {
@@ -337,32 +341,49 @@ DemoApp.OX = OX.Base.extend({
    * Event fired when a call is terminated
    */
   _handleActiveCallRetract: function (itemURI) {
+    console.log("Call Retract - Path: " + itemURI.path);
+    console.log("Call Retract - Query: " + itemURI.query);
     var itemID = itemURI.queryParam('item').replace(/(^.*\:)/, '').replace('.', '');
-    $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID).parent().remove();
+
+    /**
+    var idx = itemID.indexOf(":");
+    if (idx != -1){
+      itemID = itemID.substring(0,idx);
+    }
+     **/
+
+    console.log('Call Retract - itemID ' + itemID);
+
+    var el = $('#active-calls_xmpp_onsip_com .pubsub .events');
+    if (el && el.length && el.length > 0) {
+      el.html("");
+    }
   },
 
   /**
-   * This callback function was reigstered for the `onPublish` event handler
+   * This callback function was registered for the `onPublish` event handler
    * Event fired when the `dialogState` of the phone call transitions to:
    *     `created`   : outgoing call created
    *     `requested` : incoming call
    *     `confirmed` : phone connection is established
    */
   _handleActiveCallPublish: function (item) {
-    console.log('handling an item publish');
-    var itemID = item.callID.replace('.', '');
+    var itemID = item.uri.queryParam('item').replace(/(^.*\:)/, '').replace('.', '');
     var html = "<div id='%s'><h4>From %s; To %s</h4><ul><li>State: %s</li><li>From Tag: %s</li><li>To Tag: %s</li></ul><input type='submit' value='Hangup'/></div>";
     html = html.replace(/%s/, itemID)
-               .replace(/%s/, item.uacAOR)
-               .replace(/%s/, item.uasAOR)
+               .replace(/%s/, item.fromURI)
+               .replace(/%s/, item.toURI)
                .replace(/%s/, item.dialogState)
                .replace(/%s/, item.fromTag)
                .replace(/%s/, item.toTag);
 
+    console.log('Call Publish - ' + itemID);
+
     var el = $('#active-calls_xmpp_onsip_com .pubsub .events #' + itemID);
-    if (el.length && el.length > 0) {
+    if (el && el.length && el.length > 0) {
       el.html(html);
     } else {
+      console.log('allow output ' + html);
       _addOutput('#active-calls_xmpp_onsip_com .pubsub .events', html);
     }
 
@@ -379,7 +400,10 @@ DemoApp.OX = OX.Base.extend({
   _handleActiveCallSubscribe: function (uri) {
     console.log('handling an asynchronous subscription message');
     console.log(uri);
+    var e = $('#active-calls_xmpp_onsip_com .pubsub .subscriptions');
+    if (e) {
     _addOutput('#active-calls_xmpp_onsip_com .pubsub .subscriptions', uri.toString());
+    }
   },
 
   /**
@@ -432,8 +456,10 @@ DemoApp.OX = OX.Base.extend({
     };
 
     iq.type('get');
+    iq.xmlns = null;
     query.name = 'query';
     query.attr('xmlns', 'jabber:iq:roster');
+    query.xmlns = 'jabber:iq:roster';
     iq.addChild(query);
 
     this.ox.send(iq.toString(), function (packet) {
@@ -587,12 +613,12 @@ DemoApp.OX = OX.Base.extend({
     var id   = packet.attributes.id.value;
     var from = packet.attributes.to.value;
     var to   = packet.attributes.from.value;
-    var iq    = OX.XML.XMPP.IQ.extend();
+    var iq   = OX.XML.XMPP.IQ.extend();
     iq.from(from);
     iq.to(to);
     iq.type('result');
     iq.attr('id', id);
-    this.ox.send(iq.toString());
+    DemoApp.OX.ox.send(iq.toString());
 
     return true;
   },
@@ -633,7 +659,8 @@ DemoApp.OX = OX.Base.extend({
     iq.to(to);
     iq.type('result');
     iq.attr('id', id);
-    this.ox.send(iq.toString());
+
+    DemoApp.OX.ox.send(iq.toString());
 
     return true;
   }
@@ -679,9 +706,9 @@ $(document).ready(function () {
 });
 
 var onerror = function (e) {
-  DemoApp.Strophe.quit();
+  //DemoApp.Strophe.quit();
 
-  $('#err').html('');
-  $('#logged_out_pane').show();
+  //$('#err').html('');
+  //$('#logged_out_pane').show();
   return false;
 };

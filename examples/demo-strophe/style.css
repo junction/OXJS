@@ -21,6 +21,9 @@ input[type='text'],
 input[type='password'] {
   width: 200px;
 }
+input[name=jid] {
+  width: 410px;
+}
 
 input {
   margin: 2px 0;
@@ -66,4 +69,10 @@ input {
 
 #message_pane .msg.inbound {
   color: blue;
+}
+
+.hint {
+ font-size: 12px;
+ font-style: italic;
+ 
 }

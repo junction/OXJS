@@ -10,7 +10,7 @@
   <body>
     <div id="page">
       <h1>OXJS Test Client</h1>
-
+      <i>Documentation details of this sample can be found in the support file </i><a href="glue.js">glue.js</a>
       <div id="err"></div>
 
       <div id="logged_out_pane">
@@ -40,8 +40,8 @@
       </div> <!-- #logged_out_pane -->
 
       <div id="logged_in_pane" style="display: none;">
-        <div>
-          <div>Your are logged in as: <em id="logged_in_as"></em></div>
+        <div style="margin:10px 0px 5px;">
+          <div>You are logged in as: <em id="logged_in_as"></em></div>
           <button id="logout">Logout</button>
         </div>
 
@@ -51,13 +51,59 @@
           <div id="message_pane_inner"></div>
         </div>
 
-        <div id="auth_xmpp_onsip_com" class="service">
+        <div id="active-calls_xmpp_onsip_com" class="service">
+          <h2>active-calls.xmpp.onsip.com</h2>
+
+          <div class="commands">
+            <h3><a href="http://wiki.onsip.com/docs/Active-Calls_Component">Commands</a></h3>
+            <div class="command create">
+              <h4>Create a Call</h4>
+              <div>
+              <span class="hint">Sample To / From SIP URIs:</span>
+              <ul class="example">
+                <li>sip:john@example.onsip.com</li>
+                <li>sip:16468729219@company.onsip.com</li>
+              </ul>
+              </div>
+
+              <form id="create-call" action="#">
+                <table>
+                  <tr>
+                    <td>From:
+                    </td><td><input name="from" type="text"/></td>
+                  </tr>
+                  <tr>
+                    <td>To:</td>
+                    <td><input name="to" type="text"/></td>
+                  </tr>
+                  <tr>
+                    <td><input type="submit" value="Submit"/>
+                    </td>
+                  </tr>
+                </table>
+              </form>
+
+              <ul class="output create"></ul>
+            </div>
+          </div>
+
+          <div id="auth_xmpp_onsip_com" class="service">
           <h2>auth.xmpp.onsip.com</h2>
 
           <div class="commands">
             <h3><a href="http://wiki.onsip.com/docs/Auth_Component">Commands</a></h3>
             <div class="command authorize-plain">
               <h4>Authorize this JID for a SIP Address</h4>
+              <div class="hint">
+                HINT: Authorization is required to receive call event notifications. After successfully Authorizing,
+                you must then <strong>Subscribe to Active Calls</strong>, see below:
+              </div>
+
+              <div class="hint" style="margin: 5px 0px 0px;">
+                HINT: More information about <strong>Definition of Jabber Identifiers (JIDs)</strong>
+                can be found @ <a href="http://xmpp.org/extensions/xep-0029.html" target="+_blank">http://xmpp.org/extensions/xep-0029.html</a>
+              </div>
+
               <form id="authorize-plain" action="#">
                 <table>
                   <tr>
@@ -81,40 +127,14 @@
               <ul class="output"></ul>
             </div>
           </div>
-        </div>
-
-        <div id="active-calls_xmpp_onsip_com" class="service">
-          <h2>active-calls.xmpp.onsip.com</h2>
-
-          <div class="commands">
-            <h3><a href="http://wiki.onsip.com/docs/Active-Calls_Component">Commands</a></h3>
-            <div class="command create">
-              <h4>Create a Call</h4>
-              <form id="create-call" action="#">
-                <table>
-                  <tr>
-                    <td>From:
-                    </td><td><input name="from" type="text"/></td>
-                  </tr>
-                  <tr>
-                    <td>To:</td>
-                    <td><input name="to" type="text"/></td>
-                  </tr>
-                  <tr>
-                    <td><input type="submit" value="Submit"/>
-                    </td>
-                  </tr>
-                </table>
-              </form>
-
-              <ul class="output create"></ul>
-            </div>
           </div>
 
           <div class="pubsub">
             <h3><a href="http://wiki.onsip.com/docs/Active-Calls_Pubsub">Subscribe to Active Calls</a></h3>
-            <div>
-              Examples:
+            <div class="hint">HINT: Before Subscribing, you must be <strong>Authorized</strong></div>
+            <div class="hint">
+              HINT: for more details about Collection Nodes visit <a href="http://xmpp.org/extensions/xep-0248.html">XEP-0248: PubSub Collection Nodes<a/><br/>
+              Example Nodes:
               <ul class="example">
                 <li>/</li>
                 <li>/example.onsip.com</li>
@@ -127,7 +147,7 @@
               <table>
                 <tr>
                   <td>Node:</td>
-                  <td><input type="text" name="node"/></td>
+                  <td><input type="text" name="node" value=""/></td>
                 </tr>
                 <tr>
                   <td><input type="submit" value="Submit"/></td>
